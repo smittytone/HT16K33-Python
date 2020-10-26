@@ -122,7 +122,7 @@ led.set_character("A", True).draw()
 
 ### define_character(*glyph[], ascii_value]*) ###
 
-To record a user-definable character, write its pixel pattern (see [set_icon()](#set_iconglyph-col)) and specify the ID you will use to write the character to the display buffer (using [set_character()](#set_characterglyph-icon)).
+To record a user-definable character, write its pixel pattern (see [set_icon()](#set_iconglyph-col)) and specify the ID you will use to write the character to the display buffer (using [set_character()](#set_charactercharacter-icon)).
 
 This method returns *self*.
 
