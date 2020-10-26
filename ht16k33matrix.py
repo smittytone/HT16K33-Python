@@ -1,9 +1,8 @@
-# Import the base class
 from ht16k33 import HT16K33
 
-class HT16K33MatrixFeatherWing(HT16K33):
+class HT16K33Matrix(HT16K33):
     """
-    Micro/Circuit Python class for the Adafruit FeatherWinf LED matrix display.
+    Micro/Circuit Python class for 8x8 LED matrix displays driven by the HT16K33 controller.
     Bus         I2C
     Author      Tony Smith (@smittytone)
     License     MIT
@@ -110,43 +109,76 @@ class HT16K33MatrixFeatherWing(HT16K33):
         b"\x60\x90\x90\x60"       # Degrees sign - Ascii 127
     ]
 
+    # *********** Private Properties **********
+
     width = 8
     height = 8
     def_chars = None
+    rotation_angle = 0
+    is_rotated = False
     is_inverse = False
 
-    def __init__(self, i2c, i2c_address=0x70, units=2):
+    def __init__(self, i2c, i2c_address=0x70):
         if i2c_address < 0 or i2c_address > 255: return None
-        if units < 0: return None
-        self.width = units * 8
-        self.buffer = bytearray(self.width * 2)
-        self.def_chars = []
+        self.buffer = bytearray(self.width)
+        self.def_chars = {}
         for i in range(32): self.def_chars.append(b"\x00")
-        super(HT16K33MatrixFeatherWing, self).__init__(i2c, i2c_address)
+        super(HT16K33Matrix, self).__init__(i2c, i2c_address)
 
-    def set_icon(self, glyph, col=0):
+    def set_angle(self, angle=0):
         """
-        Present a user-defined character glyph at the specified digit.
-
-        Glyph values are byte arrays of eight 8-bit values.
-        This method updates the display buffer, but does not send the buffer to the display itself.
-        Call 'draw()' to render the buffer on the display.
+        Set the matrix orientation
 
         Args:
-            glyph (bytearray) The glyph pattern.
-            col (int)         The column at which to write the icon (Default: 0)
+            angle (integer) Display auto-rotation angle, 0 to -360 degrees. Default: 0
+        """
+        # Angle range can be -360 to + 360 - ignore values beyond this
+        if angle angle > 360:
+            while angle > 360:
+                angle -= 360
+
+        if angle < 0:
+            while angle < 360:
+                angle += 360
+
+        # Convert angle in degrees to internal value:
+        # 0 = none, 1 = 90 clockwise, 2 = 180, 3 = 90 anti-clockwise
+        if angle > 3:
+            if angle < 45 or angle > 360: angle = 0
+            if angle >= 45 and angle < 135: angle = 1
+            if angle >= 135 and angle < 225: angle = 2
+            if angle >= 225: angle = 3
+
+        self.rotation_angle = angle
+        if self.rotation_angle != 0: self.is_rotated = True
+
+    def set_icon(self, glyph, centre=False):
+        """
+        Displays a custom character on the matrix
+
+        Args:
+            glyph (array) 1-8 8-bit values defining a pixel image. The data is passed as columns
+                          0 through 7, left to right. Bit 0 is at the bottom, bit 7 at the top
+            centre (bool) Whether the icon should be displayed centred on the screen. Default: False
 
         Returns:
-            The instance (self) or None on error
+            The instance (self)
         """
-        if col < 0 or col >= self.width: return None
-        for i in range(len(glyph)):
-            buf_col = self._get_row(col + i)
-            if buf_col is False: break
-            self.buffer[buf_col] = glyph[i]
+        # Make sure the supplied array is not mis-sized
+        length = len(glyph)
+        if length < 1 or length > 8: return None
+
+        self.clear()
+        if self.is_inverse: self.fill()
+
+        for i in range(length):
+            a = i
+            if centre:
+                a = i + int((8 - length) / 2)
+            self.buffer[a] = glyph[i] if self.is_inverse is False else ((not glyph[i]) & 0xFF)
         return self
 
-    def set_character(self, ascii_value=32, col=0):
+    def set_character(self, ascii_value=32, centre=False)
         """
         Display a single character specified by its Ascii value on the matrix
 
@@ -155,20 +187,20 @@ class HT16K33MatrixFeatherWing(HT16K33):
             centre (bool)         Whether the icon should be displayed centred on the screen. Default: False
 
         Returns:
-            The instance (self) or None on error
+            The instance (self)
         """
         glyph = None
         if ascii_value < 32:
             # A user-definable character has been chosen
-            glyph = self.def_chars[ascii_value]
+            glyph = self.defchars[ascii_value]
         else:
             # A standard character has been chosen
             ascii_value -= 32
             if ascii_value < 0 or ascii_value >= len(self.CHARSET): ascii_value = 0
-            glyph = self.CHARSET[ascii_value]
-        return self.set_icon(glyph, col)
+            glyph = self.charset[ascii_value]
+        return self.set_icon(glyph, centre)
 
-    def scroll_text(self, the_line, speed=0.1):
+     def scroll_text(self, the_line, speed=0.1):
         """
         Scroll the specified line of text leftwards across the display.
 
@@ -182,7 +214,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
         import time
 
         if the_line is None or len(the_line) == 0: return None
-        the_line += "        "
+        the_line += "    "
 
         # Calculate the source buffer size
         length = 0
@@ -213,7 +245,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
         cur = 0
         while row < length:
             for i in range(0, self.width):
-                self.buffer[self._get_row(i)] = src_buf[cur];
+                self.buffer[i] = src_buf[cur];
                 cur += 1
             self.draw()
             time.sleep(speed)
@@ -222,14 +254,12 @@ class HT16K33MatrixFeatherWing(HT16K33):
 
     def define_character(self, glyph, char_code=0):
         """
-        Set a user-definable character
+        Set a user-definable character for later use
 
         Args:
-            glyph (bytearray) The glyph pattern.
-            char_code (int) The character’s ID code (0-31) (Default: 0)
-
-        Returns:
-            The instance (self) or None on error
+            glyph (bytearray)   1-8 8-bit values defining a pixel image. The data is passed as columns,
+                                with bit 0 at the bottom and bit 7 at the top
+            char_code (integer) Character's ID Ascii code 0-31. Default: 0
         """
         if glyph == None or len(glyph) == 0 or len(glyph) > self.width: return None
         if 0 <= char_code < 32:
@@ -237,13 +267,13 @@ class HT16K33MatrixFeatherWing(HT16K33):
             return self
         return None
 
-    def plot(self, x, y, ink=1, xor=False):
+    def plot(self, x, y, ink=1, xor=False)
         """
         Plot a point on the matrix. (0,0) is bottom left as viewed
 
         Args:
-            x (integer)   X co-ordinate left to right
-            y (integer)   Y co-ordinate bottom to top
+            x (integer)   X co-ordinate (0 - 7) left to right
+            y (integer)   Y co-ordinate (0 - 7) bottom to top
             ink (integer) Pixel color: 1 = 'white', 0 = black. NOTE inverse video mode reverses this. Default: 1
             xor (bool)    Whether an underlying pixel already of color ink should be inverted. Default: False
 
@@ -253,7 +283,6 @@ class HT16K33MatrixFeatherWing(HT16K33):
         # Check argument range and value
         if (0 <= x < self.width) and (0 <= y < self.height):
             if ink not in (0, 1): ink = 1
-            x = self._get_row(x)
             v = self.buffer[x]
             if ink == 1:
                 if self.is_set(x ,y) and xor:
@@ -281,24 +310,86 @@ class HT16K33MatrixFeatherWing(HT16K33):
             Whether the
         """
         if (0 <= x < self.width) and (0 <= y < self.height):
-            x = self._get_row(x)
             v = self.buffer[x]
             bit = (v >> y) & 1
             return True if bit > 0 else False
         return None
 
+    def rotate_matrix(self, input_matrix, angle=0):
+        """
+        Rotate an 8-integer matrix through the specified angle in 90-degree increments:
+           0 = none, 1 = 90 clockwise, 2 = 180, 3 = 90 anti-clockwise
+
+        Args:
+            input_matrix (byte array) The matrix to rotate
+            angle (integer)           The angle of rotation
+        Returns:
+            Byte array or None on error
+        """
+        if angle not in (1, 2, 3): return None
+        if angle is 0: return input_matrix
+
+        a = 0
+        line_value = 0
+        output_matrix = bytearray(self.width * 8)
+
+        # NOTE It's quicker to have three case-specific
+        #      code blocks than a single, generic block
+        if angle is 1:
+            for y in range(self.height):
+                line_value = input_matrix[y]
+                for x in range(7, -1, -1):
+                    a = line_value & (1 << x)
+                    if a is not 0:
+                        output_matrix[7 - x] = outputMatrix[7 - x] + (1 << y)
+        else if angle is 2:
+            for y in range(self.height):
+                line_value = input_matrix[y]
+                for x in range(7, -1, -1):
+                    a = line_value & (1 << x)
+                    if a is not 0:
+                        output_matrix[7 - y] = output_matrix[7 - y] + (1 << (7 - x))
+        else:
+            for y in range(self.height):
+                line_value = input_matrix[y]
+                for x in range(7, -1, -1):
+                    a = line_value & (1 << x)
+                    if a is not 0:
+                        output_matrix[x] = output_matrix[x] + (1 << (7 - y))
+        return output_matrix
+
+    def draw(self):
+        """
+        Takes the contents of _buffer and writes it to the LED matrix.
+        """
+        new_buffer = bytearray(len(self.buffer))
+        if self.is_rotated:
+            new_buffer = self.rotate_matrix(self.buffer)
+        else:
+            new_buffer[0:] = self.buffer
+        draw_buffer = bytearray(2 * len(new_buffer) + 1)
+        for i in range(len(new_buffer)):
+            draw_buffer[i * 2 + 1] = self._process_byte(new_buffer[i])
+            draw_buffer[i * 2 + 2] = 0x00
+        self.i2c.writeto(self.address, bytes(draw_buffer))
+
+    def _fill(value=0xFF):
+        """
+        Fill the buffer, column by column with the specified byte value
+        """
+        value &= 0xFF
+        for i in range(self.width):
+            self.buffer[i] = value
+        return
+
     # ********** PRIVATE METHODS **********
 
-    def _get_row(self, x):
+    def _process_byte(self, byte_value):
         """
-        Convert a column co-ordinate to its memory location
-        in the FeatherWing, and return the locatin.
-        An out-of-range value returns False
+        Adafruit 8x8 matrix requires some data manipulation:
+        Bits 7-0 of each line need to be sent 0 through 7, and bit 0 rotated to bit 7
         """
-        if x < 8:
-            x = 16 + (x << 1)
-        else:
-            x = 1 + (x << 1)
-
-        if x >= self.width * 2: return False
-        return x
+        bit0 = byte_value & 0x01
+        result = byte_value >> 1
+        if bit0 > 0: result |= 0x80
+        return result

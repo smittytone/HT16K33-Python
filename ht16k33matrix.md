@@ -1,4 +1,4 @@
-# HT16K33MatrixFeatherWing 3.0.0 #
+# HT16K33Matrix 3.0.0 #
 
 This is a hardware driver for the [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149), which is based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
@@ -9,7 +9,7 @@ It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPytho
 The driver comprises a parent generic HT16K33 driver and a child driver for the matrix display itself. All your code needs to do is `import` the latter:
 
 ```python
-from ht16k33matrixfeatherwing import HT16K33MatrixFeatherWing
+from ht16k33matrix import HT16K33Matrix
 ```
 
 You can then instantiate the driver.
@@ -30,17 +30,17 @@ led.clear().clear().plot(0,1,0).draw()
 
 ## Class Usage ##
 
-### Constructor: HT16K33MatrixFeatherWing(*i2C_bus[, i2c_address]*) ###
+### Constructor: HT16K33Matrix(*i2C_bus[, i2c_address]*) ###
 
-To instantiate a HT16K33MatrixFeatherWing object pass the I&sup2;C bus to which the display is connected and, optionally, its I&sup2;C address. If no address is passed, the default value, `0x70` will be used. Pass an alternative address if you have changed the display’s address using the solder pads on rear of the LED’s circuit board.
+To instantiate a HT16K33Matrix object pass the I&sup2;C bus to which the display is connected and, optionally, its I&sup2;C address. If no address is passed, the default value, `0x70` will be used. Pass an alternative address if you have changed the display’s address using the solder pads on rear of the LED’s circuit board.
 
-The passed I&sup2;C bus must be configured before the HT16K33MatrixFeatherWing object is created.
+The passed I&sup2;C bus must be configured before the HT16K33Matrix object is created.
 
 #### Examples ####
 
 ```python
 # Micropython
-from ht16k33matrixfeatherwing import HT16K33MatrixFeatherWing
+from ht16k33matrix import HT16K33Matrix
 from machine import I2C
 
 # Update the pin values for your board
@@ -53,7 +53,7 @@ led = HT16K33Segment(i2c)
 
 ```python
 # Circuitpython
-from ht16k33matrixfeatherwing import HT16K33MatrixFeatherWing
+from ht16k33matrix import HT16K33Matrix
 import busio
 import board
 
@@ -87,9 +87,9 @@ This method can be used to flash the display. The value passed into *rate* is th
 led.set_blink_rate(1)
 ```
 
-### set_icon(*glyph[, col]*) ###
+### set_icon(*glyph[, centre]*) ###
 
-To write a character that is not in the character set at a specified x co-ordinate, call *set_icon()* and pass a glyph-definition pattern and the column of the matrix at which it will be written as its parameters.
+To write a character that is not in the character set, call *set_icon()* and pass a glyph-definition pattern. Optionally, you can also specify whether you want the character centred on the display, if this is possible.
 
 The glyph pattern should be a byte array; each byte is a column of image pixels with bit zero at the bottom.
 
@@ -100,12 +100,12 @@ This method returns *self*.
 ```python
 # Display a smiley in the centre of the display
 icon = b"\x3C\x42\xA9\x85\x85\xA9\x42\x3C"
-led.set_icon(icon, 4).draw()
+led.set_icon(icon).draw()
 ```
 
-### set_character(*character[, col]*) ###
+### set_character(*character[, centre]*) ###
 
-To write a character from the display’s character set at a specified x co-ordinate, call *set_character()* and pass the Ascii code of the character to be displayed. You can also specify the column of the matrix at which it will be written.
+To write a character from the display’s character set at a specified x co-ordinate, call *set_character()* and pass the Ascii code of the character to be displayed. Optionally, you can also specify whether you want the character centred on the display, if this is possible.
 
 If you have set any user-definable characters, you can write these by passing their ID value (between 0 and 31) in place of an Ascii code.
 
@@ -116,9 +116,8 @@ This method returns *self*.
 #### Example ####
 
 ```python
-# Display 'Boo' on the LED
-led.set_character("B", 0).set_char("o", 7)
-led.set_character("o", 12).draw()
+# Display 'A' on the LED and centre it
+led.set_character("A", True).draw()
 ```
 
 ### define_character(*glyph[], ascii_value]*) ###
