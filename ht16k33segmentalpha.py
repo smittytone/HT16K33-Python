@@ -2,8 +2,18 @@
 from ht16k33 import HT16K33
 
 class HT16K33SegmentAlpha(HT16K33):
+    """
+    Micro/Circuit Python class for the Adafruit 0.54-in 4-digit,
+    16-segment LED matrix backpack.
 
-    # LED segment-specific constants
+    Version:    3.0.0
+    Bus:        I2C
+    Author:     Tony Smith (@smittytone)
+    License:    MIT
+    """
+
+    # *********** CONSTANTS **********
+
     HT16K33_SEGMENT_COLON_ROW = 0x04
     HT16K33_SEGMENT_MINUS_CHAR = 0x10
     HT16K33_SEGMENT_DEGREE_CHAR = 0x11
@@ -12,10 +22,14 @@ class HT16K33SegmentAlpha(HT16K33):
     # 0-9, A-F, minus, degree
     CHARSET = b'\x00\x3F\x12\x00\x00\xDB\x00\x8F\x12\xE0\x00\xED\x00\xFD\x0C\x01\x00\xFF\x00\xEF\x00\xF7\x12\x8F\x00\x39\x12\x0F\x00\x79\x00\x71\x00\xBD\x00\xF6\x12\x00\x00\x1E\x24\x70\x00\x38\x05\x36\x21\x36\x00\x3F\x00\xF3\x20\x3F\x20\xF3\x00\xED\x12\x01\x00\x3E\x0C\x30\x28\x36\x2D\x00\x15\x00\x0C\x09\x10\x58\x20\x78\x00\xD8\x08\x8E\x08\x58\x0C\x80\x04\x8E\x10\x70\x10\x00\x00\x0E\x36\x00\x00\x30\x10\xD4\x10\x50\x00\xDC\x01\x70\x04\x86\x00\x50\x20\x88\x00\x78\x00\x1C\x20\x04\x28\x14\x28\xC0\x20\x0C\x08\x48\x00\x00\x00\x06\x02\x20\x12\xCE\x12\xED\x0C\x24\x23\x5D\x04\x00\x24\x00\x09\x00\x3F\xC0\x12\xC0\x08\x00\x00\xC0\x00\x00\x0C\x00'
 
+    # *********** CONSTRUCTOR **********
+
     def __init__(self, i2c, i2c_address=0x70):
         if i2c_address < 0 or i2c_address > 255: return None
         self.buffer = bytearray(8)
         super(HT16K33SegmentAlpha, self).__init__(i2c, i2c_address)
+
+    # *********** PUBLIC METHODS **********
 
     def set_colon(self, is_set=True):
         """
@@ -74,7 +88,7 @@ class HT16K33SegmentAlpha(HT16K33):
         """
         return self.set_char(str(number), digit, has_dot)
 
-    def set_char(self, char, digit=0, has_dot=False):
+    def set_character(self, char, digit=0, has_dot=False):
         """
         Present single alphanumeric character at the specified digit.
 

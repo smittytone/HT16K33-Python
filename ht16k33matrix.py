@@ -2,14 +2,16 @@ from ht16k33 import HT16K33
 
 class HT16K33Matrix(HT16K33):
     """
-    Micro/Circuit Python class for 8x8 LED matrix displays driven by the HT16K33 controller.
-    https://www.adafruit.com/product/1048
-    Bus         I2C
-    Author      Tony Smith (@smittytone)
-    License     MIT
+    Micro/Circuit Python class for the Adafruit 8x8 monochrome LED matrix
+    backpack.
+
+    Version:    3.0.0
+    Bus:        I2C
+    Author:     Tony Smith (@smittytone)
+    License:    MIT
     """
 
-    VERSION = "3.0.0"
+    # *********** CONSTANTS **********
 
     CHARSET = [
         b"\x00\x00",              # space - Ascii 32
@@ -110,7 +112,7 @@ class HT16K33Matrix(HT16K33):
         b"\x60\x90\x90\x60"       # Degrees sign - Ascii 127
     ]
 
-    # *********** Private Properties **********
+    # ********** PRIVATE PROPERTIES **********
 
     width = 8
     height = 8
@@ -119,12 +121,16 @@ class HT16K33Matrix(HT16K33):
     is_rotated = False
     is_inverse = False
 
+    # *********** CONSTRUCTOR **********
+
     def __init__(self, i2c, i2c_address=0x70):
         if i2c_address < 0 or i2c_address > 255: return None
         self.buffer = bytearray(self.width)
         self.def_chars = []
         for i in range(32): self.def_chars.append(b"\x00")
         super(HT16K33Matrix, self).__init__(i2c, i2c_address)
+
+    # *********** PUBLIC METHODS **********
 
     def set_angle(self, angle=0):
         """

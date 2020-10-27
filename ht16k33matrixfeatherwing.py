@@ -3,13 +3,16 @@ from ht16k33 import HT16K33
 
 class HT16K33MatrixFeatherWing(HT16K33):
     """
-    Micro/Circuit Python class for the Adafruit FeatherWinf LED matrix display.
-    Bus         I2C
-    Author      Tony Smith (@smittytone)
-    License     MIT
+    Micro/Circuit Python class for the Adafruit 0.8-in
+    16x8 LED matrix FeatherWing.
+
+    Version:    3.0.0
+    Bus:        I2C
+    Author:     Tony Smith (@smittytone)
+    License:    MIT
     """
 
-    VERSION = "3.0.0"
+    # *********** CONSTANTS **********
 
     CHARSET = [
         b"\x00\x00",              # space - Ascii 32
@@ -56,7 +59,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
         b"\x82\xfe\x82",          # I
         b"\x0c\x02\x02\x02\xfc",  # J
         b"\xfe\x10\x28\x44\x82",  # K
-        b"\xfe\x02\x02\x02\x02",  # L
+        b"\xfe\x02\x02\x02",      # L
         b"\xfe\x40\x20\x40\xfe",  # M
         b"\xfe\x40\x20\x10\xfe",  # N
         b"\x7c\x82\x82\x82\x7c",  # O
@@ -110,10 +113,14 @@ class HT16K33MatrixFeatherWing(HT16K33):
         b"\x60\x90\x90\x60"       # Degrees sign - Ascii 127
     ]
 
+    # ********** PRIVATE PROPERTIES **********
+
     width = 8
     height = 8
     def_chars = None
     is_inverse = False
+
+    # *********** CONSTRUCTOR **********
 
     def __init__(self, i2c, i2c_address=0x70, units=2):
         if i2c_address < 0 or i2c_address > 255: return None
@@ -123,6 +130,8 @@ class HT16K33MatrixFeatherWing(HT16K33):
         self.def_chars = []
         for i in range(32): self.def_chars.append(b"\x00")
         super(HT16K33MatrixFeatherWing, self).__init__(i2c, i2c_address)
+
+    # *********** PUBLIC METHODS **********
 
     def set_icon(self, glyph, col=0):
         """
@@ -179,8 +188,10 @@ class HT16K33MatrixFeatherWing(HT16K33):
         Returns:
             None on error
         """
+        # Import the time library as we use time.sleep() here
         import time
 
+        # Check argument range and value
         if the_line is None or len(the_line) == 0: return None
         the_line += "        "
 
@@ -231,6 +242,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
         Returns:
             The instance (self) or None on error
         """
+        # Check argument range and value
         if glyph == None or len(glyph) == 0 or len(glyph) > self.width: return None
         if 0 <= char_code < 32:
             self.def_chars[char_code] = glyph
@@ -280,6 +292,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
         Returns:
             Whether the
         """
+        # Check argument range and value
         if (0 <= x < self.width) and (0 <= y < self.height):
             x = self._get_row(x)
             v = self.buffer[x]
@@ -292,13 +305,12 @@ class HT16K33MatrixFeatherWing(HT16K33):
     def _get_row(self, x):
         """
         Convert a column co-ordinate to its memory location
-        in the FeatherWing, and return the locatin.
+        in the FeatherWing, and return the location.
         An out-of-range value returns False
         """
         if x < 8:
             x = 16 + (x << 1)
         else:
             x = 1 + (x << 1)
-
         if x >= self.width * 2: return False
         return x

@@ -2,8 +2,18 @@
 from ht16k33 import HT16K33
 
 class HT16K33Segment(HT16K33):
+    """
+    Micro/Circuit Python class for the Adafruit 0.56-in 4-digit,
+    7-segment LED matrix backpack and equivalent Featherwing.
 
-    # LED segment-specific constants
+    Version:    3.0.0
+    Bus:        I2C
+    Author:     Tony Smith (@smittytone)
+    License:    MIT
+    """
+
+    # *********** CONSTANTS **********
+
     HT16K33_SEGMENT_COLON_ROW = 0x04
     HT16K33_SEGMENT_MINUS_CHAR = 0x10
     HT16K33_SEGMENT_DEGREE_CHAR = 0x11
@@ -15,10 +25,14 @@ class HT16K33Segment(HT16K33):
     # 0-9, A-F, minus, degree
     CHARSET = b'\x3F\x06\x5B\x4F\x66\x6D\x7D\x07\x7F\x6F\x5F\x7C\x58\x5E\x7B\x71\x40\x63'
 
+    # *********** CONSTRUCTOR **********
+
     def __init__(self, i2c, i2c_address=0x70):
         if i2c_address < 0 or i2c_address > 255: return None
         self.buffer = bytearray(16)
         super(HT16K33Segment, self).__init__(i2c, i2c_address)
+
+    # *********** PUBLIC METHODS **********
 
     def set_colon(self, is_set=True):
         """
@@ -77,7 +91,7 @@ class HT16K33Segment(HT16K33):
         """
         return self.set_char(str(number), digit, has_dot)
 
-    def set_char(self, char, digit=0, has_dot=False):
+    def set_character(self, char, digit=0, has_dot=False):
         """
         Present single alphanumeric character at the specified digit.
 
