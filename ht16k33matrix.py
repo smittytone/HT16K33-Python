@@ -3,6 +3,7 @@ from ht16k33 import HT16K33
 class HT16K33Matrix(HT16K33):
     """
     Micro/Circuit Python class for 8x8 LED matrix displays driven by the HT16K33 controller.
+    https://www.adafruit.com/product/1048
     Bus         I2C
     Author      Tony Smith (@smittytone)
     License     MIT
@@ -55,7 +56,7 @@ class HT16K33Matrix(HT16K33):
         b"\x82\xfe\x82",          # I
         b"\x0c\x02\x02\x02\xfc",  # J
         b"\xfe\x10\x28\x44\x82",  # K
-        b"\xfe\x02\x02\x02\x02",  # L
+        b"\xfe\x02\x02\x02",      # L
         b"\xfe\x40\x20\x40\xfe",  # M
         b"\xfe\x40\x20\x10\xfe",  # N
         b"\x7c\x82\x82\x82\x7c",  # O
@@ -121,7 +122,7 @@ class HT16K33Matrix(HT16K33):
     def __init__(self, i2c, i2c_address=0x70):
         if i2c_address < 0 or i2c_address > 255: return None
         self.buffer = bytearray(self.width)
-        self.def_chars = {}
+        self.def_chars = []
         for i in range(32): self.def_chars.append(b"\x00")
         super(HT16K33Matrix, self).__init__(i2c, i2c_address)
 
@@ -131,9 +132,12 @@ class HT16K33Matrix(HT16K33):
 
         Args:
             angle (integer) Display auto-rotation angle, 0 to -360 degrees. Default: 0
+
+        Returns:
+            The instance (self)
         """
-        # Angle range can be -360 to + 360 - ignore values beyond this
-        if angle angle > 360:
+        # Bring the supplied angle to with 0-360 degrees
+        if angle > 360:
             while angle > 360:
                 angle -= 360
 
@@ -141,7 +145,7 @@ class HT16K33Matrix(HT16K33):
             while angle < 360:
                 angle += 360
 
-        # Convert angle in degrees to internal value:
+        # Convert angle to internal value:
         # 0 = none, 1 = 90 clockwise, 2 = 180, 3 = 90 anti-clockwise
         if angle > 3:
             if angle < 45 or angle > 360: angle = 0
@@ -150,7 +154,20 @@ class HT16K33Matrix(HT16K33):
             if angle >= 225: angle = 3
 
         self.rotation_angle = angle
-        if self.rotation_angle != 0: self.is_rotated = True
+        self.is_rotated = True if self.rotation_angle != 0 else False
+        return self
+
+    def set_inverse(self):
+        """
+        Inverts the ink colour of the display
+
+        Returns:
+            The instance (self)
+        """
+        self.is_inverse = not self.is_inverse
+        for i in range(self.width):
+            self.buffer[i] = (~ self.buffer[i]) & 0xFF
+        return self
 
     def set_icon(self, glyph, centre=False):
         """
@@ -164,21 +181,16 @@ class HT16K33Matrix(HT16K33):
         Returns:
             The instance (self)
         """
-        # Make sure the supplied array is not mis-sized
         length = len(glyph)
         if length < 1 or length > 8: return None
-
-        self.clear()
-        if self.is_inverse: self.fill()
-
         for i in range(length):
             a = i
             if centre:
                 a = i + int((8 - length) / 2)
-            self.buffer[a] = glyph[i] if self.is_inverse is False else ((not glyph[i]) & 0xFF)
+            self.buffer[a] = glyph[i] if self.is_inverse is False else ((~ glyph[i]) & 0xFF)
         return self
 
-    def set_character(self, ascii_value=32, centre=False)
+    def set_character(self, ascii_value=32, centre=False):
         """
         Display a single character specified by its Ascii value on the matrix
 
@@ -192,7 +204,7 @@ class HT16K33Matrix(HT16K33):
         glyph = None
         if ascii_value < 32:
             # A user-definable character has been chosen
-            glyph = self.defchars[ascii_value]
+            glyph = self.def_chars[ascii_value]
         else:
             # A standard character has been chosen
             ascii_value -= 32
@@ -200,7 +212,7 @@ class HT16K33Matrix(HT16K33):
             glyph = self.charset[ascii_value]
         return self.set_icon(glyph, centre)
 
-     def scroll_text(self, the_line, speed=0.1):
+    def scroll_text(self, the_line, speed=0.1):
         """
         Scroll the specified line of text leftwards across the display.
 
@@ -236,7 +248,7 @@ class HT16K33Matrix(HT16K33):
             else:
                 glyph = self.CHARSET[asc_val - 32]
             for j in range(0, len(glyph)):
-                src_buf[row] = glyph[j]
+                src_buf[row] = glyph[j] if self.is_inverse is False else ((~ glyph[j]) & 0xFF)
                 row += 1
             row += 1
 
@@ -267,7 +279,7 @@ class HT16K33Matrix(HT16K33):
             return self
         return None
 
-    def plot(self, x, y, ink=1, xor=False)
+    def plot(self, x, y, ink=1, xor=False):
         """
         Plot a point on the matrix. (0,0) is bottom left as viewed
 
@@ -307,7 +319,7 @@ class HT16K33Matrix(HT16K33):
             y (integer) Y co-ordinate bottom to top
 
         Returns:
-            Whether the
+            Whether the pixel is set (True) or not (False), or None on error
         """
         if (0 <= x < self.width) and (0 <= y < self.height):
             v = self.buffer[x]
@@ -315,18 +327,42 @@ class HT16K33Matrix(HT16K33):
             return True if bit > 0 else False
         return None
 
-    def rotate_matrix(self, input_matrix, angle=0):
+    def draw(self):
+        """
+        Takes the contents of _buffer and writes it to the LED matrix.
+        NOTE Overrides the parent method
+        """
+        new_buffer = bytearray(len(self.buffer))
+        if self.is_rotated:
+            rotated_buffer = self._rotate_matrix(self.buffer, self.rotation_angle)
+            for i in range(8):
+                new_buffer[i] = rotated_buffer[i]
+        else:
+            for i in range(8):
+                new_buffer[i] = self.buffer[i]
+        draw_buffer = bytearray(17)
+        for i in range(len(new_buffer)):
+            draw_buffer[i * 2 + 1] = self._process_byte(new_buffer[i])
+        self.i2c.writeto(self.address, bytes(draw_buffer))
+
+    # ********** PRIVATE METHODS **********
+
+    def _process_byte(self, byte_value):
+        """
+        Adafruit 8x8 matrix requires some data manipulation:
+        Bits 7-0 of each line need to be sent 0 through 7, and bit 0 rotated to bit 7
+        """
+        bit0 = byte_value & 0x01
+        result = byte_value >> 1
+        if bit0 > 0: result |= 0x80
+        return result
+
+    def _rotate_matrix(self, input_matrix, angle=0):
         """
         Rotate an 8-integer matrix through the specified angle in 90-degree increments:
            0 = none, 1 = 90 clockwise, 2 = 180, 3 = 90 anti-clockwise
-
-        Args:
-            input_matrix (byte array) The matrix to rotate
-            angle (integer)           The angle of rotation
-        Returns:
-            Byte array or None on error
         """
-        if angle not in (1, 2, 3): return None
+        if angle not in (0, 1, 2, 3): return None
         if angle is 0: return input_matrix
 
         a = 0
@@ -342,13 +378,13 @@ class HT16K33Matrix(HT16K33):
                     a = line_value & (1 << x)
                     if a is not 0:
                         output_matrix[7 - x] = outputMatrix[7 - x] + (1 << y)
-        else if angle is 2:
+        elif angle is 2:
             for y in range(self.height):
                 line_value = input_matrix[y]
                 for x in range(7, -1, -1):
                     a = line_value & (1 << x)
                     if a is not 0:
-                        output_matrix[7 - y] = output_matrix[7 - y] + (1 << (7 - x))
+                        output_matrix[7 - y] += (1 << (7 - x))
         else:
             for y in range(self.height):
                 line_value = input_matrix[y]
@@ -358,21 +394,6 @@ class HT16K33Matrix(HT16K33):
                         output_matrix[x] = output_matrix[x] + (1 << (7 - y))
         return output_matrix
 
-    def draw(self):
-        """
-        Takes the contents of _buffer and writes it to the LED matrix.
-        """
-        new_buffer = bytearray(len(self.buffer))
-        if self.is_rotated:
-            new_buffer = self.rotate_matrix(self.buffer)
-        else:
-            new_buffer[0:] = self.buffer
-        draw_buffer = bytearray(2 * len(new_buffer) + 1)
-        for i in range(len(new_buffer)):
-            draw_buffer[i * 2 + 1] = self._process_byte(new_buffer[i])
-            draw_buffer[i * 2 + 2] = 0x00
-        self.i2c.writeto(self.address, bytes(draw_buffer))
-
     def _fill(value=0xFF):
         """
         Fill the buffer, column by column with the specified byte value
@@ -381,15 +402,3 @@ class HT16K33Matrix(HT16K33):
         for i in range(self.width):
             self.buffer[i] = value
         return
-
-    # ********** PRIVATE METHODS **********
-
-    def _process_byte(self, byte_value):
-        """
-        Adafruit 8x8 matrix requires some data manipulation:
-        Bits 7-0 of each line need to be sent 0 through 7, and bit 0 rotated to bit 7
-        """
-        bit0 = byte_value & 0x01
-        result = byte_value >> 1
-        if bit0 > 0: result |= 0x80
-        return result

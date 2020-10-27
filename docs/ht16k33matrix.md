@@ -1,6 +1,6 @@
 # HT16K33Matrix 3.0.0 #
 
-This is a hardware driver for the [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149), which is based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
+This is a hardware driver for the [Adafruit 1.2-inch 8x8 monochrome LED matrix backpack](https://www.adafruit.com/product/1048), which is based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
 It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPython](https://dmicropython.org).
 
@@ -86,6 +86,25 @@ This method can be used to flash the display. The value passed into *rate* is th
 # Blink the display every second
 led.set_blink_rate(1)
 ```
+
+### set_angle(*angle*) ###
+
+Use this method to set a default rotation for the matrix. Pass in an angle between 0 and 360 degrees — this will be adjusted to the nearest right angle.
+
+The angle setting will remain until changed. After changing the angle, you should call *draw()* to update the LED itself.
+
+#### Example ####
+
+```python
+# Turn the image upside down
+led.set_angle(180).draw()
+```
+
+### set_inverse() ###
+
+Call this method to flip the matrix’s pixels from lit to unlit and vice versa. You should call *draw()* afterwards to update the LED.
+
+The state of the display is recorded so subsequent calls to *set_icon()*, *set_character()* or *scroll_text()* will maintain the display’s state.
 
 ### set_icon(*glyph[, centre]*) ###
 
