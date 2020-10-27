@@ -5,6 +5,7 @@ from ht16k33segment import HT16K33Segment
 
 # CONSTANTS
 DELAY = 0.01
+PAUSE = 3
 
 # START
 if __name__ == '__main__':
@@ -17,7 +18,7 @@ if __name__ == '__main__':
         display.set_glyph(sync_text[i], i)
     display.draw()
 
-    time.sleep(5)
+    time.sleep(PAUSE)
     display.clear().draw()
 
     sync_text = b"\x6D\x6E\x37\x39"
@@ -25,10 +26,15 @@ if __name__ == '__main__':
         display.set_glyph(sync_text[i], i, True)
     display.draw()
 
-    time.sleep(5)
+    time.sleep(PAUSE)
+    display.set_character("B", 0).set_character("E", 1)
+    display.set_character("E", 2).set_character("F", 3)
+    display.draw()
+
+    time.sleep(PAUSE)
     display.clear().draw()
 
-    count = 999
+    count = 1100
     colon_state = True
     while True:
         # Convert 'count' into Binary-Coded Decimal (BCD)

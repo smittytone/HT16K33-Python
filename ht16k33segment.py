@@ -89,7 +89,7 @@ class HT16K33Segment(HT16K33):
             digit (int):   The digit to show the number. Default: 0 (leftmost digit).
             has_dot (bool): Whether the decimal point to the right of the digit should be lit. Default: False.
         """
-        return self.set_char(str(number), digit, has_dot)
+        return self.set_character(str(number), digit, has_dot)
 
     def set_character(self, char, digit=0, has_dot=False):
         """
