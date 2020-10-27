@@ -133,6 +133,18 @@ class HT16K33MatrixFeatherWing(HT16K33):
 
     # *********** PUBLIC METHODS **********
 
+    def set_inverse(self):
+        """
+        Inverts the ink colour of the display
+
+        Returns:
+            The instance (self)
+        """
+        self.is_inverse = not self.is_inverse
+        for i in range(self.width * 2):
+            self.buffer[i] = (~ self.buffer[i]) & 0xFF
+        return self
+
     def set_icon(self, glyph, col=0):
         """
         Present a user-defined character glyph at the specified digit.
@@ -152,7 +164,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
         for i in range(len(glyph)):
             buf_col = self._get_row(col + i)
             if buf_col is False: break
-            self.buffer[buf_col] = glyph[i]
+            self.buffer[buf_col] = glyph[i] if self.is_inverse is False else ((~ glyph[i]) & 0xFF)
         return self
 
     def set_character(self, ascii_value=32, col=0):
@@ -215,7 +227,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
             else:
                 glyph = self.CHARSET[asc_val - 32]
             for j in range(0, len(glyph)):
-                src_buf[row] = glyph[j]
+                src_buf[row] = glyph[j] if self.is_inverse is False else ((~ glyph[j]) & 0xFF)
                 row += 1
             row += 1
 
