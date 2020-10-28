@@ -2,12 +2,11 @@
 import time
 import board
 import busio
-from random import randint
 from ht16k33matrix import HT16K33Matrix
 
 # CONSTANTS
 DELAY = 0.01
-PAUSE = 4
+PAUSE = 3
 
 # START
 if __name__ == '__main__':

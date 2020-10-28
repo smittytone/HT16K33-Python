@@ -1,19 +1,15 @@
 # IMPORTS
-import time
-import board
-import busio
-from random import randint
+import utime as time
+from machine import I2C, Pin, RTC
 from ht16k33matrix import HT16K33Matrix
 
 # CONSTANTS
 DELAY = 0.01
-PAUSE = 4
+PAUSE = 3
 
 # START
 if __name__ == '__main__':
-    i2c = busio.I2C(board.SCL, board.SDA)
-    while not i2c.try_lock():
-        pass
+    i2c = I2C(scl=Pin(5), sda=Pin(4))
     display = HT16K33Matrix(i2c)
     display.set_brightness(2)
 

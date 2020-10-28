@@ -7,7 +7,7 @@ from ht16k33matrixfeatherwing import HT16K33MatrixFeatherWing
 
 # CONSTANTS
 DELAY = 0.01
-PAUSE = 4
+PAUSE = 3
 
 # START
 if __name__ == '__main__':
@@ -17,7 +17,7 @@ if __name__ == '__main__':
     display = HT16K33MatrixFeatherWing(i2c)
     display.set_brightness(2)
 
-    sync_text = "ABC"
+    sync_text = "BOO!"
     col = 0
     for i in range(len(sync_text)):
         display.set_character(ord(sync_text[i]), col)
@@ -42,18 +42,24 @@ if __name__ == '__main__':
     time.sleep(PAUSE)
     display.clear().draw()
 
-    text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 abcdefghijklmnopqrstuvwxyz !$%&*() \x00\x01"
+    text = "0123456789 abcdefghijklmnopqrstuvwxyz !$%&*() \x00\x01"
     display.scroll_text(text)
 
     time.sleep(PAUSE)
     display.clear().draw()
 
-    for i in range(64):
+    for i in range(32):
         while True:
             x = randint(0, 15)
             y = randint(0, 7)
             if not display.is_set(x, y): break
         display.plot(x, y).draw()
         time.sleep(0.5)
+
+    time.sleep(PAUSE)
+    display.set_inverse().draw()
+
+    time.sleep(PAUSE)
+    display.set_inverse().draw()
 
     display.set_blink_rate(1)
