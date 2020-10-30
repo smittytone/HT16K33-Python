@@ -318,9 +318,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
         in the FeatherWing, and return the location.
         An out-of-range value returns False
         """
-        if x < 8:
-            x = 16 + (x << 1)
-        else:
-            x = 1 + (x << 1)
-        if x >= self.width * 2: return False
-        return x
+        a = 1 + (i << 1)
+        if i < 8: a += 15
+        if a >= self.width * 2: return False
+        return a
