@@ -124,7 +124,6 @@ class HT16K33Matrix(HT16K33):
     # *********** CONSTRUCTOR **********
 
     def __init__(self, i2c, i2c_address=0x70):
-        if i2c_address < 0 or i2c_address > 255: return None
         self.buffer = bytearray(self.width)
         self.def_chars = []
         for i in range(32): self.def_chars.append(b"\x00")
@@ -188,7 +187,8 @@ class HT16K33Matrix(HT16K33):
             The instance (self)
         """
         length = len(glyph)
-        if length < 1 or length > 8: return None
+        assert 0 < length < self.width, "ERROR - Invalid glyph set in set_icon:"
+
         for i in range(length):
             a = i
             if centre:
@@ -207,6 +207,7 @@ class HT16K33Matrix(HT16K33):
         Returns:
             The instance (self)
         """
+        assert 0 <= ascii_value < 128, "ERROR - Invalid ascii code set in set_character:"
         glyph = None
         if ascii_value < 32:
             # A user-definable character has been chosen
@@ -231,7 +232,7 @@ class HT16K33Matrix(HT16K33):
         """
         import time
 
-        if the_line is None or len(the_line) == 0: return None
+        assert len(the_line) > 0, "ERROR - Invalid string set in scroll_text:"
         the_line += "    "
 
         # Calculate the source buffer size
@@ -279,11 +280,10 @@ class HT16K33Matrix(HT16K33):
                                 with bit 0 at the bottom and bit 7 at the top
             char_code (integer) Character's ID Ascii code 0-31. Default: 0
         """
-        if glyph == None or len(glyph) == 0 or len(glyph) > self.width: return None
-        if 0 <= char_code < 32:
-            self.def_chars[char_code] = glyph
-            return self
-        return None
+        assert 0 < len(glyph) < self.width, "ERROR - Invalid glyph set in define_character:"
+        assert 0 <= char_code < 32, "ERROR - Invalid character code set in define_character:"
+        self.def_chars[char_code] = glyph
+        return self
 
     def plot(self, x, y, ink=1, xor=False):
         """
@@ -299,22 +299,21 @@ class HT16K33Matrix(HT16K33):
             The instance (self) or None on error
         """
         # Check argument range and value
-        if (0 <= x < self.width) and (0 <= y < self.height):
-            if ink not in (0, 1): ink = 1
-            v = self.buffer[x]
-            if ink == 1:
-                if self.is_set(x ,y) and xor:
-                    v = v ^ (1 << y)
-                else:
-                    if v & (1 << y) == 0: v = v | (1 << y)
+        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in plot:"
+        if ink not in (0, 1): ink = 1
+        v = self.buffer[x]
+        if ink == 1:
+            if self.is_set(x ,y) and xor:
+                v = v ^ (1 << y)
             else:
-                if not self.is_set(x ,y) and xor:
-                    v = v ^ (1 << y)
-                else:
-                    if v & (1 << y) != 0: v = v & ~(1 << y)
-            self.buffer[x] = v
-            return self
-        return None
+                if v & (1 << y) == 0: v = v | (1 << y)
+        else:
+            if not self.is_set(x ,y) and xor:
+                v = v ^ (1 << y)
+            else:
+                if v & (1 << y) != 0: v = v & ~(1 << y)
+        self.buffer[x] = v
+        return self
 
     def is_set(self, x, y):
         """
@@ -327,11 +326,10 @@ class HT16K33Matrix(HT16K33):
         Returns:
             Whether the pixel is set (True) or not (False), or None on error
         """
-        if (0 <= x < self.width) and (0 <= y < self.height):
-            v = self.buffer[x]
-            bit = (v >> y) & 1
-            return True if bit > 0 else False
-        return None
+        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in is_set:"
+        v = self.buffer[x]
+        bit = (v >> y) & 1
+        return True if bit > 0 else False
 
     def draw(self):
         """
@@ -368,7 +366,7 @@ class HT16K33Matrix(HT16K33):
         Rotate an 8-integer matrix through the specified angle in 90-degree increments:
            0 = none, 1 = 90 clockwise, 2 = 180, 3 = 90 anti-clockwise
         """
-        if angle not in (0, 1, 2, 3): return None
+        assert angle in (0, 1, 2, 3), "ERROR - Invalid angle in _rotate_matrix:"
         if angle is 0: return input_matrix
 
         a = 0

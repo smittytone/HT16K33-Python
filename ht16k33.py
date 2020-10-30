@@ -30,6 +30,7 @@ class HT16K33:
 
     def __init__(self, i2c, i2c_address):
         # Initialize
+        assert 0x00 <= i2c_address < 0x80, "ERROR - Invalid I2C address in HT16K33.init:"
         self.i2c = i2c
         self.address = i2c_address
         self._write_cmd(self.HT16K33_GENERIC_SYSTEM_ON)
@@ -46,8 +47,7 @@ class HT16K33:
         Args:
             rate (int): The chosen flash rate. Default: 0Hz.
         """
-        rates = (0, 2, 1, 0.5)
-        if rate not in rates: return None
+        assert rate in (0, 0.5, 1, 2), "ERROR - Invalid blink rate set in set_blink_rate:"
         rate = rate & 0x03
         self.blink_rate = rate
         self._write_cmd(self.HT16K33_GENERIC_CMD_BLINK | rate << 1)

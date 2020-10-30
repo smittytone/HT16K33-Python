@@ -19,7 +19,7 @@ class HT16K33Segment(HT16K33):
     HT16K33_SEGMENT_DEGREE_CHAR = 0x11
 
     # The positions of the segments within the buffer
-    POS = [0, 2, 6, 8]
+    POS = (0, 2, 6, 8)
 
     # Bytearray of the key alphanumeric characters we can show:
     # 0-9, A-F, minus, degree
@@ -28,7 +28,6 @@ class HT16K33Segment(HT16K33):
     # *********** CONSTRUCTOR **********
 
     def __init__(self, i2c, i2c_address=0x70):
-        if i2c_address < 0 or i2c_address > 255: return None
         self.buffer = bytearray(16)
         super(HT16K33Segment, self).__init__(i2c, i2c_address)
 
@@ -72,9 +71,10 @@ class HT16K33Segment(HT16K33):
             digit (int):   The digit to show the glyph. Default: 0 (leftmost digit).
             has_dot (bool): Whether the decimal point to the right of the digit should be lit. Default: False.
         """
-        if not 0 <= digit <= 3: return None
+        assert 0 <= digit < 4, "ERROR - Invalid digit (0-3) set in set_glyph:"
+        assert 0 <= glyph < 0x80, "ERROR - Invalid glyph (0x00-0x7F) set in set_glyph:"
         self.buffer[self.POS[digit]] = glyph
-        if has_dot is True: self.buffer[self.POS[digit]] |= 0b10000000
+        if has_dot is True: self.buffer[self.POS[digit]] |= 0x80
         return self
 
     def set_number(self, number, digit=0, has_dot=False):
@@ -89,6 +89,8 @@ class HT16K33Segment(HT16K33):
             digit (int):   The digit to show the number. Default: 0 (leftmost digit).
             has_dot (bool): Whether the decimal point to the right of the digit should be lit. Default: False.
         """
+        assert 0 <= digit < 4, "ERROR - Invalid digit (0-3) set in set_number:"
+        assert 0 <= digit < 10, "ERROR - Invalid value (0-9) set in set_number:"
         return self.set_character(str(number), digit, has_dot)
 
     def set_character(self, char, digit=0, has_dot=False):
@@ -96,7 +98,7 @@ class HT16K33Segment(HT16K33):
         Present single alphanumeric character at the specified digit.
 
         Only characters from the class' character set are available:
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, a, b, c, d ,e, f, -, degree symbol.
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, a, b, c, d ,e, f, -.
         Other characters can be defined and presented using 'set_glyph()'.
 
         This method updates the display buffer, but does not send the buffer to the display itself.
@@ -107,19 +109,20 @@ class HT16K33Segment(HT16K33):
             digit (int):   The digit to show the number. Default: 0 (leftmost digit).
             has_dot (bool): Whether the decimal point to the right of the digit should be lit. Default: False.
         """
-        if not 0 <= digit <= 3: return None
+        assert 0 <= digit < 4, "ERROR - Invalid digit set in set_character:"
         char = char.lower()
-        if char in 'abcdef':
-            char_val = ord(char) - 87
+        char_val = 0xFF
+        if char == "deg":
+            char_val = HT16K33_SEGMENT_DEGREE_CHAR
         elif char == '-':
             char_val = self.HT16K33_SEGMENT_MINUS_CHAR
-        elif char in '0123456789':
-            char_val = ord(char) - 48
         elif char == ' ':
             char_val = 0x00
-        else:
-            return
-
+        elif char in 'abcdef':
+            char_val = ord(char) - 87
+        elif char in '0123456789':
+            char_val = ord(char) - 48
+        assert char_val != 0xFF, "ERROR - Invalid char string set in set_character:"
         self.buffer[self.POS[digit]] = self.CHARSET[char_val]
         if has_dot is True: self.buffer[self.POS[digit]] |= 0x80
         return self

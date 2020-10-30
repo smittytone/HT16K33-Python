@@ -115,17 +115,15 @@ class HT16K33MatrixFeatherWing(HT16K33):
 
     # ********** PRIVATE PROPERTIES **********
 
-    width = 8
+    width = 16
     height = 8
     def_chars = None
     is_inverse = False
 
     # *********** CONSTRUCTOR **********
 
-    def __init__(self, i2c, i2c_address=0x70, units=2):
-        if i2c_address < 0 or i2c_address > 255: return None
+    def __init__(self, i2c, i2c_address=0x70):
         if units < 0: return None
-        self.width = units * 8
         self.buffer = bytearray(self.width * 2)
         self.def_chars = []
         for i in range(32): self.def_chars.append(b"\x00")
@@ -160,7 +158,8 @@ class HT16K33MatrixFeatherWing(HT16K33):
         Returns:
             The instance (self) or None on error
         """
-        if col < 0 or col >= self.width: return None
+        assert 0 < length < self.width, "ERROR - Invalid glyph set in set_icon:"
+        assert 0 <= col < self.width, "ERROR - Invalid column number set in set_icon:"
         for i in range(len(glyph)):
             buf_col = self._get_row(col + i)
             if buf_col is False: break
@@ -178,6 +177,8 @@ class HT16K33MatrixFeatherWing(HT16K33):
         Returns:
             The instance (self) or None on error
         """
+        assert 0 <= ascii_value < 128, "ERROR - Invalid ascii code set in set_character:"
+        assert 0 <= col < self.width, "ERROR - Invalid column number set in set_icon:"
         glyph = None
         if ascii_value < 32:
             # A user-definable character has been chosen
@@ -204,7 +205,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
         import time
 
         # Check argument range and value
-        if the_line is None or len(the_line) == 0: return None
+        assert len(the_line) > 0, "ERROR - Invalid string set in scroll_text:"
         the_line += "        "
 
         # Calculate the source buffer size
@@ -255,11 +256,10 @@ class HT16K33MatrixFeatherWing(HT16K33):
             The instance (self) or None on error
         """
         # Check argument range and value
-        if glyph == None or len(glyph) == 0 or len(glyph) > self.width: return None
-        if 0 <= char_code < 32:
-            self.def_chars[char_code] = glyph
-            return self
-        return None
+        assert 0 < len(glyph) < self.width, "ERROR - Invalid glyph set in define_character:"
+        assert 0 <= char_code < 32, "ERROR - Invalid character code set in define_character:"
+        self.def_chars[char_code] = glyph
+        return self
 
     def plot(self, x, y, ink=1, xor=False):
         """
@@ -275,23 +275,22 @@ class HT16K33MatrixFeatherWing(HT16K33):
             The instance (self) or None on error
         """
         # Check argument range and value
-        if (0 <= x < self.width) and (0 <= y < self.height):
-            if ink not in (0, 1): ink = 1
-            x = self._get_row(x)
-            v = self.buffer[x]
-            if ink == 1:
-                if self.is_set(x ,y) and xor:
-                    v = v ^ (1 << y)
-                else:
-                    if v & (1 << y) == 0: v = v | (1 << y)
+        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in plot:"
+        if ink not in (0, 1): ink = 1
+        x = self._get_row(x)
+        v = self.buffer[x]
+        if ink == 1:
+            if self.is_set(x ,y) and xor:
+                v = v ^ (1 << y)
             else:
-                if not self.is_set(x ,y) and xor:
-                    v = v ^ (1 << y)
-                else:
-                    if v & (1 << y) != 0: v = v & ~(1 << y)
-            self.buffer[x] = v
+                if v & (1 << y) == 0: v = v | (1 << y)
+        else:
+            if not self.is_set(x ,y) and xor:
+                v = v ^ (1 << y)
+            else:
+                if v & (1 << y) != 0: v = v & ~(1 << y)
+        self.buffer[x] = v
             return self
-        return None
 
     def is_set(self, x, y):
         """
@@ -305,12 +304,11 @@ class HT16K33MatrixFeatherWing(HT16K33):
             Whether the
         """
         # Check argument range and value
-        if (0 <= x < self.width) and (0 <= y < self.height):
-            x = self._get_row(x)
-            v = self.buffer[x]
-            bit = (v >> y) & 1
-            return True if bit > 0 else False
-        return None
+        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in is_set:"
+        x = self._get_row(x)
+        v = self.buffer[x]
+        bit = (v >> y) & 1
+        return True if bit > 0 else False
 
     # ********** PRIVATE METHODS **********
 

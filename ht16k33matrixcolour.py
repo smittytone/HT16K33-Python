@@ -129,7 +129,6 @@ class HT16K33MatrixColour(HT16K33):
     # *********** CONSTRUCTOR **********
 
     def __init__(self, i2c, i2c_address=0x70):
-        if i2c_address < 0 or i2c_address > 255: return None
         self.buffer = bytearray(self.width * 2)
         self.def_chars = []
         for i in range(32): self.def_chars.append(b"\x00")
