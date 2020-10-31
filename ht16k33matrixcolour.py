@@ -167,38 +167,30 @@ class HT16K33MatrixColour(HT16K33):
         self.is_rotated = True if self.rotation_angle != 0 else False
         return self
 
-    def set_inverse(self):
-        """
-        Inverts the ink colour of the display
-
-        Returns:
-            The instance (self)
-        """
-        self.is_inverse = not self.is_inverse
-        for i in range(self.width):
-            self.buffer[i] = (~ self.buffer[i]) & 0xFF
-        return self
-
-    def set_icon(self, glyph, colour, centre=False):
+    def set_icon(self, glyph, ink, paper, centre=False):
         """
         Displays a custom character on the matrix
 
         Args:
             glyph (array) 1-8 8-bit values defining a pixel image. The data is passed as columns
                           0 through 7, left to right. Bit 0 is at the bottom, bit 7 at the top
-            colour (int)  The colour of the pixels
+            ink (int)     The colour of the pixels
+            paper (int)   The colour of the background
             centre (bool) Whether the icon should be displayed centred on the screen. Default: False
 
         Returns:
             The instance (self)
         """
         length = len(glyph)
-        if length < 1 or length > 8: return None
+        assert length < 1 or length > self.width, "ERROR - Invalid glyph set in set_icon:"
+        offset = (8 - length) // 2
         for i in range(length):
-            a = i
-            if centre:
-                a = i + int((8 - length) / 2)
-            self.buffer[a] = glyph[i] if self.is_inverse is False else ((~ glyph[i]) & 0xFF)
+            col = glyph[i]
+            for y in range(8):
+                if col & (1 << y):
+                    self.plot(a + x, y, ink)
+                else:
+                    self.plot(a + x, y, paper)
         return self
 
     def set_character(self, ascii_value=32, centre=False):
@@ -306,8 +298,6 @@ class HT16K33MatrixColour(HT16K33):
         # Check argument range and value
         assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in plot:"
         if ink not in (0, 1, 2, 3): ink = 1
-
-
         for i in range(2):
             a = x * 2 + i
             v = self.buffer[a]
@@ -330,11 +320,27 @@ class HT16K33MatrixColour(HT16K33):
         Returns:
             Whether the pixel is set (True) or not (False), or None on error
         """
-        if (0 <= x < self.width) and (0 <= y < self.height):
-            v = self.buffer[x]
-            bit = (v >> y) & 1
-            return True if bit > 0 else False
-        return None
+        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in is_set:"
+        val_left = self.buffer[x]
+        val_right = self.buffer[x + 1]
+        bit = ((val_left >> y) & 1) or ((val_right >> y) & 1)
+        return bit
+
+    def fill(self, ink):
+        """
+        Fill the matrix with the specified colour.
+
+        Args:
+            colour (integer) The chosen colour (0, 1, 2, 3)
+
+        Returns:
+            The instance (self)
+        """
+        assert ink in (0, 1, 2, 3), "ERROR - Invalid colour set in fill:"
+        for i in range(0, 15, 2):
+            self.buffer[i] = ((ink >> 1) & 0x01) * 0xFF
+            self.buffer[i + 1] = (ink & 0x01) * 0xFF
+        return self
 
     def draw(self):
         """
@@ -345,69 +351,44 @@ class HT16K33MatrixColour(HT16K33):
         new_buffer = bytearray(16)
         if self.is_rotated:
             new_buffer = self._rotate_matrix(self.buffer, self.rotation_angle)
-
             for i in range(len(new_buffer)):
                 draw_buffer[i + 1] = new_buffer[i]
         else:
-            for i in range(16):
+            for i in range(len(self.buffer)):
                 draw_buffer[i + 1] = self.buffer[i]
         self.i2c.writeto(self.address, bytes(draw_buffer))
 
     # ********** PRIVATE METHODS **********
 
-    def _process_byte(self, byte_value):
-        """
-        Adafruit 8x8 matrix requires some data manipulation:
-        Bits 7-0 of each line need to be sent 0 through 7, and bit 0 rotated to bit 7
-        """
-        bit0 = byte_value & 0x01
-        result = byte_value >> 1
-        if bit0 > 0: result |= 0x80
-        return result
-
     def _rotate_matrix(self, input_matrix, angle=0):
         """
-        Rotate an 8-integer matrix through the specified angle in 90-degree increments:
-           0 = none, 1 = 90 clockwise, 2 = 180, 3 = 90 anti-clockwise
+        Rotate an 16-integer matrix through the specified angle in 90-degree increments:
+        0 = none, 1 = 90 clockwise, 2 = 180, 3 = 90 anti-clockwise
+        BUT maintain adjacent column pairs
         """
-        if angle not in (0, 1, 2, 3): return None
+        assert angle in (0, 1, 2, 3), "ERROR -- Invalid angle set in _rotate_matrix:"
         if angle is 0: return input_matrix
-
-        a = 0
-        line_value = 0
-        output_matrix = bytearray(self.width * 2)
 
         # NOTE It's quicker to have three case-specific
         #      code blocks than a single, generic block
-        for i in range(2):
-            if angle is 1:
-                for x in range(self.width):
-                    line_value = input_matrix[x * 2 + i]
-                    for y in range(7, -1, -1):
-                        a = line_value & (1 << y)
-                        if a is not 0:
-                            output_matrix[x * 2 + i] |= (1 << (7 - y))
-            elif angle is 2:
-                for x in range(self.width):
-                    line_value = input_matrix[x * 2 + i]
-                    for y in range(7, -1, -1):
-                        a = line_value & (1 << y)
-                        if a is not 0:
-                            output_matrix[14 - (x * 2 + i) + (2 * i)] |= (1 << (7 - y))
-            else:
-                for x in range(self.width):
-                    line_value = input_matrix[x * 2 + i]
-                    for y in range(7, -1, -1):
-                        a = line_value & (1 << y)
-                        if a is not 0:
-                            output_matrix[14 - (x * 2 + i) + (2 * i)] |= (1 << y)
+        output_matrix = bytearray(self.width * 2)
+        for x in range(0, 15, 2):
+            val_left = buffer[x]
+            val_right = buffer[x + 1]
+            for y in range(8):
+                if angle == 1:
+                    if (val_left >> y) & 1:
+                        output_matrix[y * 2] |= (1 << (7 - (x // 2)))
+                    if (val_right >> y) & 1:
+                        output_matrix[y * 2 + 1] |= (1 << (7 - (x // 2)))
+                elif angle == 2:
+                    if (val_left >> y) & 1:
+                        output_matrix[14 - x] |= (1 << (7 - y))
+                    if (val_right >> y) & 1:
+                        output_matrix[15 - x] |= (1 << (7 - y))
+                else:
+                    if (val_left >> y) & 1:
+                        output_matrix[14 - y * 2] |= (1 << (x // 2))
+                    if (val_right >> y) & 1:
+                        output_matrix[15 - y * 2] |= (1 << (x // 2))
         return output_matrix
-
-    def _fill(value=0xFF):
-        """
-        Fill the buffer, column by column with the specified byte value
-        """
-        value &= 0xFF
-        for i in range(self.width):
-            self.buffer[i] = value
-        return
