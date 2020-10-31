@@ -14,8 +14,8 @@ class HT16K33MatrixColour(HT16K33):
     # *********** CONSTANTS **********
 
     COLOUR_NONE = 0
-    COLOUR_RED = 1
-    COLOUR_GREEN = 2
+    COLOUR_GREEN = 1
+    COLOUR_RED = 2
     COLOUR_YELLOW = 3
 
     CHARSET = [
@@ -304,25 +304,20 @@ class HT16K33MatrixColour(HT16K33):
             The instance (self) or None on error
         """
         # Check argument range and value
-        if (0 <= x < self.width) and (0 <= y < self.height):
-            if ink not in (0, 1): ink = 1
-            v = self.buffer[x]
-            if ink == 1:
-                if self.is_set(x ,y) and xor:
-                    v = v ^ (1 << y)
-                else:
-                    if v & (1 << y) == 0: v = v | (1 << y)
-            else:
-                if not self.is_set(x ,y) and xor:
-                    v = v ^ (1 << y)
-                else:
-                    if v & (1 << y) != 0: v = v & ~(1 << y)
-            self.buffer[x] = v
-            return self
-        return None
+        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in plot:"
+        if ink not in (0, 1, 2, 3): ink = 1
 
-        #super()._pixel(y, x, (color >> 1) & 0x01)
-        #super()._pixel(y + 8, x, (color & 0x01))
+
+        for i in range(2):
+            a = x * 2 + i
+            v = self.buffer[a]
+            c = ink & (1 << i)
+            if c != 0:
+                v |= (1 << y)
+            else:
+                v &= ~(1 << y)
+            self.buffer[a] = v
+        return self
 
     def is_set(self, x, y):
         """
@@ -346,17 +341,16 @@ class HT16K33MatrixColour(HT16K33):
         Takes the contents of _buffer and writes it to the LED matrix.
         NOTE Overrides the parent method
         """
-        new_buffer = bytearray(len(self.buffer))
-        if self.is_rotated:
-            rotated_buffer = self._rotate_matrix(self.buffer, self.rotation_angle)
-            for i in range(8):
-                new_buffer[i] = rotated_buffer[i]
-        else:
-            for i in range(8):
-                new_buffer[i] = self.buffer[i]
         draw_buffer = bytearray(17)
-        for i in range(len(new_buffer)):
-            draw_buffer[i * 2 + 1] = self._process_byte(new_buffer[i])
+        new_buffer = bytearray(16)
+        if self.is_rotated:
+            new_buffer = self._rotate_matrix(self.buffer, self.rotation_angle)
+
+            for i in range(len(new_buffer)):
+                draw_buffer[i + 1] = new_buffer[i]
+        else:
+            for i in range(16):
+                draw_buffer[i + 1] = self.buffer[i]
         self.i2c.writeto(self.address, bytes(draw_buffer))
 
     # ********** PRIVATE METHODS **********
@@ -381,31 +375,32 @@ class HT16K33MatrixColour(HT16K33):
 
         a = 0
         line_value = 0
-        output_matrix = bytearray(self.width * 8)
+        output_matrix = bytearray(self.width * 2)
 
         # NOTE It's quicker to have three case-specific
         #      code blocks than a single, generic block
-        if angle is 1:
-            for y in range(self.height):
-                line_value = input_matrix[y]
-                for x in range(7, -1, -1):
-                    a = line_value & (1 << x)
-                    if a is not 0:
-                        output_matrix[7 - x] = outputMatrix[7 - x] + (1 << y)
-        elif angle is 2:
-            for y in range(self.height):
-                line_value = input_matrix[y]
-                for x in range(7, -1, -1):
-                    a = line_value & (1 << x)
-                    if a is not 0:
-                        output_matrix[7 - y] += (1 << (7 - x))
-        else:
-            for y in range(self.height):
-                line_value = input_matrix[y]
-                for x in range(7, -1, -1):
-                    a = line_value & (1 << x)
-                    if a is not 0:
-                        output_matrix[x] = output_matrix[x] + (1 << (7 - y))
+        for i in range(2):
+            if angle is 1:
+                for x in range(self.width):
+                    line_value = input_matrix[x * 2 + i]
+                    for y in range(7, -1, -1):
+                        a = line_value & (1 << y)
+                        if a is not 0:
+                            output_matrix[x * 2 + i] |= (1 << (7 - y))
+            elif angle is 2:
+                for x in range(self.width):
+                    line_value = input_matrix[x * 2 + i]
+                    for y in range(7, -1, -1):
+                        a = line_value & (1 << y)
+                        if a is not 0:
+                            output_matrix[14 - (x * 2 + i) + (2 * i)] |= (1 << (7 - y))
+            else:
+                for x in range(self.width):
+                    line_value = input_matrix[x * 2 + i]
+                    for y in range(7, -1, -1):
+                        a = line_value & (1 << y)
+                        if a is not 0:
+                            output_matrix[14 - (x * 2 + i) + (2 * i)] |= (1 << y)
         return output_matrix
 
     def _fill(value=0xFF):

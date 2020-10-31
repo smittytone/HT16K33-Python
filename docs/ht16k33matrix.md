@@ -1,6 +1,6 @@
 # HT16K33Matrix 3.0.0 #
 
-This is a hardware driver for the [Adafruit 1.2-inch 8x8 monochrome LED matrix backpack](https://www.adafruit.com/product/1048), which is based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
+This is a hardware driver for the [Adafruit 1.2-inch 8x8 monochrome LED matrix backpack](https://www.adafruit.com/product/1048) or the [Adafruit Mini 0.8-inch 8x8 LED Matrix](https://www.adafruit.com/product/872), which are based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
 It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPython](https://dmicropython.org).
 
@@ -19,6 +19,10 @@ You will need both the display driver file and `ht16k33.py` in your project fold
 ## Characters ##
 
 The class incorporates a full, proportionally spaced Ascii character set. Additionally, you can use Ascii values 0 through 31 for user-definable characters.
+
+## Usage ##
+
+Different matrices are mounted at different angles. Use *set_angle()* to rotate the display buffer through the number of right-angles needed for correct viewing.
 
 ## Method Chaining ##
 

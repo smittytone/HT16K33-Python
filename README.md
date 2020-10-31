@@ -18,9 +18,11 @@ You will need both the display driver file and `ht16k33.py` in your project fold
 
 ## Display Drivers ##
 
-* [4-digit, 7-segment LED](./docs/ht16k33segment.md) — [Adafruit 0.56-inch 4-digit, 7-segment LED display](https://www.adafruit.com/products/878)
-* [16 x 8 FeatherWing matrix LED](./docs/ht16k33matrixfeatherwing.md) — [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149)
-* [8 x 8 matrix LED](./docs/ht16k33matrix.md)
+| Driver | Example&nbsp;Product |
+| --- | --- |
+| [4-digit, 7-segment LED](./docs/ht16k33segment.md) | [Adafruit 0.56-inch 4-digit, 7-segment LED display](https://www.adafruit.com/products/878) |
+| [8 x 8 matrix LED](./docs/ht16k33matrix.md) | [Adafruit Mini 0.8-inch 8x8 LED Matrix](https://www.adafruit.com/product/872) |
+| [16 x 8 FeatherWing matrix LED](./docs/ht16k33matrixfeatherwing.md) | [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149) |
 
 ## License ##
 

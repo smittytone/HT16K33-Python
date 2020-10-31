@@ -160,6 +160,7 @@ class HT16K33Matrix(HT16K33):
 
         self.rotation_angle = angle
         self.is_rotated = True if self.rotation_angle != 0 else False
+        print(self.rotation_angle, self.is_rotated)
         return self
 
     def set_inverse(self):
@@ -187,7 +188,7 @@ class HT16K33Matrix(HT16K33):
             The instance (self)
         """
         length = len(glyph)
-        assert 0 < length < self.width, "ERROR - Invalid glyph set in set_icon:"
+        assert 0 < length <= self.width, "ERROR - Invalid glyph set in set_icon:"
 
         for i in range(length):
             a = i
@@ -304,14 +305,14 @@ class HT16K33Matrix(HT16K33):
         v = self.buffer[x]
         if ink == 1:
             if self.is_set(x ,y) and xor:
-                v = v ^ (1 << y)
+                v ^= (1 << y)
             else:
-                if v & (1 << y) == 0: v = v | (1 << y)
+                if v & (1 << y) == 0: v |= (1 << y)
         else:
             if not self.is_set(x ,y) and xor:
-                v = v ^ (1 << y)
+                v ^= (1 << y)
             else:
-                if v & (1 << y) != 0: v = v & ~(1 << y)
+                if v & (1 << y) != 0: v &= ~(1 << y)
         self.buffer[x] = v
         return self
 
@@ -338,9 +339,7 @@ class HT16K33Matrix(HT16K33):
         """
         new_buffer = bytearray(len(self.buffer))
         if self.is_rotated:
-            rotated_buffer = self._rotate_matrix(self.buffer, self.rotation_angle)
-            for i in range(8):
-                new_buffer[i] = rotated_buffer[i]
+            new_buffer = self._rotate_matrix(self.buffer, self.rotation_angle)
         else:
             for i in range(8):
                 new_buffer[i] = self.buffer[i]
@@ -381,7 +380,7 @@ class HT16K33Matrix(HT16K33):
                 for x in range(7, -1, -1):
                     a = line_value & (1 << x)
                     if a is not 0:
-                        output_matrix[7 - x] = outputMatrix[7 - x] + (1 << y)
+                        output_matrix[7 - x] = output_matrix[7 - x] + (1 << y)
         elif angle is 2:
             for y in range(self.height):
                 line_value = input_matrix[y]
