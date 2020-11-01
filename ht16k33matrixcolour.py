@@ -167,15 +167,14 @@ class HT16K33MatrixColour(HT16K33):
         self.is_rotated = True if self.rotation_angle != 0 else False
         return self
 
-    def set_icon(self, glyph, ink, paper, centre=False):
+    def set_icon(self, glyph, centre=False):
         """
         Displays a custom character on the matrix
 
         Args:
-            glyph (array) 1-8 8-bit values defining a pixel image. The data is passed as columns
-                          0 through 7, left to right. Bit 0 is at the bottom, bit 7 at the top
-            ink (int)     The colour of the pixels
-            paper (int)   The colour of the background
+            glyph (array) 1-16 8-bit values defining a pixel image. The data is passed as columns
+                          0 through 7, left to right. Bit 0 is at the bottom, bit 7 at the top.
+                          Two bits per colour.
             centre (bool) Whether the icon should be displayed centred on the screen. Default: False
 
         Returns:
@@ -184,13 +183,13 @@ class HT16K33MatrixColour(HT16K33):
         length = len(glyph)
         assert length < 1 or length > self.width, "ERROR - Invalid glyph set in set_icon:"
         offset = (8 - length) // 2
-        for i in range(length):
-            col = glyph[i]
-            for y in range(8):
-                if col & (1 << y):
-                    self.plot(a + x, y, ink)
-                else:
-                    self.plot(a + x, y, paper)
+        for i in range(0, length, 2):
+            for k in range(2):
+                nibble = glyph[i + k]
+                for y in range(4):
+                    c = (nibble >> (y * 2)) & 0x03
+                    if c:
+                        self.plot(a + i, y, c)
         return self
 
     def set_character(self, ascii_value=32, centre=False):
