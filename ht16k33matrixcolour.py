@@ -3,7 +3,6 @@ from ht16k33 import HT16K33
 class HT16K33MatrixColour(HT16K33):
     """
     Micro/Circuit Python class for the Adafruit 8x8 bi-colour LED matrix
-    backpack.
 
     Version:    3.0.0
     Bus:        I2C
@@ -124,7 +123,6 @@ class HT16K33MatrixColour(HT16K33):
     def_chars = None
     rotation_angle = 0
     is_rotated = False
-    is_inverse = False
 
     # *********** CONSTRUCTOR **********
 
@@ -138,10 +136,10 @@ class HT16K33MatrixColour(HT16K33):
 
     def set_angle(self, angle=0):
         """
-        Set the matrix orientation
+        Set the matrix orientation.
 
         Args:
-            angle (integer) Display auto-rotation angle, 0 to -360 degrees. Default: 0
+            angle (int) Display auto-rotation angle, 0 to -360 degrees. Default: 0
 
         Returns:
             The instance (self)
@@ -181,37 +179,36 @@ class HT16K33MatrixColour(HT16K33):
             The instance (self)
         """
         length = len(glyph)
-        assert (0 < length <= self.width * 2) and length % 2 == 0, "ERROR - Invalid glyph set in set_icon()"
-
-        buf = bytearray(self.width * 2)
-        buf_idx = 0
-        if centre: buf_idx = ((8 - (length >> 1)) >> 1) << 1
+        assert (0 < length <= self.width * 2) and (length % 2 == 0), "ERROR - Invalid glyph set in set_icon()"
+        temp_buffer = bytearray(self.width * 2)
+        buffer_idx = 0
+        if centre: buffer_idx = ((8 - (length >> 1)) >> 1) << 1
         for i in range(0, length, 2):
             byte = glyph[i]
             for j in range(0, 8, 2):
                 v = (byte >> j) & 1
-                buf[buf_idx] |= v << (j >> 1)
+                temp_buffer[buffer_idx] |= v << (j >> 1)
             for j in range(1, 8, 2):
                 v = (byte >> j) & 1
-                buf[buf_idx + 1] |= v << (j >> 1)
+                temp_buffer[buffer_idx + 1] |= v << (j >> 1)
             byte = glyph[i + 1]
             for j in range(0, 8, 2):
                 v = (byte >> j) & 1
-                buf[buf_idx] |= v << ((j >> 1) + 4)
+                temp_buffer[buffer_idx] |= v << ((j >> 1) + 4)
             for j in range(1, 8, 2):
                 v = (byte >> j) & 1
-                buf[buf_idx + 1] |= v << ((j >> 1) + 4)
-            buf_idx += 2
-        self.buffer = buf
+                temp_buffer[buffer_idx + 1] |= v << ((j >> 1) + 4)
+            buffer_idx += 2
+        self.buffer = temp_buffer
         return self
 
     def set_character(self, ascii_value=32, ink=1, paper=0, centre=False):
         """
-        Display a single character specified by its Ascii value on the matrix.
+        Display a single character (from the charset) specified by its Ascii value on the matrix.
 
         Args:
-            ascii_value (integer) Character Ascii code. Default: 32 (space)
-            centre (bool)         Whether the icon should be displayed centred on the screen. Default: False
+            ascii_value (int) Character Ascii code. Default: 32 (space)
+            centre (bool)     Whether the icon should be displayed centred on the screen. Default: False
 
         Returns:
             The instance (self)
@@ -227,9 +224,9 @@ class HT16K33MatrixColour(HT16K33):
             # A standard character has been chosen
             ascii_value -= 32
             if ascii_value < 0 or ascii_value >= len(self.CHARSET): ascii_value = 0
-            icon = self._make_icon(self.CHARSET[ascii_value], ink, paper)
-            if centre: offset = (16 - len(icon)) >> 1
-        for i in range(len(icon)): self.buffer[i + offset] = icon[i]
+            glyph = self._colour_icon(self.CHARSET[ascii_value], ink, paper)
+            if centre: offset = (16 - len(glyph)) >> 1
+        for i in range(len(glyph)): self.buffer[i + offset] = glyph[i]
         return self
 
     def scroll_text(self, the_line, ink=1, paper=0, speed=0.1):
@@ -246,7 +243,7 @@ class HT16K33MatrixColour(HT16K33):
         import time
 
         if the_line is None or len(the_line) == 0: return None
-        the_line += "     "
+        the_line += "    "
 
         # Calculate the source buffer size
         length = 0
@@ -256,8 +253,9 @@ class HT16K33MatrixColour(HT16K33):
                 glyph = self.def_chars[asc_val]
             else:
                 glyph = self.CHARSET[asc_val - 32]
-            length += len(glyph) + 1
-        src_buf = bytearray(length * 2 + 16)
+            length += len(glyph)
+            if asc_val > 32: length += 1
+        src_buffer = bytearray(length * 2 + 16)
 
         # Draw the string to the source buffer
         row = 0
@@ -266,54 +264,55 @@ class HT16K33MatrixColour(HT16K33):
             if asc_val < 32:
                 glyph = self.def_chars[asc_val]
             else:
-                glyph = self._make_icon(self.CHARSET[asc_val - 32], ink, paper)
+                glyph = self._colour_glyph(self.CHARSET[asc_val - 32], ink, paper)
             for j in range(0, len(glyph)):
-                src_buf[row] = glyph[j]
+                src_buffer[row] = glyph[j]
                 row += 1
             for j in range(0, 2):
-                src_buf[row] = (0,0,255,255)[paper]
-                src_buf[row + 1] = (0,255,0,255)[paper]
-            row += 2
+                src_buffer[row] = (0,0,255,255)[paper]
+                src_buffer[row + 1] = (0,255,0,255)[paper]
+            if asc_val > 32: row += 2
+        assert row == length, "ERROR - Mismatched lengths in scroll_text()"
 
         # Finally, animate the line
         row = 0
-        cur = 0
+        cursor = 0
         while row < length - 8:
-            a = cur
+            a = cursor
             for i in range(0, self.width * 2):
-                self.buffer[i] = src_buf[a];
+                self.buffer[i] = src_buffer[a];
                 a += 1
             self.draw()
             row += 1
-            cur += 2
+            cursor += 2
             time.sleep(speed)
 
     def define_character(self, glyph, char_code=0):
         """
-        Set a user-definable character for later use
+        Set a user-definable character for later use.
 
         Args:
-            glyph (bytearray)   1-8 8-bit values defining a pixel image. The data is passed as columns,
-                                with bit 0 at the bottom and bit 7 at the top
-            char_code (integer) Character's ID Ascii code 0-31. Default: 0
+            glyph (bytearray) 1-8 8-bit values defining a pixel image. The data is passed as columns,
+                              with bit 0 at the bottom and bit 7 at the top
+            char_code (int)   Character's ID Ascii code 0-31. Default: 0
         """
-        assert (glyph is not None) and (0 < len(glyph) <= self.width * 2), "ERROR - Invalid glyph data set in define_character()"
+        assert 0 < len(glyph) <= self.width * 2, "ERROR - Invalid glyph data set in define_character()"
         assert 0 <= char_code < 32, "ERROR - Invalid character code set in define_character()"
         self.def_chars[char_code] = glyph
         return self
 
     def plot(self, x, y, ink=1, xor=False):
         """
-        Plot a point on the matrix. (0,0) is bottom left as viewed
+        Plot a point on the matrix. (0,0) is bottom left as viewed.
 
         Args:
-            x (integer)   X co-ordinate (0 - 7) left to right
-            y (integer)   Y co-ordinate (0 - 7) bottom to top
-            ink (integer) Pixel color: 1 = 'white', 0 = black. NOTE inverse video mode reverses this. Default: 1
-            xor (bool)    Whether an underlying pixel already of color ink should be inverted. Default: False
+            x (int)    X co-ordinate (0 - 7) left to right
+            y (int)    Y co-ordinate (0 - 7) bottom to top
+            ink (int)  Pixel color: 1 = 'white', 0 = black. NOTE inverse video mode reverses this. Default: 1
+            xor (bool) Whether an underlying pixel already of color ink should be inverted. Default: False
 
         Returns:
-            The instance (self) or None on error
+            The instance (self)
         """
         # Check argument range and value
         assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in plot()"
@@ -332,11 +331,11 @@ class HT16K33MatrixColour(HT16K33):
         Indicate whether a pixel is set.
 
         Args:
-            x (integer) X co-ordinate left to right
-            y (integer) Y co-ordinate bottom to top
+            x (int) X co-ordinate left to right
+            y (int) Y co-ordinate bottom to top
 
         Returns:
-            Whether the pixel is set (True) or not (False), or None on error
+            Whether the pixel is set (True) or not (False)
         """
         assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in is_set()"
         val_left = self.buffer[x]
@@ -349,12 +348,12 @@ class HT16K33MatrixColour(HT16K33):
         Fill the matrix with the specified colour.
 
         Args:
-            colour (integer) The chosen colour (0, 1, 2, 3)
+            colour (int) The chosen colour (0, 1, 2, 3)
 
         Returns:
             The instance (self)
         """
-        assert ink in (0, 1, 2, 3), "ERROR - Invalid colour set in fill()"
+        if ink not in (0, 1, 2, 3): ink = 1s
         for i in range(0, 15, 2):
             self.buffer[i] = ((ink >> 1) & 1) * 0xFF
             self.buffer[i + 1] = (ink & 1) * 0xFF
@@ -363,7 +362,7 @@ class HT16K33MatrixColour(HT16K33):
     def draw(self):
         """
         Takes the contents of _buffer and writes it to the LED matrix.
-        NOTE Overrides the parent method
+        NOTE Overrides the parent method.
         """
         draw_buffer = bytearray(17)
         new_buffer = bytearray(16)
@@ -411,7 +410,7 @@ class HT16K33MatrixColour(HT16K33):
                         output_matrix[15 - y * 2] |= (1 << (x // 2))
         return output_matrix
 
-    def _make_icon(self, glyph, ink, paper):
+    def _colour_glyph(self, glyph, ink, paper):
         """
         Convert an existing monochrome glyph to a multi-colour one
         """

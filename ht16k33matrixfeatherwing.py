@@ -3,8 +3,7 @@ from ht16k33 import HT16K33
 
 class HT16K33MatrixFeatherWing(HT16K33):
     """
-    Micro/Circuit Python class for the Adafruit 0.8-in
-    16x8 LED matrix FeatherWing.
+    Micro/Circuit Python class for the Adafruit 0.8-in 16x8 LED matrix FeatherWing.
 
     Version:    3.0.0
     Bus:        I2C
@@ -123,7 +122,6 @@ class HT16K33MatrixFeatherWing(HT16K33):
     # *********** CONSTRUCTOR **********
 
     def __init__(self, i2c, i2c_address=0x70):
-        if units < 0: return None
         self.buffer = bytearray(self.width * 2)
         self.def_chars = []
         for i in range(32): self.def_chars.append(b"\x00")
@@ -143,7 +141,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
             self.buffer[i] = (~ self.buffer[i]) & 0xFF
         return self
 
-    def set_icon(self, glyph, col=0):
+    def set_icon(self, glyph, column=0):
         """
         Present a user-defined character glyph at the specified digit.
 
@@ -153,32 +151,32 @@ class HT16K33MatrixFeatherWing(HT16K33):
 
         Args:
             glyph (bytearray) The glyph pattern.
-            col (int)         The column at which to write the icon (Default: 0)
+            column (int)      The column at which to write the icon. Default: 0
 
         Returns:
-            The instance (self) or None on error
+            The instance (self)
         """
-        assert 0 < length < self.width, "ERROR - Invalid glyph set in set_icon:"
-        assert 0 <= col < self.width, "ERROR - Invalid column number set in set_icon:"
+        assert 0 < length <= self.width * 2, "ERROR - Invalid glyph set in set_icon()"
+        assert 0 <= col < self.width, "ERROR - Invalid column number set in set_icon()"
         for i in range(len(glyph)):
-            buf_col = self._get_row(col + i)
-            if buf_col is False: break
-            self.buffer[buf_col] = glyph[i] if self.is_inverse is False else ((~ glyph[i]) & 0xFF)
+            buf_column = self._get_row(column + i)
+            if buf_column is False: break
+            self.buffer[buf_column] = glyph[i] if self.is_inverse is False else ((~ glyph[i]) & 0xFF)
         return self
 
-    def set_character(self, ascii_value=32, col=0):
+    def set_character(self, ascii_value=32, column=0):
         """
-        Display a single character specified by its Ascii value on the matrix
+        Display a single character specified by its Ascii value on the matrix.
 
         Args:
-            ascii_value (integer) Character Ascii code. Default: 32 (space)
-            centre (bool)         Whether the icon should be displayed centred on the screen. Default: False
+            ascii_value (int) Character Ascii code. Default: 32 (space)
+            column (int)      Whether the icon should be displayed centred on the screen. Default: False
 
         Returns:
-            The instance (self) or None on error
+            The instance (self)
         """
-        assert 0 <= ascii_value < 128, "ERROR - Invalid ascii code set in set_character:"
-        assert 0 <= col < self.width, "ERROR - Invalid column number set in set_icon:"
+        assert 0 <= ascii_value < 128, "ERROR - Invalid ascii code set in set_character()"
+        assert 0 <= col < self.width, "ERROR - Invalid column number set in set_icon()"
         glyph = None
         if ascii_value < 32:
             # A user-definable character has been chosen
@@ -188,7 +186,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
             ascii_value -= 32
             if ascii_value < 0 or ascii_value >= len(self.CHARSET): ascii_value = 0
             glyph = self.CHARSET[ascii_value]
-        return self.set_icon(glyph, col)
+        return self.set_icon(glyph, column)
 
     def scroll_text(self, the_line, speed=0.1):
         """
@@ -197,15 +195,12 @@ class HT16K33MatrixFeatherWing(HT16K33):
         Args:
             the_line (string) The string to display
             speed (float)     The delay between frames
-
-        Returns:
-            None on error
         """
         # Import the time library as we use time.sleep() here
         import time
 
         # Check argument range and value
-        assert len(the_line) > 0, "ERROR - Invalid string set in scroll_text:"
+        assert len(the_line) > 0, "ERROR - Invalid string set in scroll_text()"
         the_line += "        "
 
         # Calculate the source buffer size
@@ -216,8 +211,9 @@ class HT16K33MatrixFeatherWing(HT16K33):
                 glyph = self.def_chars[asc_val]
             else:
                 glyph = self.CHARSET[asc_val - 32]
-            length += len(glyph) + 1
-        src_buf = bytearray(length * 8)
+            length += len(glyph)
+            if asc_val > 32: length += 1
+        src_buffer = bytearray(length)
 
         # Draw the string to the source buffer
         row = 0
@@ -228,42 +224,44 @@ class HT16K33MatrixFeatherWing(HT16K33):
             else:
                 glyph = self.CHARSET[asc_val - 32]
             for j in range(0, len(glyph)):
-                src_buf[row] = glyph[j] if self.is_inverse is False else ((~ glyph[j]) & 0xFF)
+                src_buffer[row] = glyph[j] if self.is_inverse is False else ((~ glyph[j]) & 0xFF)
                 row += 1
-            row += 1
+            if asc_val > 32: row += 1
+        assert row == length, "ERROR - Mismatched lengths in scroll_text()"
 
         # Finally, nimate the line
         row = 0
-        cur = 0
+        cursor = 0
         while row < length:
+            a = cursor
             for i in range(0, self.width):
-                self.buffer[self._get_row(i)] = src_buf[cur];
-                cur += 1
+                self.buffer[self._get_row(i)] = src_buffer[a];
+                a += 1
             self.draw()
-            time.sleep(speed)
             row += 1
-            cur -= (self.width - 1)
+            cursor += 1
+            time.sleep(speed)
 
     def define_character(self, glyph, char_code=0):
         """
-        Set a user-definable character
+        Set a user-definable character.
 
         Args:
             glyph (bytearray) The glyph pattern.
-            char_code (int) The character’s ID code (0-31) (Default: 0)
+            char_code (int)   The character’s ID code (0-31). Default: 0
 
         Returns:
-            The instance (self) or None on error
+            The instance (self)
         """
         # Check argument range and value
-        assert 0 < len(glyph) < self.width, "ERROR - Invalid glyph set in define_character:"
-        assert 0 <= char_code < 32, "ERROR - Invalid character code set in define_character:"
+        assert 0 < len(glyph) < self.width * 2, "ERROR - Invalid glyph set in define_character()"
+        assert 0 <= char_code < 32, "ERROR - Invalid character code set in define_character()"
         self.def_chars[char_code] = glyph
         return self
 
     def plot(self, x, y, ink=1, xor=False):
         """
-        Plot a point on the matrix. (0,0) is bottom left as viewed
+        Plot a point on the matrix. (0,0) is bottom left as viewed.
 
         Args:
             x (integer)   X co-ordinate left to right
@@ -272,42 +270,39 @@ class HT16K33MatrixFeatherWing(HT16K33):
             xor (bool)    Whether an underlying pixel already of color ink should be inverted. Default: False
 
         Returns:
-            The instance (self) or None on error
+            The instance (self)
         """
         # Check argument range and value
-        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in plot:"
+        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in plot()"
         if ink not in (0, 1): ink = 1
         x = self._get_row(x)
-        v = self.buffer[x]
         if ink == 1:
             if self.is_set(x ,y) and xor:
-                v = v ^ (1 << y)
+                self.buffer[x] ^= (1 << y)
             else:
-                if v & (1 << y) == 0: v = v | (1 << y)
+                if self.buffer[x] & (1 << y) == 0: self.buffer[x] |= (1 << y)
         else:
             if not self.is_set(x ,y) and xor:
-                v = v ^ (1 << y)
+                self.buffer[x] ^= (1 << y)
             else:
-                if v & (1 << y) != 0: v = v & ~(1 << y)
-        self.buffer[x] = v
-            return self
+                if self.buffer[x] & (1 << y) != 0: self.buffer[x] &= ~(1 << y)
+        return self
 
     def is_set(self, x, y):
         """
         Indicate whether a pixel is set.
 
         Args:
-            x (integer) X co-ordinate left to right
-            y (integer) Y co-ordinate bottom to top
+            x (int) X co-ordinate left to right
+            y (int) Y co-ordinate bottom to top
 
         Returns:
             Whether the
         """
         # Check argument range and value
-        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in is_set:"
+        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in is_set()"
         x = self._get_row(x)
-        v = self.buffer[x]
-        bit = (v >> y) & 1
+        bit = (self.buffer[x] >> y) & 1
         return True if bit > 0 else False
 
     # ********** PRIVATE METHODS **********

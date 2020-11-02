@@ -133,7 +133,7 @@ class HT16K33Matrix(HT16K33):
 
     def set_angle(self, angle=0):
         """
-        Set the matrix orientation
+        Set the matrix orientation.
 
         Args:
             angle (integer) Display auto-rotation angle, 0 to -360 degrees. Default: 0
@@ -160,12 +160,11 @@ class HT16K33Matrix(HT16K33):
 
         self.rotation_angle = angle
         self.is_rotated = True if self.rotation_angle != 0 else False
-        print(self.rotation_angle, self.is_rotated)
         return self
 
     def set_inverse(self):
         """
-        Inverts the ink colour of the display
+        Inverts the ink colour of the display.
 
         Returns:
             The instance (self)
@@ -177,7 +176,7 @@ class HT16K33Matrix(HT16K33):
 
     def set_icon(self, glyph, centre=False):
         """
-        Displays a custom character on the matrix
+        Displays a custom character on the matrix.
 
         Args:
             glyph (array) 1-8 8-bit values defining a pixel image. The data is passed as columns
@@ -188,18 +187,16 @@ class HT16K33Matrix(HT16K33):
             The instance (self)
         """
         length = len(glyph)
-        assert 0 < length <= self.width, "ERROR - Invalid glyph set in set_icon:"
-
+        assert 0 < length <= self.width, "ERROR - Invalid glyph set in set_icon()"
         for i in range(length):
             a = i
-            if centre:
-                a = i + int((8 - length) / 2)
+            if centre: a = i + ((8 - length) >> 1)
             self.buffer[a] = glyph[i] if self.is_inverse is False else ((~ glyph[i]) & 0xFF)
         return self
 
     def set_character(self, ascii_value=32, centre=False):
         """
-        Display a single character specified by its Ascii value on the matrix
+        Display a single character specified by its Ascii value on the matrix.
 
         Args:
             ascii_value (integer) Character Ascii code. Default: 32 (space)
@@ -208,7 +205,7 @@ class HT16K33Matrix(HT16K33):
         Returns:
             The instance (self)
         """
-        assert 0 <= ascii_value < 128, "ERROR - Invalid ascii code set in set_character:"
+        assert 0 <= ascii_value < 128, "ERROR - Invalid ascii code set in set_character()"
         glyph = None
         if ascii_value < 32:
             # A user-definable character has been chosen
@@ -229,11 +226,11 @@ class HT16K33Matrix(HT16K33):
             speed (float)     The delay between frames
 
         Returns:
-            None on error
+            The instance (self)
         """
         import time
 
-        assert len(the_line) > 0, "ERROR - Invalid string set in scroll_text:"
+        assert len(the_line) > 0, "ERROR - Invalid string set in scroll_text()"
         the_line += "    "
 
         # Calculate the source buffer size
@@ -244,8 +241,9 @@ class HT16K33Matrix(HT16K33):
                 glyph = self.def_chars[asc_val]
             else:
                 glyph = self.CHARSET[asc_val - 32]
-            length += len(glyph) + 1
-        src_buf = bytearray(length * 8)
+            length += len(glyph)
+            if asc_val > 32: length += 1
+        src_buffer = bytearray(length)
 
         # Draw the string to the source buffer
         row = 0
@@ -256,39 +254,44 @@ class HT16K33Matrix(HT16K33):
             else:
                 glyph = self.CHARSET[asc_val - 32]
             for j in range(0, len(glyph)):
-                src_buf[row] = glyph[j] if self.is_inverse is False else ((~ glyph[j]) & 0xFF)
+                src_buffer[row] = glyph[j] if self.is_inverse is False else ((~ glyph[j]) & 0xFF)
                 row += 1
-            row += 1
+            if asc_val > 32: row += 1
+        assert row == length, "ERROR - Mismatched lengths in scroll_text()"
 
         # Finally, nimate the line
         row = 0
-        cur = 0
+        cursor = 0
         while row < length:
+            a = cursor
             for i in range(0, self.width):
-                self.buffer[i] = src_buf[cur];
-                cur += 1
+                self.buffer[i] = src_buffer[a];
+                a += 1
             self.draw()
-            time.sleep(speed)
             row += 1
-            cur -= (self.width - 1)
+            cursor += 1
+            time.sleep(speed)
 
     def define_character(self, glyph, char_code=0):
         """
-        Set a user-definable character for later use
+        Set a user-definable character for later use.
 
         Args:
             glyph (bytearray)   1-8 8-bit values defining a pixel image. The data is passed as columns,
                                 with bit 0 at the bottom and bit 7 at the top
             char_code (integer) Character's ID Ascii code 0-31. Default: 0
+
+        Returns:
+            The instance (self)
         """
-        assert 0 < len(glyph) < self.width, "ERROR - Invalid glyph set in define_character:"
-        assert 0 <= char_code < 32, "ERROR - Invalid character code set in define_character:"
+        assert 0 < len(glyph) <= self.width, "ERROR - Invalid glyph set in define_character()"
+        assert 0 <= char_code < 32, "ERROR - Invalid character code set in define_character()"
         self.def_chars[char_code] = glyph
         return self
 
     def plot(self, x, y, ink=1, xor=False):
         """
-        Plot a point on the matrix. (0,0) is bottom left as viewed
+        Plot a point on the matrix. (0,0) is bottom left as viewed.
 
         Args:
             x (integer)   X co-ordinate (0 - 7) left to right
@@ -297,23 +300,21 @@ class HT16K33Matrix(HT16K33):
             xor (bool)    Whether an underlying pixel already of color ink should be inverted. Default: False
 
         Returns:
-            The instance (self) or None on error
+            The instance (self)
         """
         # Check argument range and value
-        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in plot:"
+        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in plot()"
         if ink not in (0, 1): ink = 1
-        v = self.buffer[x]
         if ink == 1:
             if self.is_set(x ,y) and xor:
-                v ^= (1 << y)
+                self.buffer[x] ^= (1 << y)
             else:
-                if v & (1 << y) == 0: v |= (1 << y)
+                if self.buffer[x] & (1 << y) == 0: self.buffer[x] |= (1 << y)
         else:
             if not self.is_set(x ,y) and xor:
-                v ^= (1 << y)
+                self.buffer[x] ^= (1 << y)
             else:
-                if v & (1 << y) != 0: v &= ~(1 << y)
-        self.buffer[x] = v
+                if self.buffer[x] & (1 << y) != 0: self.buffer[x] &= ~(1 << y)
         return self
 
     def is_set(self, x, y):
@@ -321,28 +322,26 @@ class HT16K33Matrix(HT16K33):
         Indicate whether a pixel is set.
 
         Args:
-            x (integer) X co-ordinate left to right
-            y (integer) Y co-ordinate bottom to top
+            x (int) X co-ordinate left to right
+            y (int) Y co-ordinate bottom to top
 
         Returns:
-            Whether the pixel is set (True) or not (False), or None on error
+            Whether the pixel is set (True) or not (False)
         """
-        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in is_set:"
-        v = self.buffer[x]
-        bit = (v >> y) & 1
+        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in is_set()"
+        bit = (self.buffer[x] >> y) & 1
         return True if bit > 0 else False
 
     def draw(self):
         """
         Takes the contents of _buffer and writes it to the LED matrix.
-        NOTE Overrides the parent method
+        NOTE Overrides the parent method.
         """
-        new_buffer = bytearray(len(self.buffer))
         if self.is_rotated:
             new_buffer = self._rotate_matrix(self.buffer, self.rotation_angle)
         else:
-            for i in range(8):
-                new_buffer[i] = self.buffer[i]
+            new_buffer = bytearray(len(self.buffer))
+            for i in range(8): new_buffer[i] = self.buffer[i]
         draw_buffer = bytearray(17)
         for i in range(len(new_buffer)):
             draw_buffer[i * 2 + 1] = self._process_byte(new_buffer[i])
@@ -365,7 +364,7 @@ class HT16K33Matrix(HT16K33):
         Rotate an 8-integer matrix through the specified angle in 90-degree increments:
            0 = none, 1 = 90 clockwise, 2 = 180, 3 = 90 anti-clockwise
         """
-        assert angle in (0, 1, 2, 3), "ERROR - Invalid angle in _rotate_matrix:"
+        assert angle in (0, 1, 2, 3), "ERROR - Invalid angle in _rotate_matrix()"
         if angle is 0: return input_matrix
 
         a = 0
@@ -374,26 +373,16 @@ class HT16K33Matrix(HT16K33):
 
         # NOTE It's quicker to have three case-specific
         #      code blocks than a single, generic block
-        if angle is 1:
-            for y in range(self.height):
-                line_value = input_matrix[y]
-                for x in range(7, -1, -1):
-                    a = line_value & (1 << x)
-                    if a is not 0:
+        for y in range(self.height):
+            line_value = input_matrix[y]
+            for x in range(7, -1, -1):
+                a = line_value & (1 << x)
+                if a is not 0:
+                    if angle is 1:
                         output_matrix[7 - x] = output_matrix[7 - x] + (1 << y)
-        elif angle is 2:
-            for y in range(self.height):
-                line_value = input_matrix[y]
-                for x in range(7, -1, -1):
-                    a = line_value & (1 << x)
-                    if a is not 0:
+                    elif angle is 2:
                         output_matrix[7 - y] += (1 << (7 - x))
-        else:
-            for y in range(self.height):
-                line_value = input_matrix[y]
-                for x in range(7, -1, -1):
-                    a = line_value & (1 << x)
-                    if a is not 0:
+                    else:
                         output_matrix[x] = output_matrix[x] + (1 << (7 - y))
         return output_matrix
 
@@ -402,6 +391,4 @@ class HT16K33Matrix(HT16K33):
         Fill the buffer, column by column with the specified byte value
         """
         value &= 0xFF
-        for i in range(self.width):
-            self.buffer[i] = value
-        return
+        for i in range(self.width): self.buffer[i] = value
