@@ -14,8 +14,8 @@ class HT16K33MatrixColour(HT16K33):
     # *********** CONSTANTS **********
 
     COLOUR_NONE = 0
-    COLOUR_GREEN = 1
-    COLOUR_RED = 2
+    COLOUR_GREEN = 2
+    COLOUR_RED = 1
     COLOUR_YELLOW = 3
 
     CHARSET = [
@@ -169,7 +169,7 @@ class HT16K33MatrixColour(HT16K33):
 
     def set_icon(self, glyph, centre=False):
         """
-        Displays a custom character on the matrix
+        Displays a custom character on the matrix.
 
         Args:
             glyph (array) 1-16 8-bit values defining a pixel image. The data is passed as columns
@@ -181,20 +181,33 @@ class HT16K33MatrixColour(HT16K33):
             The instance (self)
         """
         length = len(glyph)
-        assert length < 1 or length > self.width, "ERROR - Invalid glyph set in set_icon:"
-        offset = (8 - length) // 2
+        assert (0 < length <= self.width * 2) and length % 2 == 0, "ERROR - Invalid glyph set in set_icon()"
+
+        buf = bytearray(self.width * 2)
+        buf_idx = 0
+        if centre: buf_idx = ((8 - (length >> 1)) >> 1) << 1
         for i in range(0, length, 2):
-            for k in range(2):
-                nibble = glyph[i + k]
-                for y in range(4):
-                    c = (nibble >> (y * 2)) & 0x03
-                    if c:
-                        self.plot(a + i, y, c)
+            byte = glyph[i]
+            for j in range(0, 8, 2):
+                v = (byte >> j) & 1
+                buf[buf_idx] |= v << (j >> 1)
+            for j in range(1, 8, 2):
+                v = (byte >> j) & 1
+                buf[buf_idx + 1] |= v << (j >> 1)
+            byte = glyph[i + 1]
+            for j in range(0, 8, 2):
+                v = (byte >> j) & 1
+                buf[buf_idx] |= v << ((j >> 1) + 4)
+            for j in range(1, 8, 2):
+                v = (byte >> j) & 1
+                buf[buf_idx + 1] |= v << ((j >> 1) + 4)
+            buf_idx += 2
+        self.buffer = buf
         return self
 
-    def set_character(self, ascii_value=32, centre=False):
+    def set_character(self, ascii_value=32, ink=1, paper=0, centre=False):
         """
-        Display a single character specified by its Ascii value on the matrix
+        Display a single character specified by its Ascii value on the matrix.
 
         Args:
             ascii_value (integer) Character Ascii code. Default: 32 (space)
@@ -204,17 +217,22 @@ class HT16K33MatrixColour(HT16K33):
             The instance (self)
         """
         glyph = None
+        icon = None
+        offset = 0
         if ascii_value < 32:
             # A user-definable character has been chosen
             glyph = self.def_chars[ascii_value]
+            if centre: offset = (16 - len(glyph)) >> 1
         else:
             # A standard character has been chosen
             ascii_value -= 32
             if ascii_value < 0 or ascii_value >= len(self.CHARSET): ascii_value = 0
-            glyph = self.charset[ascii_value]
-        return self.set_icon(glyph, centre)
+            icon = self._make_icon(self.CHARSET[ascii_value], ink, paper)
+            if centre: offset = (16 - len(icon)) >> 1
+        for i in range(len(icon)): self.buffer[i + offset] = icon[i]
+        return self
 
-    def scroll_text(self, the_line, speed=0.1):
+    def scroll_text(self, the_line, ink=1, paper=0, speed=0.1):
         """
         Scroll the specified line of text leftwards across the display.
 
@@ -228,7 +246,7 @@ class HT16K33MatrixColour(HT16K33):
         import time
 
         if the_line is None or len(the_line) == 0: return None
-        the_line += "    "
+        the_line += "     "
 
         # Calculate the source buffer size
         length = 0
@@ -239,7 +257,7 @@ class HT16K33MatrixColour(HT16K33):
             else:
                 glyph = self.CHARSET[asc_val - 32]
             length += len(glyph) + 1
-        src_buf = bytearray(length * 8)
+        src_buf = bytearray(length * 2 + 16)
 
         # Draw the string to the source buffer
         row = 0
@@ -248,23 +266,27 @@ class HT16K33MatrixColour(HT16K33):
             if asc_val < 32:
                 glyph = self.def_chars[asc_val]
             else:
-                glyph = self.CHARSET[asc_val - 32]
+                glyph = self._make_icon(self.CHARSET[asc_val - 32], ink, paper)
             for j in range(0, len(glyph)):
-                src_buf[row] = glyph[j] if self.is_inverse is False else ((~ glyph[j]) & 0xFF)
+                src_buf[row] = glyph[j]
                 row += 1
-            row += 1
+            for j in range(0, 2):
+                src_buf[row] = (0,0,255,255)[paper]
+                src_buf[row + 1] = (0,255,0,255)[paper]
+            row += 2
 
-        # Finally, nimate the line
+        # Finally, animate the line
         row = 0
         cur = 0
-        while row < length:
-            for i in range(0, self.width):
-                self.buffer[i] = src_buf[cur];
-                cur += 1
+        while row < length - 8:
+            a = cur
+            for i in range(0, self.width * 2):
+                self.buffer[i] = src_buf[a];
+                a += 1
             self.draw()
-            time.sleep(speed)
             row += 1
-            cur -= (self.width - 1)
+            cur += 2
+            time.sleep(speed)
 
     def define_character(self, glyph, char_code=0):
         """
@@ -275,11 +297,10 @@ class HT16K33MatrixColour(HT16K33):
                                 with bit 0 at the bottom and bit 7 at the top
             char_code (integer) Character's ID Ascii code 0-31. Default: 0
         """
-        if glyph == None or len(glyph) == 0 or len(glyph) > self.width: return None
-        if 0 <= char_code < 32:
-            self.def_chars[char_code] = glyph
-            return self
-        return None
+        assert (glyph is not None) and (0 < len(glyph) <= self.width * 2), "ERROR - Invalid glyph data set in define_character()"
+        assert 0 <= char_code < 32, "ERROR - Invalid character code set in define_character()"
+        self.def_chars[char_code] = glyph
+        return self
 
     def plot(self, x, y, ink=1, xor=False):
         """
@@ -295,17 +316,15 @@ class HT16K33MatrixColour(HT16K33):
             The instance (self) or None on error
         """
         # Check argument range and value
-        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in plot:"
+        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in plot()"
         if ink not in (0, 1, 2, 3): ink = 1
         for i in range(2):
             a = x * 2 + i
-            v = self.buffer[a]
             c = ink & (1 << i)
             if c != 0:
-                v |= (1 << y)
+                self.buffer[a] |= (1 << y)
             else:
-                v &= ~(1 << y)
-            self.buffer[a] = v
+                self.buffer[a] &= ~(1 << y)
         return self
 
     def is_set(self, x, y):
@@ -319,7 +338,7 @@ class HT16K33MatrixColour(HT16K33):
         Returns:
             Whether the pixel is set (True) or not (False), or None on error
         """
-        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in is_set:"
+        assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in is_set()"
         val_left = self.buffer[x]
         val_right = self.buffer[x + 1]
         bit = ((val_left >> y) & 1) or ((val_right >> y) & 1)
@@ -335,10 +354,10 @@ class HT16K33MatrixColour(HT16K33):
         Returns:
             The instance (self)
         """
-        assert ink in (0, 1, 2, 3), "ERROR - Invalid colour set in fill:"
+        assert ink in (0, 1, 2, 3), "ERROR - Invalid colour set in fill()"
         for i in range(0, 15, 2):
-            self.buffer[i] = ((ink >> 1) & 0x01) * 0xFF
-            self.buffer[i + 1] = (ink & 0x01) * 0xFF
+            self.buffer[i] = ((ink >> 1) & 1) * 0xFF
+            self.buffer[i + 1] = (ink & 1) * 0xFF
         return self
 
     def draw(self):
@@ -365,15 +384,15 @@ class HT16K33MatrixColour(HT16K33):
         0 = none, 1 = 90 clockwise, 2 = 180, 3 = 90 anti-clockwise
         BUT maintain adjacent column pairs
         """
-        assert angle in (0, 1, 2, 3), "ERROR -- Invalid angle set in _rotate_matrix:"
+        assert angle in (0, 1, 2, 3), "ERROR -- Invalid angle set in _rotate_matrix()"
         if angle is 0: return input_matrix
 
         # NOTE It's quicker to have three case-specific
         #      code blocks than a single, generic block
         output_matrix = bytearray(self.width * 2)
         for x in range(0, 15, 2):
-            val_left = buffer[x]
-            val_right = buffer[x + 1]
+            val_left = input_matrix[x]
+            val_right = input_matrix[x + 1]
             for y in range(8):
                 if angle == 1:
                     if (val_left >> y) & 1:
@@ -391,3 +410,23 @@ class HT16K33MatrixColour(HT16K33):
                     if (val_right >> y) & 1:
                         output_matrix[15 - y * 2] |= (1 << (x // 2))
         return output_matrix
+
+    def _make_icon(self, glyph, ink, paper):
+        """
+        Convert an existing monochrome glyph to a multi-colour one
+        """
+        icon = bytearray()
+        for i in range(len(glyph)):
+            col = glyph[i]
+            out_l = 0
+            out_r = 0
+            for j in range(8):
+                if ((col >> j) & 1) != 0:
+                    out_l |= ((ink >> 1) & 1) << j
+                    out_r |= (ink & 1) << j
+                else:
+                    out_l |= ((paper >> 1) & 1) << j
+                    out_r |= (paper & 1) << j
+            icon.append(out_l)
+            icon.append(out_r)
+        return icon
