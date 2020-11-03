@@ -180,26 +180,10 @@ class HT16K33MatrixColour(HT16K33):
         """
         length = len(glyph)
         assert (0 < length <= self.width * 2) and (length % 2 == 0), "ERROR - Invalid glyph set in set_icon()"
-        temp_buffer = bytearray(self.width * 2)
-        buffer_idx = 0
-        if centre: buffer_idx = ((8 - (length >> 1)) >> 1) << 1
-        for i in range(0, length, 2):
-            byte = glyph[i]
-            for j in range(0, 8, 2):
-                v = (byte >> j) & 1
-                temp_buffer[buffer_idx] |= v << (j >> 1)
-            for j in range(1, 8, 2):
-                v = (byte >> j) & 1
-                temp_buffer[buffer_idx + 1] |= v << (j >> 1)
-            byte = glyph[i + 1]
-            for j in range(0, 8, 2):
-                v = (byte >> j) & 1
-                temp_buffer[buffer_idx] |= v << ((j >> 1) + 4)
-            for j in range(1, 8, 2):
-                v = (byte >> j) & 1
-                temp_buffer[buffer_idx + 1] |= v << ((j >> 1) + 4)
-            buffer_idx += 2
-        self.buffer = temp_buffer
+        offset = 0
+        if centre: offset = self._calc_offset(length)
+        for i in range(length):
+            self.buffer[i + offset] = glyph[i]
         return self
 
     def set_character(self, ascii_value=32, ink=1, paper=0, centre=False):
@@ -214,18 +198,16 @@ class HT16K33MatrixColour(HT16K33):
             The instance (self)
         """
         glyph = None
-        icon = None
         offset = 0
         if ascii_value < 32:
             # A user-definable character has been chosen
             glyph = self.def_chars[ascii_value]
-            if centre: offset = (16 - len(glyph)) >> 1
         else:
             # A standard character has been chosen
             ascii_value -= 32
             if ascii_value < 0 or ascii_value >= len(self.CHARSET): ascii_value = 0
-            glyph = self._colour_icon(self.CHARSET[ascii_value], ink, paper)
-            if centre: offset = (16 - len(glyph)) >> 1
+            glyph = self._colour_glyph(self.CHARSET[ascii_value], ink, paper)
+        if centre: offset = self._calc_offset(len(glyph))
         for i in range(len(glyph)): self.buffer[i + offset] = glyph[i]
         return self
 
@@ -242,24 +224,22 @@ class HT16K33MatrixColour(HT16K33):
         """
         import time
 
-        if the_line is None or len(the_line) == 0: return None
-        the_line += "    "
-
+        assert (the_line is not None) and (len(the_line) > 0), "ERROR - Invalid text set in scroll_text()"
         # Calculate the source buffer size
         length = 0
-        for i in range(0, len(the_line)):
+        for i in range(len(the_line)):
             asc_val = ord(the_line[i])
             if asc_val < 32:
                 glyph = self.def_chars[asc_val]
             else:
-                glyph = self.CHARSET[asc_val - 32]
+                glyph = self._colour_glyph(self.CHARSET[asc_val - 32], ink, paper)
             length += len(glyph)
-            if asc_val > 32: length += 1
-        src_buffer = bytearray(length * 2 + 16)
+            if asc_val > 32: length += 2
+        src_buffer = bytearray(length)
 
         # Draw the string to the source buffer
         row = 0
-        for i in range(0, len(the_line)):
+        for i in range(len(the_line)):
             asc_val = ord(the_line[i])
             if asc_val < 32:
                 glyph = self.def_chars[asc_val]
@@ -268,23 +248,23 @@ class HT16K33MatrixColour(HT16K33):
             for j in range(0, len(glyph)):
                 src_buffer[row] = glyph[j]
                 row += 1
-            for j in range(0, 2):
+            if asc_val > 32:
+                # Add two-line spacer
                 src_buffer[row] = (0,0,255,255)[paper]
                 src_buffer[row + 1] = (0,255,0,255)[paper]
-            if asc_val > 32: row += 2
+                row += 2
         assert row == length, "ERROR - Mismatched lengths in scroll_text()"
 
         # Finally, animate the line
-        row = 0
         cursor = 0
-        while row < length - 8:
+        while True:
             a = cursor
-            for i in range(0, self.width * 2):
+            for i in range(self.width * 2):
                 self.buffer[i] = src_buffer[a];
                 a += 1
             self.draw()
-            row += 1
             cursor += 2
+            if cursor > length - 16: break
             time.sleep(speed)
 
     def define_character(self, glyph, char_code=0):
@@ -301,15 +281,14 @@ class HT16K33MatrixColour(HT16K33):
         self.def_chars[char_code] = glyph
         return self
 
-    def plot(self, x, y, ink=1, xor=False):
+    def plot(self, x, y, ink=1):
         """
         Plot a point on the matrix. (0,0) is bottom left as viewed.
 
         Args:
             x (int)    X co-ordinate (0 - 7) left to right
             y (int)    Y co-ordinate (0 - 7) bottom to top
-            ink (int)  Pixel color: 1 = 'white', 0 = black. NOTE inverse video mode reverses this. Default: 1
-            xor (bool) Whether an underlying pixel already of color ink should be inverted. Default: False
+            ink (int)  Pixel color. Default: 1
 
         Returns:
             The instance (self)
@@ -338,9 +317,9 @@ class HT16K33MatrixColour(HT16K33):
             Whether the pixel is set (True) or not (False)
         """
         assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in is_set()"
-        val_left = self.buffer[x]
-        val_right = self.buffer[x + 1]
-        bit = ((val_left >> y) & 1) or ((val_right >> y) & 1)
+        val_left = self.buffer[x * 2]
+        val_right = self.buffer[x * 2 + 1]
+        bit = ((val_left >> y) & 1) > 0 or ((val_right >> y) & 1) > 0
         return bit
 
     def fill(self, ink):
@@ -353,7 +332,7 @@ class HT16K33MatrixColour(HT16K33):
         Returns:
             The instance (self)
         """
-        if ink not in (0, 1, 2, 3): ink = 1s
+        if ink not in (0, 1, 2, 3): ink = 1
         for i in range(0, 15, 2):
             self.buffer[i] = ((ink >> 1) & 1) * 0xFF
             self.buffer[i + 1] = (ink & 1) * 0xFF
@@ -429,3 +408,11 @@ class HT16K33MatrixColour(HT16K33):
             icon.append(out_l)
             icon.append(out_r)
         return icon
+
+    def _calc_offset(self, length):
+        """
+        Calculate the first row of a centred glyph
+        """
+        off_set = (16 - length) >> 1
+        if off_set % 2 != 0: off_set -= 1
+        return off_set

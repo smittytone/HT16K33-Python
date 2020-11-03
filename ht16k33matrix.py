@@ -231,7 +231,6 @@ class HT16K33Matrix(HT16K33):
         import time
 
         assert len(the_line) > 0, "ERROR - Invalid string set in scroll_text()"
-        the_line += "    "
 
         # Calculate the source buffer size
         length = 0
@@ -259,17 +258,16 @@ class HT16K33Matrix(HT16K33):
             if asc_val > 32: row += 1
         assert row == length, "ERROR - Mismatched lengths in scroll_text()"
 
-        # Finally, nimate the line
-        row = 0
+        # Finally, animate the line
         cursor = 0
-        while row < length:
+        while True:
             a = cursor
             for i in range(0, self.width):
                 self.buffer[i] = src_buffer[a];
                 a += 1
             self.draw()
-            row += 1
             cursor += 1
+            if cursor > length - self.width: break
             time.sleep(speed)
 
     def define_character(self, glyph, char_code=0):
@@ -369,7 +367,7 @@ class HT16K33Matrix(HT16K33):
 
         a = 0
         line_value = 0
-        output_matrix = bytearray(self.width * 8)
+        output_matrix = bytearray(self.width)
 
         # NOTE It's quicker to have three case-specific
         #      code blocks than a single, generic block

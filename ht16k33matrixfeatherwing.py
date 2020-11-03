@@ -156,8 +156,8 @@ class HT16K33MatrixFeatherWing(HT16K33):
         Returns:
             The instance (self)
         """
-        assert 0 < length <= self.width * 2, "ERROR - Invalid glyph set in set_icon()"
-        assert 0 <= col < self.width, "ERROR - Invalid column number set in set_icon()"
+        assert 0 < len(glyph) <= self.width * 2, "ERROR - Invalid glyph set in set_icon()"
+        assert 0 <= column < self.width, "ERROR - Invalid column number set in set_icon()"
         for i in range(len(glyph)):
             buf_column = self._get_row(column + i)
             if buf_column is False: break
@@ -176,7 +176,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
             The instance (self)
         """
         assert 0 <= ascii_value < 128, "ERROR - Invalid ascii code set in set_character()"
-        assert 0 <= col < self.width, "ERROR - Invalid column number set in set_icon()"
+        assert 0 <= column < self.width, "ERROR - Invalid column number set in set_icon()"
         glyph = None
         if ascii_value < 32:
             # A user-definable character has been chosen
@@ -201,11 +201,10 @@ class HT16K33MatrixFeatherWing(HT16K33):
 
         # Check argument range and value
         assert len(the_line) > 0, "ERROR - Invalid string set in scroll_text()"
-        the_line += "        "
 
         # Calculate the source buffer size
         length = 0
-        for i in range(0, len(the_line)):
+        for i in range(len(the_line)):
             asc_val = ord(the_line[i])
             if asc_val < 32:
                 glyph = self.def_chars[asc_val]
@@ -217,29 +216,28 @@ class HT16K33MatrixFeatherWing(HT16K33):
 
         # Draw the string to the source buffer
         row = 0
-        for i in range(0, len(the_line)):
+        for i in range(len(the_line)):
             asc_val = ord(the_line[i])
             if asc_val < 32:
                 glyph = self.def_chars[asc_val]
             else:
                 glyph = self.CHARSET[asc_val - 32]
-            for j in range(0, len(glyph)):
+            for j in range(len(glyph)):
                 src_buffer[row] = glyph[j] if self.is_inverse is False else ((~ glyph[j]) & 0xFF)
                 row += 1
             if asc_val > 32: row += 1
         assert row == length, "ERROR - Mismatched lengths in scroll_text()"
 
-        # Finally, nimate the line
-        row = 0
+        # Finally, a the line
         cursor = 0
-        while row < length:
+        while True:
             a = cursor
-            for i in range(0, self.width):
+            for i in range(self.width):
                 self.buffer[self._get_row(i)] = src_buffer[a];
                 a += 1
             self.draw()
-            row += 1
             cursor += 1
+            if cursor > length - self.width: break
             time.sleep(speed)
 
     def define_character(self, glyph, char_code=0):
@@ -275,17 +273,17 @@ class HT16K33MatrixFeatherWing(HT16K33):
         # Check argument range and value
         assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in plot()"
         if ink not in (0, 1): ink = 1
-        x = self._get_row(x)
+        x2 = self._get_row(x)
         if ink == 1:
             if self.is_set(x ,y) and xor:
-                self.buffer[x] ^= (1 << y)
+                self.buffer[x2] ^= (1 << y)
             else:
-                if self.buffer[x] & (1 << y) == 0: self.buffer[x] |= (1 << y)
+                if self.buffer[x2] & (1 << y) == 0: self.buffer[x2] |= (1 << y)
         else:
             if not self.is_set(x ,y) and xor:
-                self.buffer[x] ^= (1 << y)
+                self.buffer[x2] ^= (1 << y)
             else:
-                if self.buffer[x] & (1 << y) != 0: self.buffer[x] &= ~(1 << y)
+                if self.buffer[x2] & (1 << y) != 0: self.buffer[x2] &= ~(1 << y)
         return self
 
     def is_set(self, x, y):
@@ -313,7 +311,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
         in the FeatherWing, and return the location.
         An out-of-range value returns False
         """
-        a = 1 + (i << 1)
-        if i < 8: a += 15
+        a = 1 + (x << 1)
+        if x < 8: a += 15
         if a >= self.width * 2: return False
         return a

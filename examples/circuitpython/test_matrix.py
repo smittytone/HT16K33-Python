@@ -16,46 +16,55 @@ if __name__ == '__main__':
     display = HT16K33Matrix(i2c)
     display.set_brightness(2)
 
+    # Draw a custom icon on the LED
     icon = b"\x3C\x42\xA9\x85\x85\xA9\x42\x3C"
     display.set_icon(icon).draw()
-
     time.sleep(PAUSE)
+
+    # Rotate the icon
     display.set_angle(900).draw()
-
     time.sleep(PAUSE)
+
+    # Clear the LED
     display.clear().draw()
 
+    # Record two custom icons using 'define_character()'
     icon = b"\x0E\x18\xBE\x6D\x3D\x3C"
     display.define_character(icon, 0)
     icon = b"\x3C\x3D\x6D\xBE\x18\x0E"
     display.define_character(icon, 1)
 
-    text = "abcdefghijklmnopqrstuvwxyz0123456789!$%&*()\x00\x01"
+    # Display scrolling text
+    text = "    abcdefghijklmnopqrstuvwxyz 0123456789!$%&*() \x00\x01    "
     display.scroll_text(text)
-
     time.sleep(PAUSE)
+
+    # Show the previously stored custom icon then Blink the LED
     display.set_character(0, True).draw()
-
     display.set_blink_rate(1)
-
     time.sleep(PAUSE)
+
+    # Inverse the pixes
     display.set_inverse().draw()
-
     time.sleep(PAUSE)
+
+    # Inverse the pixels (to revert)
     display.set_inverse().draw()
-
     time.sleep(PAUSE)
+
+    # Clear and stop blinking
     display.clear().draw()
-
     display.set_blink_rate(0)
 
+    # Plot an X
     for i in range(4):
         display.plot(i, i).plot(7 - i, i).plot(i, 7 - i).plot(7 - i, 7 - i)
     display.draw()
-
     time.sleep(PAUSE)
+    assert (display.is_set(0, 0) is True) and (display.is_set(0, 1) is False)
     display.clear().draw()
 
+    # Show an animation
     while True:
         x = 7
         y = 0;

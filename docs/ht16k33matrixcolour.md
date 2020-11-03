@@ -1,6 +1,6 @@
 # HT16K33Matrix 3.0.0 #
 
-This is a hardware driver for the [Adafruit 1.2-inch 8x8 monochrome LED matrix backpack](https://www.adafruit.com/product/1048) or the [Adafruit Mini 0.8-inch 8x8 LED Matrix](https://www.adafruit.com/product/872), which are based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
+This is a hardware driver for the [Adafruit 1.2-inch 8x8 bi-color LED matrix backpack](https://www.adafruit.com/product/1048), which is based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
 It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPython](https://dmicropython.org).
 
@@ -9,7 +9,7 @@ It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPytho
 The driver comprises a parent generic HT16K33 driver and a child driver for the matrix display itself. All your code needs to do is `import` the latter:
 
 ```python
-from ht16k33matrix import HT16K33Matrix
+from ht16k33matrixcolour import HT16K33MatrixColour
 ```
 
 You can then instantiate the driver.
@@ -19,6 +19,15 @@ You will need both the display driver file and `ht16k33.py` in your project fold
 ## Characters ##
 
 The class incorporates a full, proportionally spaced Ascii character set. Additionally, you can use Ascii values 0 through 31 for user-definable characters.
+
+## Colours ##
+
+The bi-colour LED elements are capable of showing three colours (and unlit): green, red and yellow. Specify these colours using the following constants that are properties of the HT16K33MatrixColour instance:
+
+* `display.COLOUR_NONE`
+* `COLOUR_GREEN`
+* `COLOUR_RED`
+* `COLOUR_YELLOW`
 
 ## Usage ##
 
@@ -34,17 +43,17 @@ led.clear().clear().plot(0,1,0).draw()
 
 ## Class Usage ##
 
-### Constructor: HT16K33Matrix(*i2C_bus[, i2c_address]*) ###
+### Constructor: HT16K33MatrixColour(*i2C_bus[, i2c_address]*) ###
 
-To instantiate a HT16K33Matrix object pass the I&sup2;C bus to which the display is connected and, optionally, its I&sup2;C address. If no address is passed, the default value, `0x70` will be used. Pass an alternative address if you have changed the display’s address using the solder pads on rear of the LED’s circuit board.
+To instantiate a HT16K33MatrixColour object pass the I&sup2;C bus to which the display is connected and, optionally, its I&sup2;C address. If no address is passed, the default value, `0x70` will be used. Pass an alternative address if you have changed the display’s address using the solder pads on rear of the LED’s circuit board.
 
-The passed I&sup2;C bus must be configured before the HT16K33Matrix object is created.
+The passed I&sup2;C bus must be configured before the HT16K33MatrixColour object is created.
 
 #### Examples ####
 
 ```python
 # Micropython
-from ht16k33matrix import HT16K33Matrix
+from ht16k33matrixcolour import HT16K33MatrixColour
 from machine import I2C
 
 # Update the pin values for your board
@@ -52,19 +61,19 @@ DEVICE_I2C_SCL_PIN = 5
 DEVICE_I2C_SDA_PIN = 4
 
 i2c = I2C(scl=Pin(DEVICE_I2C_SCL_PIN), sda=Pin(DEVICE_I2C_SDA_PIN))
-led = HT16K33Matrix(i2c)
+led = HT16K33MatrixColour(i2c)
 ```
 
 ```python
 # Circuitpython
-from ht16k33matrix import HT16K33Matrix
+from ht16k33matrixcolour import HT16K33MatrixColour
 import busio
 import board
 
 i2c = busio.I2C(board.SCL, board.SDA)
 while not i2c.try_lock():
     pass
-led = HT16K33Matrix(i2c)
+led = HT16K33MatrixColour(i2c)
 ```
 
 ## Class Methods ##
@@ -104,17 +113,20 @@ The angle setting will remain until changed. After changing the angle, you shoul
 led.set_angle(180).draw()
 ```
 
-### set_inverse() ###
-
-Call this method to flip the matrix’s pixels from lit to unlit and vice versa. You should call *draw()* afterwards to update the LED.
-
-The state of the display is recorded so subsequent calls to *set_icon()*, *set_character()* or *scroll_text()* will maintain the display’s state.
-
 ### set_icon(*glyph[, centre]*) ###
 
 To write a character that is not in the character set, call *set_icon()* and pass a glyph-definition pattern. Optionally, you can also specify whether you want the character centred on the display, if this is possible.
 
-The glyph pattern should be a byte array; each byte is a column of image pixels with bit zero at the bottom.
+The glyph pattern should be a byte array; pairs of bytes represent a column of image pixels with bit zero at the bottom; the bit values in each column determine the pixel colour:
+
+|  | Byte *n* | Byte *n+1* |
+| --- | --- | --- |
+| Green | Set | Unset |
+| Red | Unset | Set |
+| Yellow | Set | Set |
+| Off | Unset | Unset |
+
+**Note** Check out the tool `colour-glyph-maker.py` in the `tools` folder. You enter a glyph line by line as a sequence of colours, and the script will print a bytearray literal you can copy and paste into your code.
 
 This method returns *self*.
 
@@ -122,15 +134,17 @@ This method returns *self*.
 
 ```python
 # Display a smiley in the centre of the display
-icon = b"\x3C\x42\xA9\x85\x85\xA9\x42\x3C"
+icon = b"\xC3\x3C\xC3\x3D\xC3\x6D\xC3\xBE\xE7\x18\xF1\x0E\xFF\x00\xFF\x00"
 led.set_icon(icon).draw()
 ```
 
-### set_character(*character[, centre]*) ###
+### set_character(*character[, ink][, paper][, centre]*) ###
 
 To write a character from the display’s character set at a specified x co-ordinate, call *set_character()* and pass the Ascii code of the character to be displayed. Optionally, you can also specify whether you want the character centred on the display, if this is possible.
 
 If you have set any user-definable characters, you can write these by passing their ID value (between 0 and 31) in place of an Ascii code.
+
+The values of *ink* and *paper* are the colours in which the character and its background will be rendered. These values are not applied to user-defined characters, which are assumed to be already coloured.
 
 If you need other letters or symbols, these can be generated using *set_icon()*.
 
@@ -140,12 +154,12 @@ This method returns *self*.
 
 ```python
 # Display 'A' on the LED and centre it
-led.set_character("A", True).draw()
+led.set_character(48, True).draw()
 ```
 
 ### define_character(*glyph[], ascii_value]*) ###
 
-To record a user-definable character, write its pixel pattern (see [set_icon()](#set_iconglyph-centre)) and specify the ID you will use to write the character to the display buffer (using [set_character()](#set_charactercharacter-centre)).
+To record a user-definable character, write its pixel pattern (see [*set_icon()*](#set_iconglyph-centre)) and specify the ID you will use to write the character to the display buffer (using [*set_character()*](#set_charactercharacter-ink-paper-centre)).
 
 This method returns *self*.
 
@@ -159,11 +173,13 @@ icon = b"\x3C\x3D\x6D\xBE\x18\x0E\x00\x00"
 led.define_character(icon, 1)
 ```
 
-### scroll_text(*the_line[, speed]*) ###
+### scroll_text(*the_line[, ink][, paper][, speed]*) ###
 
 Call *scroll-text()* to write a line of text to the display and see it scroll right to left until all of the string’s characters have been shown. The method pads the text with spaces so that the text completely clears the screen at the end of the animation.
 
 You can include user-defined graphics in your string by embedding escaped hex characters for the graphics’ ID codes, as the example below shows.
+
+The values of *ink* and *paper* are the colours in which the character and its background will be rendered. These values are not applied to user-defined characters, which are assumed to be already coloured.
 
 The optional parameter *speed* takes a period in seconds: the pause between animation frames. The smaller the value, the quicker the scroll. Default: 0.1s.
 
@@ -174,9 +190,9 @@ text = "Eeeek! The Space Invaders are coming... \x00\x01"
 led.scroll_text(text)
 ```
 
-### plot(*x, y[, ink][, xor]*) ###
+### plot(*x, y[, ink]*) ###
 
-To set a single pixel on the matrix, call this method and pass in the pixel’s co-ordinates. The *ink* parameter defaults to 1, to set the pixel; specify 0 to unset the pixel. The *xor* parameter is also optional: pass in `True` to cause the target pixel to flip if it already in the specified ink colour.
+To set a single pixel on the matrix, call this method and pass in the pixel’s co-ordinates. The *ink* parameter defaults to 1, to set the pixel; specify 0 to unset the pixel.
 
 #### Example ####
 
@@ -192,6 +208,16 @@ led.draw()
 ### is_set(*x, y*) ###
 
 This method returns `True` if the specified pixel is set, otherwise `False`.
+
+### fill(colour)
+
+This method paints the entire LED the specified [colour](#colours).
+
+#### Example ####
+
+```python
+led..fill(led.COLOUR_YELLOW).draw()
+```
 
 ### clear() ###
 

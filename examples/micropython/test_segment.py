@@ -13,27 +13,28 @@ if __name__ == '__main__':
     display = HT16K33Segment(i2c)
     display.set_brightness(2)
 
+    # Write 'SYNC' to the LED using custom glyphs
     sync_text = b"\x6D\x6E\x37\x39"
     for i in range(len(sync_text)):
         display.set_glyph(sync_text[i], i)
     display.draw()
-
     time.sleep(PAUSE)
-    display.clear().draw()
 
+    # Write 'SYNC' to the LED -- this time with decimal points
     sync_text = b"\x6D\x6E\x37\x39"
     for i in range(len(sync_text)):
         display.set_glyph(sync_text[i], i, True)
     display.draw()
-
     time.sleep(PAUSE)
+
+    # Write 'BEEF' to the display using the charset characters
     display.set_character("B", 0).set_character("E", 1)
     display.set_character("E", 2).set_character("F", 3)
     display.draw()
-
     time.sleep(PAUSE)
-    display.clear().draw()
 
+    # Show a countdown using the charset numbers
+    # (also uses 'set_colon()')
     count = 1100
     colon_state = True
     while True:
@@ -55,4 +56,5 @@ if __name__ == '__main__':
         # Pause for breath
         time.sleep(DELAY)
 
+    # Flash the LED
     display.set_blink_rate(1)

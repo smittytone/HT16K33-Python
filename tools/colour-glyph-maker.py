@@ -2,31 +2,36 @@
 
 """
 Take a glyph input line-by-line as colour values (r, g, y)
-and convert to the HT16K33MatrixColour library's internal
-format (two bits per pixel)
+and convert to the HT16K33MatrixColour library's buffer
+format: two bytes per pixel column
 """
 lines = []
 print("  Bits: 01234567")
 for i in range(8):
     lines.append(input("Line " + str(i) + ": "))
 
+spaces = ".........."
 output = bytearray()
-l = 0
-for i in range(8):
-    for j in range(0,2):
-        row = 4 * j
-        byte_value = 0
-        for k in range(0,4):
-            line = lines[7 - row].lower()
-            if len(line) < 8: line = "........"
-            colour_value = line[l]
-            if colour_value == "r": byte_value |= (0x02 << (k * 2))
-            if colour_value == "g": byte_value |= (0x01 << (k * 2))
-            if colour_value == "y": byte_value |= (0x03 << (k * 2))
-            row += 1
-            #print(l, j, k, k * 2, colour_value, byte_value)
-        output.append(byte_value)
-    l += 1
+for column in range(8):
+    byte_left = 0
+    byte_right = 0
+    row = 7
+    for bit in range(8):
+        line = lines[row].lower()
+        length = len(line)
+        if length < 8: line += spaces[:8 - len(line)]
+        colour_value = line[column]
+        if colour_value == "r":
+            byte_right |= (1 << bit)
+        if colour_value == "g":
+            byte_left |= (1 << bit)
+        if colour_value == "y":
+            byte_left |= (1 << bit)
+            byte_right |= (1 << bit)
+        row -= 1
+        #print(l, j, k, k * 2, colour_value, byte_value)
+    output.append(byte_left)
+    output.append(byte_right)
 
 # Output the glyph bytearray as a string, ie.
 # b"\x00\x00"

@@ -48,7 +48,7 @@ DEVICE_I2C_SCL_PIN = 5
 DEVICE_I2C_SDA_PIN = 4
 
 i2c = I2C(scl=Pin(DEVICE_I2C_SCL_PIN), sda=Pin(DEVICE_I2C_SDA_PIN))
-led = HT16K33Segment(i2c)
+led = HT16K33MatrixFeatherWing(i2c)
 ```
 
 ```python
@@ -60,7 +60,7 @@ import board
 i2c = busio.I2C(board.SCL, board.SDA)
 while not i2c.try_lock():
     pass
-led = HT16K33Segment(i2c)
+led = HT16K33MatrixFeatherWing(i2c)
 ```
 
 ## Class Methods ##
