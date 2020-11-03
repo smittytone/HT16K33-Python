@@ -25,6 +25,12 @@ You will need both the display driver file and `ht16k33.py` in your project fold
 | [8x8 bi-colour matrix LED](./docs/ht16k33matrixcolour.md) | [Adafruit 1.2-inch 8x8 bi-color LED matrix backpack](https://www.adafruit.com/product/1048) |
 | [16x8 FeatherWing matrix LED](./docs/ht16k33matrixfeatherwing.md) | [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149) |
 
+Further drivers may be added in due course.
+
+## Version Numbering ##
+
+All of the drivers in this repo commence at version 3.0.0. This is because some represent the latest, but breaking releases of existing drivers I have written. The others have been set to 3.0.0 for consistency.
+
 ## License ##
 
 The HTK16K33 driver and subsidiary display drivers are licensed under the [MIT License](LICENSE).
