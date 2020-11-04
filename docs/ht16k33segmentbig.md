@@ -1,6 +1,6 @@
-# HT16K33Segment 3.0.0 #
+# HT16K33SegmentBig 3.0.0 #
 
-This is a hardware driver for the [Adafruit 0.56-inch 4-digit, 7-segment LED display](http://www.adafruit.com/products/878), which is based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
+This is a hardware driver for the [Adafruit 1.2-inch 4-digit, 7-segment LED display](http://www.adafruit.com/products/1270), which is based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
 It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPython](https://dmicropython.org).
 
@@ -9,7 +9,7 @@ It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPytho
 The driver comprises a parent generic HT16K33 driver and a child driver for the 7-segment display itself. All your code needs to do is `import` the latter:
 
 ```python
-from ht16k33segment import HT16K33Segment
+from ht16k33segmentbig import HT16K33SegmentBig
 ```
 
 You can then instantiate the driver.
@@ -40,17 +40,17 @@ led.clear().set_number(4, 0).set_number(3, 1).draw()
 
 ## Class Usage ##
 
-### Constructor: HT16K33Segment(*i2C_bus[, i2c_address]*) ###
+### Constructor: HT16K33SegmentBig(*i2C_bus[, i2c_address]*) ###
 
-To instantiate a HT16K33Segment object pass the I&sup2;C bus to which the display is connected and, optionally, its I&sup2;C address. If no address is passed, the default value, `0x70` will be used. Pass an alternative address if you have changed the display’s address using the solder pads on rear of the LED’s circuit board.
+To instantiate a HT16K33SegmentBig object pass the I&sup2;C bus to which the display is connected and, optionally, its I&sup2;C address. If no address is passed, the default value, `0x70` will be used. Pass an alternative address if you have changed the display’s address using the solder pads on rear of the LED’s circuit board.
 
-The passed I&sup2;C bus must be configured before the HT16K33Segment object is created.
+The passed I&sup2;C bus must be configured before the HT16K33SegmentBig object is created.
 
 #### Examples ####
 
 ```python
 # Micropython
-from ht16k33segment import HT16K33Segment
+from ht16k33segmentbig import HT16K33SegmentBig
 from machine import I2C
 
 # Update the pin values for your board
@@ -58,30 +58,19 @@ DEVICE_I2C_SCL_PIN = 5
 DEVICE_I2C_SDA_PIN = 4
 
 i2c = I2C(scl=Pin(DEVICE_I2C_SCL_PIN), sda=Pin(DEVICE_I2C_SDA_PIN))
-led = HT16K33Segment(i2c)
+led = HT16K33SegmentBig(i2c)
 ```
 
 ```python
 # Circuitpython
-from ht16k33segment import HT16K33Segment
+from ht16k33segmentbig import HT16K33SegmentBig
 import busio
 import board
 
 i2c = busio.I2C(board.SCL, board.SDA)
 while not i2c.try_lock():
     pass
-led = HT16K33Segment(i2c)
-```
-
-```python
-# Python
-from ht16k33segment_python import HT16K33Segment
-import smbus
-
-PI_I2C_BUS = 1
-
-i2c = smbus.SMBus(PI_I2C_BUS)
-led = HT16K33Segment(i2c)
+led = HT16K33SegmentBig(i2c)
 ```
 
 ## Class Methods ##
@@ -108,23 +97,29 @@ This method can be used to flash the display. The value passed into *rate* is th
 led.set_blink_rate(1)
 ```
 
-### set_colon(*[is_set]*) ###
+### set_colon(*[pattern]*) ###
 
-Call *set_colon()* to specify whether the display’s center colon symbol is illuminated (`True`) or not (`False`). The call defaults to `True`.
+Call *set_colon()* to specify whether the display’s center colon symbol and decimal points are illuminated. Pass in an integer bit patten which determines which symbols are lit:
+
+* `0x00` — no colon
+* `0x02` — centre colon
+* `0x04` — left colon, lower dot
+* `0x08` — left colon, upper dot
+* `0x10` — decimal point (upper)
 
 This method returns *self*.
 
 #### Example ####
 
 ```python
-# Set the display to --:--
-led.set_char("-", 0).set_char("-", 1).set_char("-", 2).set_char("-", 3)
-led.set_colon().draw()
+# Set the centre : and the left :
+pattern = 0x02 | 0x04 | 0x08
+led.set_colon(pattern).draw()
 ```
 
-### set_glyph(*glyph[, digit][, has_dot]*) ###
+### set_glyph(*glyph[, digit]*) ###
 
-To write a character that is not in the character set (see [**Characters**](#characters)) to a single digit, call *set_glyph()* and pass a glyph-definition pattern and the digit number (0, 1, 2 or 3, left to right) as its parameters. You can also provide a third, optional parameter: a boolean value indicating whether the decimal point to the right of the specified digit should be illuminated. By default, the decimal point is not lit.
+To write a character that is not in the character set (see [**Characters**](#characters)) to a single digit, call *set_glyph()* and pass a glyph-definition pattern and the digit number (0, 1, 2 or 3, left to right) as its parameters.
 
 Calculate the glyph pattern value using the following chart. The segment number is the bit that must be set to illuminate it (or unset to keep it unlit):
 
@@ -153,9 +148,9 @@ for index in range(0, len(letters)):
 led.draw()
 ```
 
-### set_number(*number[, digit][, hasDot]*) ###
+### set_number(*number[, digit]*) ###
 
-To write a number to a single digit, call *set_number()* and pass the digit number (0, 1, 2 or 4, left to right) and the number to be displayed (0 to 9, A to F) as its parameters. You can also provide a third, optional parameter: a boolean value indicating whether the decimal point to the right of the specified segment should be illuminated. By default, the decimal point is not lit.
+To write a number to a single digit, call *set_number()* and pass the digit number (0, 1, 2 or 4, left to right) and the number to be displayed (0 to 9, A to F) as its parameters.
 
 This method returns *self*.
 
@@ -167,9 +162,9 @@ led.set_number(4, 0).set_number(2, 1, True)
 led.set_number(4, 2).set_number(2, 3).draw()
 ```
 
-### set_char(*character[, digit][, hasDot]*) ###
+### set_char(*character[, digit]*) ###
 
-To write a character from the display’s hexadecimal character set to a single digit, call *set_char()* and pass the digit number (0, 1, 2 or 3, left to right) and the letter to be displayed (0 to 9, A to F, - or a space) as its parameters. You can also provide a third, optional parameter: a boolean value indicating whether the decimal point to the right of the specified segment should be illuminated. By default, the decimal point is not lit.
+To write a character from the display’s hexadecimal character set to a single digit, call *set_char()* and pass the digit number (0, 1, 2 or 3, left to right) and the letter to be displayed (0 to 9, A to F, - or a space) as its parameters.
 
 If you need other letters or symbols, these can be generated using *set_glyph()*.
 

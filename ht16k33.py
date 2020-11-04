@@ -32,8 +32,7 @@ class HT16K33:
         assert 0x00 <= i2c_address < 0x80, "ERROR - Invalid I2C address in HT16K33()"
         self.i2c = i2c
         self.address = i2c_address
-        self._write_cmd(self.HT16K33_GENERIC_SYSTEM_ON)
-        self._write_cmd(self.HT16K33_GENERIC_DISPLAY_ON)
+        self.power_on()
 
     # *********** PUBLIC METHODS **********
 
@@ -87,6 +86,20 @@ class HT16K33:
         """
         for i in range(0, len(self.buffer)): self.buffer[i] = 0x00
         return self
+
+    def power_on(self):
+        """
+        Power on the controller and display.
+        """
+        self._write_cmd(self.HT16K33_GENERIC_SYSTEM_ON)
+        self._write_cmd(self.HT16K33_GENERIC_DISPLAY_ON)
+
+    def power_off(self):
+        """
+        Power on the controller and display.
+        """
+        self._write_cmd(self.HT16K33_GENERIC_DISPLAY_OFF)
+        self._write_cmd(self.HT16K33_GENERIC_SYSTEM_OFF)
 
     # ********** PRIVATE METHODS **********
 
