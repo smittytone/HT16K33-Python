@@ -117,7 +117,7 @@ class HT16K33SegmentBig(HT16K33):
         Other characters can be defined and presented using 'set_glyph()'.
 
         This method updates the display buffer, but does not send the buffer to the display itself.
-        Call 'update()' to render the buffer on the display.
+        Call 'draw()' to render the buffer on the display.
 
         Args:
             char (string):  The character to show.

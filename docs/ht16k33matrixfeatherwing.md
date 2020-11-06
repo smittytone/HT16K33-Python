@@ -1,8 +1,8 @@
 # HT16K33MatrixFeatherWing 3.0.0 #
 
-This is a hardware driver for the [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149), which is based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
+This is a hardware driver for the [Adafruit 0.8-inch 16x8 LED Matrix FeatherWing](https://www.adafruit.com/product/3149), which is based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
-It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPython](https://dmicropython.org).
+It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPython](https://micropython.org).
 
 ## Importing the Driver ##
 
@@ -67,7 +67,7 @@ led = HT16K33MatrixFeatherWing(i2c)
 
 ### set_brightness(*[brightness]*) ###
 
-To set the LED’s brightness (its duty cycle), call *setBrightness()* and pass an integer value between 0 (dim) and 15 (maximum brightness). If you don’t pass a value, the method will default to maximum brightness.
+To set the LED’s brightness (its duty cycle), call *set_brightness()* and pass an integer value between 0 (dim) and 15 (maximum brightness). If you don’t pass a value, the method will default to maximum brightness.
 
 #### Example ####
 
@@ -89,11 +89,11 @@ led.set_blink_rate(1)
 
 ### set_inverse() ###
 
-Call this method to flip the matrix’s pixels from lit to unlit and vice versa. You should call *draw()* afterwards to update the LED.
+Call this method to flip the matrix’s pixels from lit to unlit and vice versa. You should call [*draw()*](#draw) afterwards to update the LED.
 
-The state of the display is recorded so subsequent calls to *set_icon()*, *set_character()* or *scroll_text()* will maintain the display’s state.
+The state of the display is recorded so subsequent calls to [*set_icon()*](#set_iconglyph-column), [*set_character()*](#ascii_value-column) or *scroll_text()* will maintain the display’s state.
 
-### set_icon(*glyph[, col]*) ###
+### set_icon(*glyph[, column]*) ###
 
 To write a character that is not in the character set at a specified x co-ordinate, call *set_icon()* and pass a glyph-definition pattern and the column of the matrix at which it will be written as its parameters.
 
@@ -109,13 +109,13 @@ icon = b"\x3C\x42\xA9\x85\x85\xA9\x42\x3C"
 led.set_icon(icon, 4).draw()
 ```
 
-### set_character(*character[, col]*) ###
+### set_character(*ascii_value[, column]*) ###
 
 To write a character from the display’s character set at a specified x co-ordinate, call *set_character()* and pass the Ascii code of the character to be displayed. You can also specify the column of the matrix at which it will be written.
 
 If you have set any user-definable characters, you can write these by passing their ID value (between 0 and 31) in place of an Ascii code.
 
-If you need other letters or symbols, these can be generated using *set_icon()*.
+If you need other letters or symbols, these can be generated using [*set_icon()*](#set_iconglyph-column).
 
 This method returns *self*.
 
@@ -129,7 +129,7 @@ led.set_character("o", 12).draw()
 
 ### define_character(*glyph[], ascii_value]*) ###
 
-To record a user-definable character, write its pixel pattern (see [set_icon()](#set_iconglyph-col)) and specify the ID you will use to write the character to the display buffer (using [set_character()](#set_charactercharacter-col)).
+To record a user-definable character, write its pixel pattern (see [*set_icon()*](#set_iconglyph-column)) and specify the ID you will use to write the character to the display buffer (using [*set_character()*](#ascii_value-column)).
 
 This method returns *self*.
 
@@ -181,7 +181,7 @@ This method returns `True` if the specified pixel is set, otherwise `False`.
 
 Call *clear()* to wipe the class’ internal display buffer.
 
-*clear()* does not update the display, only the buffer. Call *draw()* to refresh the LED.
+*clear()* does not update the display, only the buffer. Call [*draw()*](#draw) to refresh the LED.
 
 This method returns *self*.
 

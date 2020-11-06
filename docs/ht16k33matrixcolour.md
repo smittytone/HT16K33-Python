@@ -2,7 +2,7 @@
 
 This is a hardware driver for the [Adafruit 1.2-inch 8x8 bi-color LED matrix backpack](https://www.adafruit.com/product/1048), which is based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
-It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPython](https://dmicropython.org).
+It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPython](https://micropython.org).
 
 ## Importing the Driver ##
 
@@ -24,14 +24,14 @@ The class incorporates a full, proportionally spaced Ascii character set. Additi
 
 The bi-colour LED elements are capable of showing three colours (and unlit): green, red and yellow. Specify these colours using the following constants that are properties of the HT16K33MatrixColour instance:
 
-* `display.COLOUR_NONE`
-* `COLOUR_GREEN`
-* `COLOUR_RED`
-* `COLOUR_YELLOW`
+* `led.COLOUR_NONE`
+* `led.COLOUR_GREEN`
+* `led.COLOUR_RED`
+* `led.COLOUR_YELLOW`
 
 ## Usage ##
 
-Different matrices are mounted at different angles. Use *set_angle()* to rotate the display buffer through the number of right-angles needed for correct viewing.
+Different matrices are mounted at different angles. Use [*set_angle()*](#set_angleangle) to rotate the display buffer through the number of right-angles needed for correct viewing.
 
 ## Method Chaining ##
 
@@ -80,7 +80,7 @@ led = HT16K33MatrixColour(i2c)
 
 ### set_brightness(*[brightness]*) ###
 
-To set the LED’s brightness (its duty cycle), call *setBrightness()* and pass an integer value between 0 (dim) and 15 (maximum brightness). If you don’t pass a value, the method will default to maximum brightness.
+To set the LED’s brightness (its duty cycle), call *set_brightness()* and pass an integer value between 0 (dim) and 15 (maximum brightness). If you don’t pass a value, the method will default to maximum brightness.
 
 #### Example ####
 
@@ -104,7 +104,7 @@ led.set_blink_rate(1)
 
 Use this method to set a default rotation for the matrix. Pass in an angle between 0 and 360 degrees — this will be adjusted to the nearest right angle.
 
-The angle setting will remain until changed. After changing the angle, you should call *draw()* to update the LED itself.
+The angle setting will remain until changed. After changing the angle, you should call [*draw()*](#draw) to update the LED itself.
 
 #### Example ####
 
@@ -138,7 +138,7 @@ icon = b"\xC3\x3C\xC3\x3D\xC3\x6D\xC3\xBE\xE7\x18\xF1\x0E\xFF\x00\xFF\x00"
 led.set_icon(icon).draw()
 ```
 
-### set_character(*character[, ink][, paper][, centre]*) ###
+### set_character(*ascii_value[, ink][, paper][, centre]*) ###
 
 To write a character from the display’s character set at a specified x co-ordinate, call *set_character()* and pass the Ascii code of the character to be displayed. Optionally, you can also specify whether you want the character centred on the display, if this is possible.
 
@@ -146,7 +146,7 @@ If you have set any user-definable characters, you can write these by passing th
 
 The values of *ink* and *paper* are the colours in which the character and its background will be rendered. These values are not applied to user-defined characters, which are assumed to be already coloured.
 
-If you need other letters or symbols, these can be generated using *set_icon()*.
+If you need other letters or symbols, these can be generated using [*set_icon()*](#set_iconglyph-centre).
 
 This method returns *self*.
 
@@ -159,7 +159,7 @@ led.set_character(48, True).draw()
 
 ### define_character(*glyph[], ascii_value]*) ###
 
-To record a user-definable character, write its pixel pattern (see [*set_icon()*](#set_iconglyph-centre)) and specify the ID you will use to write the character to the display buffer (using [*set_character()*](#set_charactercharacter-ink-paper-centre)).
+To record a user-definable character, write its pixel pattern (see [*set_icon()*](#set_iconglyph-centre)) and specify the ID you will use to write the character to the display buffer (using [*set_character()*](#set_characterascii_value-ink-paper-centre)).
 
 This method returns *self*.
 
@@ -223,7 +223,7 @@ led..fill(led.COLOUR_YELLOW).draw()
 
 Call *clear()* to wipe the class’ internal display buffer.
 
-*clear()* does not update the display, only the buffer. Call *draw()* to refresh the LED.
+*clear()* does not update the display, only the buffer. Call [*draw()*](#draw) to refresh the LED.
 
 This method returns *self*.
 
@@ -245,4 +245,4 @@ Call *draw()* after changing any or all of the internal display buffer contents 
 
 ## License ##
 
-The HT16K33MatrixFeatherWing library is licensed under the [MIT License](./LICENSE).
+The HT16K33MatrixColour library is licensed under the [MIT License](./LICENSE).

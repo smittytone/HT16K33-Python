@@ -2,7 +2,9 @@
 
 This is a hardware driver for the [Adafruit 1.2-inch 4-digit, 7-segment LED display](http://www.adafruit.com/products/1270), which is based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
-It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPython](https://dmicropython.org).
+It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPython](https://micropython.org).
+
+**Note** This display requires a 5V input in addition to the IO driver voltage (3V3 or 5V). Please check that your MCU board can deliver this.
 
 ## Importing the Driver ##
 
@@ -77,7 +79,7 @@ led = HT16K33SegmentBig(i2c)
 
 ### set_brightness(*[brightness]*) ###
 
-To set the LED’s brightness (its duty cycle), call *setBrightness()* and pass an integer value between 0 (dim) and 15 (maximum brightness). If you don’t pass a value, the method will default to maximum brightness.
+To set the LED’s brightness (its duty cycle), call *set_brightness()* and pass an integer value between 0 (dim) and 15 (maximum brightness). If you don’t pass a value, the method will default to maximum brightness.
 
 #### Example ####
 
@@ -99,7 +101,7 @@ led.set_blink_rate(1)
 
 ### set_colon(*[pattern]*) ###
 
-Call *set_colon()* to specify whether the display’s center colon symbol and decimal points are illuminated. Pass in an integer bit patten which determines which symbols are lit:
+Call *set_colon()* to specify whether the display’s center and left-side colon symbols and upper point (between digits 2 and 3) are illuminated. Pass in an integer bit patten which determines which symbols are lit:
 
 * `0x00` — no colon
 * `0x02` — centre colon
@@ -134,7 +136,7 @@ Calculate the glyph pattern value using the following chart. The segment number 
     3
 ```
 
-For example, to define the letter 'P', we need to set segments 0, 1, 4, 5 and 6. In bit form that makes 0x73, and this is the value passed into *glyph*.
+For example, to define the letter `P`, we need to set segments 0, 1, 4, 5 and 6. In bit form that makes `0x73`, and this is the value passed into *glyph*.
 
 This method returns *self*.
 
@@ -162,11 +164,11 @@ led.set_number(4, 0).set_number(2, 1, True)
 led.set_number(4, 2).set_number(2, 3).draw()
 ```
 
-### set_char(*character[, digit]*) ###
+### set_character(*character[, digit]*) ###
 
-To write a character from the display’s hexadecimal character set to a single digit, call *set_char()* and pass the digit number (0, 1, 2 or 3, left to right) and the letter to be displayed (0 to 9, A to F, - or a space) as its parameters.
+To write a character from the display’s hexadecimal character set to a single digit, call *set_character()* and pass the the letter to be displayed (`"0"` to `"9"`, `"A"` to `"F"`, `"-"` or `" "`) and the digit number (0, 1, 2 or 3, left to right) as its parameters. You can pass the string `"deg"` for a degree symbol.
 
-If you need other letters or symbols, these can be generated using *set_glyph()*.
+If you need other letters or symbols, these can be generated using [*set_glyph()*](#set_glyphglyph-digit).
 
 This method returns *self*.
 
@@ -182,7 +184,7 @@ led.set_char("e", 2).set_char("f", 3).draw()
 
 Call *clear()* to wipe the class’ internal display buffer.
 
-*clear()* does not update the display, only the buffer. Call *draw()* to refresh the LED.
+*clear()* does not update the display, only the buffer. Call [*draw()*](#draw) to refresh the LED.
 
 This method returns *self*.
 
@@ -203,16 +205,7 @@ Call *draw()* after changing any or all of the internal display buffer contents 
     - Merge MicroPython and CircuitPython libraries.
     - Separate out generic HT16K33 features to generic driver.
     - Return *self* from some methods to support method chaining.
-- 2.0.0 *21 May 2020*
-    - Correct library filenames.
-    - Add smbus-based version.
-    - Fix documentation issues.
-- 1.0.1 *17 March 2020*
-  - Rename internal constants.
-  - Code improvements.
-- 1.0.0 *4 march 2020*
-    - Initial public release.
 
 ## License ##
 
-The HTK16K33Segment libraries are licensed under the [MIT License](LICENSE).
+The HTK16K33SegmentBig library are licensed under the [MIT License](LICENSE).

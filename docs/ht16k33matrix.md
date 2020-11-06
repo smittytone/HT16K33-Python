@@ -2,7 +2,7 @@
 
 This is a hardware driver for the [Adafruit 1.2-inch 8x8 monochrome LED matrix backpack](https://www.adafruit.com/product/1048) or the [Adafruit Mini 0.8-inch 8x8 LED Matrix](https://www.adafruit.com/product/872), which are based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
-It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPython](https://dmicropython.org).
+It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPython](https://micropython.org).
 
 ## Importing the Driver ##
 
@@ -22,7 +22,7 @@ The class incorporates a full, proportionally spaced Ascii character set. Additi
 
 ## Usage ##
 
-Different matrices are mounted at different angles. Use[*set_angle()*](#set_angleangle) to rotate the display buffer through the number of right-angles needed for correct viewing.
+Different matrices are mounted at different angles. Use [*set_angle()*](#set_angleangle) to rotate the display buffer through the number of right-angles needed for correct viewing.
 
 ## Method Chaining ##
 
@@ -73,8 +73,6 @@ led = HT16K33Matrix(i2c)
 
 To set the LED’s brightness (its duty cycle), call *set_brightness()* and pass an integer value between 0 (dim) and 15 (maximum brightness). If you don’t pass a value, the method will default to maximum brightness.
 
-To turn the display off, call *power_off()* or simply set each digit’s glyph value to `0x00`.
-
 #### Example ####
 
 ```python
@@ -110,7 +108,7 @@ led.set_angle(180).draw()
 
 Call this method to flip the matrix’s pixels from lit to unlit and vice versa. You should call [*draw()*](#draw) afterwards to update the LED.
 
-The state of the display is recorded so subsequent calls to [*set_icon()*](#set_iconglyph-centre), [*set_character()*](#set_charactercharacter-centre) or [*scroll_text()*](#scroll_textthe_line-speed) will maintain the display’s state.
+The state of the display is recorded so subsequent calls to [*set_icon()*](#set_iconglyph-centre), [*set_character()*](#set_characterascii_code-centre) or [*scroll_text()*](#scroll_textthe_line-speed) will maintain the display’s state.
 
 ### set_icon(*glyph[, centre]*) ###
 
@@ -134,7 +132,7 @@ To write a character from the display’s character set at a specified x co-ordi
 
 If you have set any user-definable characters, you can write these by passing their ID value (between 0 and 31) in place of an Ascii code.
 
-If you need other letters or symbols, these can be generated using *set_icon()*.
+If you need other letters or symbols, these can be generated using [*set_icon()*](#set_iconglyph-centre).
 
 This method returns *self*.
 
@@ -147,7 +145,7 @@ led.set_character("A", True).draw()
 
 ### define_character(*glyph[], ascii_value]*) ###
 
-To record a user-definable character, write its pixel pattern (see [*set_icon()*](#set_iconglyph-centre)) and specify the ID you will use to write the character to the display buffer (using [*set_character()*](#set_charactercharacter-centre)).
+To record a user-definable character, write its pixel pattern (see [*set_icon()*](#set_iconglyph-centre)) and specify the ID you will use to write the character to the display buffer (using [*set_character()*](#set_characterascii_code-centre)).
 
 This method returns *self*.
 

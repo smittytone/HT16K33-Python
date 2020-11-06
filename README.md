@@ -2,7 +2,7 @@
 
 This repo provides Python drivers for the Holtek HT16K33 controller chip and various display devices based upon it, such as the [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149).
 
-The driver supports both [CircuitPython](https://circuitpython.org) and [MicroPython](https://dmicropython.org) applications. It communicates using I&sup2;C.
+The driver supports both [CircuitPython](https://circuitpython.org) and [MicroPython](https://micropython.org) applications. It communicates using I&sup2;C.
 
 ## Importing the Drivers ##
 
