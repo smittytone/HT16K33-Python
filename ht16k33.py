@@ -7,6 +7,7 @@ class HT16K33:
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
+    Copyright:  2020
     """
 
     # *********** CONSTANTS **********
@@ -116,6 +117,4 @@ class HT16K33:
         """
         Writes a single command to the HT16K33. A private method.
         """
-        #temp = bytearray(1)
-        #temp[0] = byte
         self.i2c.writeto(self.address, bytes([byte]))

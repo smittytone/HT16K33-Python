@@ -214,7 +214,7 @@ Call *draw()* after changing any or all of the internal display buffer contents 
 
 ## Release Notes ##
 
-- 3.0.0 *Unreleased*
+- 3.0.0 *6 November 2020*
     - Initial release.
 
 ## License ##

@@ -91,7 +91,7 @@ led.set_blink_rate(1)
 
 Call this method to flip the matrix’s pixels from lit to unlit and vice versa. You should call [*draw()*](#draw) afterwards to update the LED.
 
-The state of the display is recorded so subsequent calls to [*set_icon()*](#set_iconglyph-column), [*set_character()*](#set_characterascii_value-column) or [*scroll_text()*](#scroll_textthe_line-speed) will maintain the display’s state.
+The state of the display is recorded so subsequent calls to [*set_icon()*](#set_iconglyph-column), [*set_character()*](#set_characterascii_code-column) or [*scroll_text()*](#scroll_textthe_line-speed) will maintain the display’s state.
 
 ### set_icon(*glyph[, column]*) ###
 
@@ -129,7 +129,7 @@ led.set_character(111, 12).draw()
 
 ### define_character(*glyph[], code]*) ###
 
-To record a user-definable character, write its pixel pattern (see [*set_icon()*](#set_iconglyph-column)) and specify the ID you will use to write the character to the display buffer (using [*set_character()*](#ascii_code-column)).
+To record a user-definable character, write its pixel pattern (see [*set_icon()*](#set_iconglyph-column)) and specify the ID you will use to write the character to the display buffer (using [*set_character()*](#set_characterascii_code-column)).
 
 This method returns *self*.
 
@@ -198,7 +198,7 @@ Call *draw()* after changing any or all of the internal display buffer contents 
 
 ## Release Notes ##
 
-- 3.0.0 *Unreleased*
+- 3.0.0 *6 November 2020*
     - Initial release.
 
 ## License ##
