@@ -22,7 +22,7 @@ The class incorporates a full, proportionally spaced Ascii character set. Additi
 
 ## Usage ##
 
-Different matrices are mounted at different angles. Use *set_angle()* to rotate the display buffer through the number of right-angles needed for correct viewing.
+Different matrices are mounted at different angles. Use[*set_angle()*](#set_angleangle) to rotate the display buffer through the number of right-angles needed for correct viewing.
 
 ## Method Chaining ##
 
@@ -71,7 +71,9 @@ led = HT16K33Matrix(i2c)
 
 ### set_brightness(*[brightness]*) ###
 
-To set the LED’s brightness (its duty cycle), call *setBrightness()* and pass an integer value between 0 (dim) and 15 (maximum brightness). If you don’t pass a value, the method will default to maximum brightness.
+To set the LED’s brightness (its duty cycle), call *set_brightness()* and pass an integer value between 0 (dim) and 15 (maximum brightness). If you don’t pass a value, the method will default to maximum brightness.
+
+To turn the display off, call *power_off()* or simply set each digit’s glyph value to `0x00`.
 
 #### Example ####
 
@@ -95,7 +97,7 @@ led.set_blink_rate(1)
 
 Use this method to set a default rotation for the matrix. Pass in an angle between 0 and 360 degrees — this will be adjusted to the nearest right angle.
 
-The angle setting will remain until changed. After changing the angle, you should call *draw()* to update the LED itself.
+The angle setting will remain until changed. After changing the angle, you should call [*draw()*](#draw) to update the LED itself.
 
 #### Example ####
 
@@ -106,15 +108,15 @@ led.set_angle(180).draw()
 
 ### set_inverse() ###
 
-Call this method to flip the matrix’s pixels from lit to unlit and vice versa. You should call *draw()* afterwards to update the LED.
+Call this method to flip the matrix’s pixels from lit to unlit and vice versa. You should call [*draw()*](#draw) afterwards to update the LED.
 
-The state of the display is recorded so subsequent calls to *set_icon()*, *set_character()* or *scroll_text()* will maintain the display’s state.
+The state of the display is recorded so subsequent calls to [*set_icon()*](#set_iconglyph-centre), [*set_character()*](#set_charactercharacter-centre) or [*scroll_text()*](#scroll_textthe_line-speed) will maintain the display’s state.
 
 ### set_icon(*glyph[, centre]*) ###
 
 To write a character that is not in the character set, call *set_icon()* and pass a glyph-definition pattern. Optionally, you can also specify whether you want the character centred on the display, if this is possible.
 
-The glyph pattern should be a byte array; each byte is a column of image pixels with bit zero at the bottom.
+The glyph pattern should be a byte array; each byte is a column of image pixels, one bix per pixel, with bit zero at the bottom.
 
 This method returns *self*.
 
@@ -126,7 +128,7 @@ icon = b"\x3C\x42\xA9\x85\x85\xA9\x42\x3C"
 led.set_icon(icon).draw()
 ```
 
-### set_character(*character[, centre]*) ###
+### set_character(*ascii_code[, centre]*) ###
 
 To write a character from the display’s character set at a specified x co-ordinate, call *set_character()* and pass the Ascii code of the character to be displayed. Optionally, you can also specify whether you want the character centred on the display, if this is possible.
 
@@ -145,7 +147,7 @@ led.set_character("A", True).draw()
 
 ### define_character(*glyph[], ascii_value]*) ###
 
-To record a user-definable character, write its pixel pattern (see [set_icon()](#set_iconglyph-centre)) and specify the ID you will use to write the character to the display buffer (using [set_character()](#set_charactercharacter-centre)).
+To record a user-definable character, write its pixel pattern (see [*set_icon()*](#set_iconglyph-centre)) and specify the ID you will use to write the character to the display buffer (using [*set_character()*](#set_charactercharacter-centre)).
 
 This method returns *self*.
 
@@ -197,7 +199,7 @@ This method returns `True` if the specified pixel is set, otherwise `False`.
 
 Call *clear()* to wipe the class’ internal display buffer.
 
-*clear()* does not update the display, only the buffer. Call *draw()* to refresh the LED.
+*clear()* does not update the display, only the buffer. Call [*draw()*](#draw) to refresh the LED.
 
 This method returns *self*.
 
@@ -219,4 +221,4 @@ Call *draw()* after changing any or all of the internal display buffer contents 
 
 ## License ##
 
-The HT16K33MatrixFeatherWing library is licensed under the [MIT License](./LICENSE).
+The HT16K33Matrix library is licensed under the [MIT License](./LICENSE).

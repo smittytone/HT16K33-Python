@@ -1,8 +1,7 @@
 # IMPORTS
-import time
-import board
-import busio
-from ht16k33segment import HT16K33Segment
+import utime as time
+from machine import I2C, Pin, RTC
+from ht16k33segmentbig import HT16K33SegmentBig
 
 # CONSTANTS
 DELAY = 0.01
@@ -10,10 +9,8 @@ PAUSE = 3
 
 # START
 if __name__ == '__main__':
-    i2c = busio.I2C(board.SCL, board.SDA)
-    while not i2c.try_lock():
-        pass
-    display = HT16K33Segment(i2c)
+    i2c = I2C(scl=Pin(5), sda=Pin(4))
+    display = HT16K33SegmentBig(i2c)
     display.set_brightness(2)
 
     # Write 'SYNC' to the LED using custom glyphs
@@ -26,7 +23,7 @@ if __name__ == '__main__':
     # Write 'SYNC' to the LED -- this time with decimal points
     sync_text = b"\x6D\x6E\x37\x39"
     for i in range(len(sync_text)):
-        display.set_glyph(sync_text[i], i, True)
+        display.set_glyph(sync_text[i], i)
     display.draw()
     time.sleep(PAUSE)
 
@@ -38,7 +35,7 @@ if __name__ == '__main__':
 
     # Show a countdown using the charset numbers
     # (also uses 'set_colon()')
-    count = 1100
+    count = 9999
     colon_state = True
     while True:
         # Convert 'count' into Binary-Coded Decimal (BCD)
@@ -51,7 +48,7 @@ if __name__ == '__main__':
         display.set_number((bcd & 0x0F), 3)
 
         if count % 10 == 0: colon_state = not colon_state
-        display.set_colon(colon_state).draw()
+        display.set_colon(0x02 if colon_state else 0x00).draw()
 
         count -= 1
         if count < 0: break
