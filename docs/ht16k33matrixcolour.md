@@ -1,6 +1,6 @@
 # HT16K33Matrix 3.0.0 #
 
-This is a hardware driver for the [Adafruit 1.2-inch 8x8 bi-color LED matrix backpack](https://www.adafruit.com/product/1048), which is based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
+This is a hardware driver for the [Adafruit 1.2-inch 8x8 bi-color LED matrix backpack](https://www.adafruit.com/product/902), which is based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
 It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPython](https://micropython.org).
 

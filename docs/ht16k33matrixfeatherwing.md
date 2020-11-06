@@ -91,11 +91,11 @@ led.set_blink_rate(1)
 
 Call this method to flip the matrix’s pixels from lit to unlit and vice versa. You should call [*draw()*](#draw) afterwards to update the LED.
 
-The state of the display is recorded so subsequent calls to [*set_icon()*](#set_iconglyph-column), [*set_character()*](#ascii_value-column) or *scroll_text()* will maintain the display’s state.
+The state of the display is recorded so subsequent calls to [*set_icon()*](#set_iconglyph-column), [*set_character()*](#set_characterascii_value-column) or [*scroll_text()*](#scroll_textthe_line-speed) will maintain the display’s state.
 
 ### set_icon(*glyph[, column]*) ###
 
-To write a character that is not in the character set at a specified x co-ordinate, call *set_icon()* and pass a glyph-definition pattern and the column of the matrix at which it will be written as its parameters.
+To write a character that is not in the character set at a specified x co-ordinate, call [*set_icon()*](#set_iconglyph-column) and pass a glyph-definition pattern and the column of the matrix at which it will be written as its parameters.
 
 The glyph pattern should be a byte array; each byte is a column of image pixels with bit zero at the bottom.
 

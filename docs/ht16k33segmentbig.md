@@ -202,9 +202,7 @@ Call *draw()* after changing any or all of the internal display buffer contents 
 ## Release Notes ##
 
 - 3.0.0 *Unreleased*
-    - Merge MicroPython and CircuitPython libraries.
-    - Separate out generic HT16K33 features to generic driver.
-    - Return *self* from some methods to support method chaining.
+    - Initial release.
 
 ## License ##
 
