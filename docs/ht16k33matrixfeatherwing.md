@@ -109,7 +109,7 @@ icon = b"\x3C\x42\xA9\x85\x85\xA9\x42\x3C"
 led.set_icon(icon, 4).draw()
 ```
 
-### set_character(*ascii_value[, column]*) ###
+### set_character(*ascii_code[, column]*) ###
 
 To write a character from the display’s character set at a specified x co-ordinate, call *set_character()* and pass the Ascii code of the character to be displayed. You can also specify the column of the matrix at which it will be written.
 
@@ -123,13 +123,13 @@ This method returns *self*.
 
 ```python
 # Display 'Boo' on the LED
-led.set_character("B", 0).set_char("o", 7)
-led.set_character("o", 12).draw()
+led.set_character(66, 0).set_character(111, 7)
+led.set_character(111, 12).draw()
 ```
 
-### define_character(*glyph[], ascii_value]*) ###
+### define_character(*glyph[], code]*) ###
 
-To record a user-definable character, write its pixel pattern (see [*set_icon()*](#set_iconglyph-column)) and specify the ID you will use to write the character to the display buffer (using [*set_character()*](#ascii_value-column)).
+To record a user-definable character, write its pixel pattern (see [*set_icon()*](#set_iconglyph-column)) and specify the ID you will use to write the character to the display buffer (using [*set_character()*](#ascii_code-column)).
 
 This method returns *self*.
 

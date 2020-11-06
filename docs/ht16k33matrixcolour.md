@@ -138,7 +138,7 @@ icon = b"\xC3\x3C\xC3\x3D\xC3\x6D\xC3\xBE\xE7\x18\xF1\x0E\xFF\x00\xFF\x00"
 led.set_icon(icon).draw()
 ```
 
-### set_character(*ascii_value[, ink][, paper][, centre]*) ###
+### set_character(*ascii_code[, ink][, paper][, centre]*) ###
 
 To write a character from the display’s character set at a specified x co-ordinate, call *set_character()* and pass the Ascii code of the character to be displayed. Optionally, you can also specify whether you want the character centred on the display, if this is possible.
 
@@ -154,12 +154,12 @@ This method returns *self*.
 
 ```python
 # Display 'A' on the LED and centre it
-led.set_character(48, True).draw()
+led.set_character(65, True).draw()
 ```
 
-### define_character(*glyph[], ascii_value]*) ###
+### define_character(*glyph[], code]*) ###
 
-To record a user-definable character, write its pixel pattern (see [*set_icon()*](#set_iconglyph-centre)) and specify the ID you will use to write the character to the display buffer (using [*set_character()*](#set_characterascii_value-ink-paper-centre)).
+To record a user-definable character, write its pixel pattern (see [*set_icon()*](#set_iconglyph-centre)) and specify the ID you will use to write the character to the display buffer (using [*set_character()*](#set_characterascii_code-ink-paper-centre)).
 
 This method returns *self*.
 

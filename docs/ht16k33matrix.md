@@ -140,10 +140,10 @@ This method returns *self*.
 
 ```python
 # Display 'A' on the LED and centre it
-led.set_character("A", True).draw()
+led.set_character(65, True).draw()
 ```
 
-### define_character(*glyph[], ascii_value]*) ###
+### define_character(*glyph[], code]*) ###
 
 To record a user-definable character, write its pixel pattern (see [*set_icon()*](#set_iconglyph-centre)) and specify the ID you will use to write the character to the display buffer (using [*set_character()*](#set_characterascii_code-centre)).
 
