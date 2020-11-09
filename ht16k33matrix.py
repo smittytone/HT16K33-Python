@@ -5,7 +5,7 @@ class HT16K33Matrix(HT16K33):
     Micro/Circuit Python class for the Adafruit 8x8 monochrome LED matrix
     backpack.
 
-    Version:    3.0.0
+    Version:    3.0.1
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
@@ -215,7 +215,7 @@ class HT16K33Matrix(HT16K33):
             # A standard character has been chosen
             ascii_value -= 32
             if ascii_value < 0 or ascii_value >= len(self.CHARSET): ascii_value = 0
-            glyph = self.charset[ascii_value]
+            glyph = self.CHARSET[ascii_value]
         return self.set_icon(glyph, centre)
 
     def scroll_text(self, the_line, speed=0.1):
