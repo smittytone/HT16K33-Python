@@ -6,7 +6,7 @@ class HT16K33SegmentBig(HT16K33):
     Micro/Circuit Python class for the Adafruit 1.2-in 4-digit,
     7-segment LED matrix backpack and equivalent Featherwing.
 
-    Version:    3.0.0
+    Version:    3.0.2
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT

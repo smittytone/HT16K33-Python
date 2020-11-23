@@ -5,7 +5,7 @@ class HT16K33Matrix(HT16K33):
     Micro/Circuit Python class for the Adafruit 8x8 monochrome LED matrix
     backpack.
 
-    Version:    3.0.1
+    Version:    3.0.2
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
@@ -343,20 +343,10 @@ class HT16K33Matrix(HT16K33):
             for i in range(8): new_buffer[i] = self.buffer[i]
         draw_buffer = bytearray(17)
         for i in range(len(new_buffer)):
-            draw_buffer[i * 2 + 1] = self._process_byte(new_buffer[i])
+            draw_buffer[i * 2 + 1] = (new_buffer[i] >> 1) | ((new_buffer[i] << 7) & 0xFF)
         self.i2c.writeto(self.address, bytes(draw_buffer))
 
     # ********** PRIVATE METHODS **********
-
-    def _process_byte(self, byte_value):
-        """
-        Adafruit 8x8 matrix requires some data manipulation:
-        Bits 7-0 of each line need to be sent 0 through 7, and bit 0 rotated to bit 7
-        """
-        bit0 = byte_value & 0x01
-        result = byte_value >> 1
-        if bit0 > 0: result |= 0x80
-        return result
 
     def _rotate_matrix(self, input_matrix, angle=0):
         """

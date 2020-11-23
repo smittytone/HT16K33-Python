@@ -1,4 +1,4 @@
-# HT16K33 Drivers 3.0.0 #
+# HT16K33 Drivers 3.0.2 #
 
 This repo provides Python drivers for the Holtek HT16K33 controller chip and various display devices based upon it, such as the [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149).
 
@@ -27,6 +27,15 @@ You will need both the display driver file and `ht16k33.py` in your project fold
 | [16x8 FeatherWing matrix LED](./docs/ht16k33matrixfeatherwing.md) | [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149) |
 
 Further drivers may be added in due course.
+
+## Release Notes
+
+- 3.0.2 *23 November 2020*
+    - Refactor out some `ht16k33matrix.py` code.
+- 3.0.1 *7 November 2020*
+    - Correct variable name in `ht16k33matrix.py`.
+- 3.0.0 *6 November 2020*
+    - Initial public release.
 
 ## Version Numbering ##
 
