@@ -16,6 +16,12 @@ You can then instantiate the driver object. This requires a configured I2C bus o
 
 You will need both the display driver file and `ht16k33.py` in your project folder.
 
+## Reducing Memory Usage ##
+
+Adding the driver code may prove too much for certain CircuitPython devices which have limited amounts of memory. To overcome this, run the `mpy-cross` compiler. This will compile the raw Python into a highly compact form in a `.mpy` file. Copy `ht16k33.mpy` and the device-specific `.mpy` file to your device in place of the `.py` versions.
+
+The repo’s `mpy` directory contains pre-compiled versions for CircuitPython applications.
+
 ## Display Drivers ##
 
 | Driver | Example&nbsp;Product |
@@ -36,10 +42,6 @@ Further drivers may be added in due course.
     - Correct variable name in `ht16k33matrix.py`.
 - 3.0.0 *6 November 2020*
     - Initial public release.
-
-## Version Numbering ##
-
-All of the drivers in this repo commence at version 3.0.0. This is because some represent the latest, but breaking releases of existing drivers I have written. The others have been set to 3.0.0 for consistency.
 
 ## License ##
 
