@@ -1,4 +1,4 @@
-# HT16K33Segment 3.0.0 #
+# HT16K33Segment 3.1.0 #
 
 This is a hardware driver for the [Adafruit 0.56-inch 4-digit, 7-segment LED display](http://www.adafruit.com/products/878), which is based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
@@ -190,23 +190,3 @@ led.clear().draw()
 ### draw() ###
 
 Call *draw()* after changing any or all of the internal display buffer contents in order to reflect those changes on the display itself.
-
-## Release Notes ##
-
-- 3.0.0 *6 November 2020*
-    - Merge MicroPython and CircuitPython libraries.
-    - Separate out generic HT16K33 features to generic driver.
-    - Return *self* from some methods to support method chaining.
-- 2.0.0 *21 May 2020*
-    - Correct library filenames.
-    - Add smbus-based version.
-    - Fix documentation issues.
-- 1.0.1 *17 March 2020*
-  - Rename internal constants.
-  - Code improvements.
-- 1.0.0 *4 march 2020*
-    - Initial public release.
-
-## License ##
-
-The HTK16K33Segment library are licensed under the [MIT License](LICENSE).

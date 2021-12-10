@@ -1,4 +1,4 @@
-# HT16K33MatrixFeatherWing 3.0.0 #
+# HT16K33MatrixFeatherWing 3.1.0 #
 
 This is a hardware driver for the [Adafruit 0.8-inch 16x8 LED Matrix FeatherWing](https://www.adafruit.com/product/3149), which is based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
@@ -195,12 +195,3 @@ led.clear().draw()
 ### draw() ###
 
 Call *draw()* after changing any or all of the internal display buffer contents in order to reflect those changes on the display itself.
-
-## Release Notes ##
-
-- 3.0.0 *6 November 2020*
-    - Initial release.
-
-## License ##
-
-The HT16K33MatrixFeatherWing library is licensed under the [MIT License](./LICENSE).

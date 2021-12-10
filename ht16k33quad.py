@@ -1,0 +1,138 @@
+from ht16k33 import HT16K33
+
+class HT16K33Quad(HT16K33):
+    """
+    Micro/Circuit Python class for the SparkFun Qwiic Alphanumeric Display,
+    a four-digit, 14-segment LED displays driven by the VK16K33 controller,
+    a HT16K33 clone
+    Version:    3.1.0
+    Bus:        I2C
+    Author:     Tony Smith (@smittytone)
+    License:    MIT
+    Copyright:  2021
+    """
+
+    # *********** CONSTANTS **********
+
+    HT16K33_QUAD_DP_VALUE = 0x4000
+    HT16K33_QUAD_BLANK_CHAR = 62
+    HT16K33_QUAD_MINUS_CHAR = 17
+    HT16K33_QUAD_CHAR_COUNT = 77
+
+    # CHARSET store character matrices for 0-9, A-F, a-z, space and various symbols
+    CHARSET = b'\x00\x3F\x12\x00\x00\xDB\x00\x8F\x12\xE0\x00\xED\x00\xFD\x14\x01\x00\xFF\x00\xEF\x00\xF7\x12\x8F\x00\x39\x12\x0F\x00\x79\x00\x71\x00\xBD\x00\xF6\x12\x09\x00\x1E\x0C\x70\x00\x38\x05\x36\x09\x36\x00\x3F\x00\xF3\x08\x3F\x08\xF3\x00\xED\x12\x01\x00\x3E\x24\x30\x28\x36\x2D\x00\x15\x00\x24\x09\x10\x58\x20\x78\x00\xD8\x08\x8E\x08\x58\x0C\x80\x04\x8E\x10\x70\x10\x00\x00\x0E\x36\x00\x00\x30\x10\xD4\x10\x50\x00\xDC\x01\x70\x04\x86\x00\x50\x20\x88\x00\x78\x00\x1C\x20\x04\x28\x14\x28\xC0\x20\x0C\x08\x48\x00\x00\x00\x06\x02\x20\x12\xCE\x12\xED\x0C\x24\x23\x5D\x04\x00\x24\x00\x09\x00\x3F\xC0\x12\xC0\x08\x00\x00\xC0\x00\x00\x0C\x00'
+
+    # *********** PRIVATE PROPERTIES **********
+
+
+    # *********** CONSTRUCTOR **********
+
+    def __init__(self, i2c, i2c_address=0x70):
+        self.buffer = bytearray(16)
+        super(HT16K33Quad, self).__init__(i2c, i2c_address)
+
+    def set_glyph(self, glyph, digit=0, has_dot=False):
+        """
+        Puts the input character matrix (a 16-bit integer) into the specified row,
+        adding a decimal point if required. Character matrix value is calculated by
+        setting the bit(s) representing the segment(s) you want illuminated:
+
+                0			    9
+                _
+            5 |   | 1		8 \ | / 10
+              |   |			   \|/
+                            6  - -  7
+            4 |   | 2		   /|\
+              | _ |		   12 / | \ 11		. 14
+                3			    12
+
+        Bit 14 is the period, but this is set with parameter 3
+        Nb. Bit 15 is not read by the display
+
+        Args:
+            glyph (int):   The glyph pattern.
+            digit (int):   The digit to show the glyph. Default: 0 (leftmost digit).
+            has_dot (bool): Whether the decimal point to the right of the digit should be lit. Default: False.
+
+        Returns:
+            The instance (self)
+        """
+
+        # Bail on incorrect row numbers or character values
+        assert 0 <= digit < 4, "ERROR - Invalid digit (0-3) set in set_glyph()"
+        assert 0 <= glyph < 0xFFFF, "ERROR - Invalid glyph (0x0000-0xFFFF) set in set_glyph()"
+
+        # Write the character to the buffer
+        if has_dot: glyph |= HT16K33_QUAD_DP_VALUE
+        self.buffer[digit << 1] = (glyph >> 8) & 0xFF
+        self.buffer[(digit << 1 + 1)] = glyph & 0xFF
+
+    def set_number(self, number, digit=0, has_dot=False):
+        """
+        Present single decimal value (0-9) at the specified digit.
+
+        This method updates the display buffer, but does not send the buffer to the display itself.
+        Call 'update()' to render the buffer on the display.
+
+        Args:
+            number (int):  The number to show.
+            digit (int):   The digit to show the number. Default: 0 (leftmost digit).
+            has_dot (bool): Whether the decimal point to the right of the digit should be lit. Default: False.
+
+        Returns:
+            The instance (self)
+        """
+        assert 0 <= digit < 4, "ERROR - Invalid digit (0-3) set in set_number()"
+        assert 0 <= number < 10, "ERROR - Invalid value (0-9) set in set_number()"
+        return self.set_character(str(number), digit)
+
+    def set_character(self, char, digit=0):
+        """
+        Present single alphanumeric character at the specified digit.
+
+        Only characters from the class' character set are available:
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, a, b, c, d ,e, f, -.
+        Other characters can be defined and presented using 'set_glyph()'.
+
+        This method updates the display buffer, but does not send the buffer to the display itself.
+        Call 'update()' to render the buffer on the display.
+
+        Args:
+            char (string):  The character to show.
+            digit (int):    The digit to show the number. Default: 0 (leftmost digit).
+            has_dot (bool): Whether the decimal point to the right of the digit should be lit. Default: False.
+
+        Returns:
+            The instance (self)
+        """
+        assert 0 <= digit < 4, "ERROR - Invalid digit set in set_character()"
+        char_val = 0xFFFF
+        if char == "deg":
+            char_val = self.HT16K33_QUAD_MINUS_CHAR
+        elif char == '-':
+            char_val = self.HT16K33_QUAD_MINUS_CHAR
+        elif char == ' ':
+            char_val = self.HT16K33_QUAD_BLANK_CHAR
+        elif char in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
+            char_val = ord(char) - 55
+        elif char in 'abcdefghijklmnopqrstuvwxyz':
+            char_val = ord(char) - 61
+        elif char in '0123456789':
+            char_val = ord(char) - 48
+        assert char_val != 0xFFFF, "ERROR - Invalid char string set in set_character() " + char
+
+        print(char_val)
+        self.set_digit((self.CHARSET[char_val << 1] << 8) | self.CHARSET[(char_val << 1) + 1], digit)
+        return self
+
+    def set_digit(self, val, digit):
+        a = 0
+        d = 1
+        for i in range(0, 16):
+            if (val & (1 << i)):
+                self.buffer[a] |= (d << digit)
+            a += 2
+            if i == 6:
+                a = 0
+                d = 16
+        return self

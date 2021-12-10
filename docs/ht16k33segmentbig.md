@@ -1,4 +1,4 @@
-# HT16K33SegmentBig 3.0.0 #
+# HT16K33SegmentBig 3.1.0 #
 
 This is a hardware driver for the [Adafruit 1.2-inch 4-digit, 7-segment LED display](http://www.adafruit.com/products/1270), which is based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
@@ -198,12 +198,3 @@ led.clear().draw()
 ### draw() ###
 
 Call *draw()* after changing any or all of the internal display buffer contents in order to reflect those changes on the display itself.
-
-## Release Notes ##
-
-- 3.0.0 *6 November 2020*
-    - Initial release.
-
-## License ##
-
-The HTK16K33SegmentBig library are licensed under the [MIT License](LICENSE).

@@ -1,4 +1,4 @@
-# HT16K33Matrix 3.0.1 #
+# HT16K33Matrix 3.1.0 #
 
 This is a hardware driver for the [Adafruit 1.2-inch 8x8 monochrome LED matrix backpack](https://www.adafruit.com/product/1048) or the [Adafruit Mini 0.8-inch 8x8 LED Matrix](https://www.adafruit.com/product/872), which are based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
@@ -211,14 +211,3 @@ led.clear().draw()
 ### draw() ###
 
 Call *draw()* after changing any or all of the internal display buffer contents in order to reflect those changes on the display itself.
-
-## Release Notes ##
-
-- 3.0.1 *9 November 2020*
-    - Bug fix: correct property name.
-- 3.0.0 *6 November 2020*
-    - Initial release.
-
-## License ##
-
-The HT16K33Matrix library is licensed under the [MIT License](./LICENSE).
