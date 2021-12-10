@@ -14,13 +14,17 @@ class HT16K33Quad(HT16K33):
 
     # *********** CONSTANTS **********
 
-    HT16K33_QUAD_DP_VALUE = 0x4000
-    HT16K33_QUAD_BLANK_CHAR = 62
-    HT16K33_QUAD_MINUS_CHAR = 17
-    HT16K33_QUAD_CHAR_COUNT = 77
+    HT16K33_QUAD_DP_VALUE    = 0x4000
+    HT16K33_QUAD_BLANK_CHAR  = 62
+    HT16K33_QUAD_MINUS_CHAR  = 71
+    HT16K33_QUAD_DOLLAR_CHAR = 66
+    HT16K33_QUAD_PLUS_CHAR   = 70
+    HT16K33_QUAD_MINUS_CHAR  = 71
+    HT16K33_QUAD_DIVN_CHAR   = 72
+    HT16K33_QUAD_CHAR_COUNT  = 73
 
     # CHARSET store character matrices for 0-9, A-F, a-z, space and various symbols
-    CHARSET = b'\x00\x3F\x12\x00\x00\xDB\x00\x8F\x12\xE0\x00\xED\x00\xFD\x14\x01\x00\xFF\x00\xEF\x00\xF7\x12\x8F\x00\x39\x12\x0F\x00\x79\x00\x71\x00\xBD\x00\xF6\x12\x09\x00\x1E\x0C\x70\x00\x38\x05\x36\x09\x36\x00\x3F\x00\xF3\x08\x3F\x08\xF3\x00\xED\x12\x01\x00\x3E\x24\x30\x28\x36\x2D\x00\x15\x00\x24\x09\x10\x58\x20\x78\x00\xD8\x08\x8E\x08\x58\x0C\x80\x04\x8E\x10\x70\x10\x00\x00\x0E\x36\x00\x00\x30\x10\xD4\x10\x50\x00\xDC\x01\x70\x04\x86\x00\x50\x20\x88\x00\x78\x00\x1C\x20\x04\x28\x14\x28\xC0\x20\x0C\x08\x48\x00\x00\x00\x06\x02\x20\x12\xCE\x12\xED\x0C\x24\x23\x5D\x04\x00\x24\x00\x09\x00\x3F\xC0\x12\xC0\x08\x00\x00\xC0\x00\x00\x0C\x00'
+    CHARSET = b'\x00\x3F\x12\x00\x00\xDB\x00\x8F\x12\xE0\x00\xED\x00\xFD\x14\x01\x00\xFF\x00\xEF\x00\xF7\x12\x8F\x00\x39\x12\x0F\x00\x79\x00\x71\x00\xBD\x00\xF6\x12\x09\x00\x1E\x0C\x70\x00\x38\x05\x36\x09\x36\x00\x3F\x00\xF3\x08\x3F\x08\xF3\x00\xED\x12\x01\x00\x3E\x24\x30\x28\x36\x2D\x00\x15\x00\x24\x09\x10\x58\x20\x78\x00\xD8\x08\x8E\x08\x58\x0C\x80\x04\x8E\x10\x70\x10\x00\x00\x0E\x36\x00\x00\x30\x10\xD4\x10\x50\x00\xDC\x01\x70\x04\x86\x00\x50\x20\x88\x00\x78\x00\x1C\x20\x04\x28\x14\x28\xC0\x20\x0C\x08\x48\x00\x00\x00\x06\x02\x20\x10\x83\x12\xED\x24\x24\x00\xE3\x04\x00\x09\x00\x20\x00\x3F\xC0\x12\xC0\x00\xC0\x24\x00'
 
     # *********** PRIVATE PROPERTIES **********
 
@@ -43,7 +47,7 @@ class HT16K33Quad(HT16K33):
               |   |			   \|/
                             6  - -  7
             4 |   | 2		   /|\
-              | _ |		   12 / | \ 11		. 14
+              | _ |		   13 / | \ 11		. 14
                 3			    12
 
         Bit 14 is the period, but this is set with parameter 3
@@ -52,7 +56,6 @@ class HT16K33Quad(HT16K33):
         Args:
             glyph (int):   The glyph pattern.
             digit (int):   The digit to show the glyph. Default: 0 (leftmost digit).
-            has_dot (bool): Whether the decimal point to the right of the digit should be lit. Default: False.
 
         Returns:
             The instance (self)
@@ -77,7 +80,6 @@ class HT16K33Quad(HT16K33):
         Args:
             number (int):  The number to show.
             digit (int):   The digit to show the number. Default: 0 (leftmost digit).
-            has_dot (bool): Whether the decimal point to the right of the digit should be lit. Default: False.
 
         Returns:
             The instance (self)
@@ -91,7 +93,6 @@ class HT16K33Quad(HT16K33):
         Present single alphanumeric character at the specified digit.
 
         Only characters from the class' character set are available:
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, a, b, c, d ,e, f, -.
         Other characters can be defined and presented using 'set_glyph()'.
 
         This method updates the display buffer, but does not send the buffer to the display itself.
@@ -100,19 +101,24 @@ class HT16K33Quad(HT16K33):
         Args:
             char (string):  The character to show.
             digit (int):    The digit to show the number. Default: 0 (leftmost digit).
-            has_dot (bool): Whether the decimal point to the right of the digit should be lit. Default: False.
 
         Returns:
             The instance (self)
         """
         assert 0 <= digit < 4, "ERROR - Invalid digit set in set_character()"
         char_val = 0xFFFF
-        if char == "deg":
+        if char == '-':
             char_val = self.HT16K33_QUAD_MINUS_CHAR
-        elif char == '-':
-            char_val = self.HT16K33_QUAD_MINUS_CHAR
+        elif char == '*':
+            char_val = self.HT16K33_QUAD_STAR_CHAR
+        elif char == '+':
+            char_val = self.HT16K33_QUAD_PLUS_CHAR
         elif char == ' ':
             char_val = self.HT16K33_QUAD_BLANK_CHAR
+        elif char == '/':
+            char_val = self.HT16K33_QUAD_DIVN_CHAR
+        elif char == '$':
+            char_val = self.HT16K33_QUAD_DOLLAR_CHAR
         elif char in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
             char_val = ord(char) - 55
         elif char in 'abcdefghijklmnopqrstuvwxyz':
@@ -123,6 +129,28 @@ class HT16K33Quad(HT16K33):
 
         print(char_val)
         self.set_digit((self.CHARSET[char_val << 1] << 8) | self.CHARSET[(char_val << 1) + 1], digit)
+        return self
+
+    def set_code(self, code, digit):
+        """
+        Present single alphanumeric character at the specified digit.
+
+        Only characters from the class' character set are available:
+        Other characters can be defined and presented using 'set_glyph()'.
+
+        This method updates the display buffer, but does not send the buffer to the display itself.
+        Call 'update()' to render the buffer on the display.
+
+        Args:
+            code (int):     The character's class-specific code.
+            digit (int):    The digit to show the number. Default: 0 (leftmost digit).
+
+        Returns:
+            The instance (self)
+        """
+        assert 0 <= digit < 4, "ERROR - Invalid digit (0-3) set in set_code()"
+        assert 0 <= code < 78, "ERROR - Invalid code (0-78) set in set_code()"
+        self.set_digit((self.CHARSET[code << 1] << 8) | self.CHARSET[(code << 1) + 1], digit)
         return self
 
     def set_digit(self, val, digit):

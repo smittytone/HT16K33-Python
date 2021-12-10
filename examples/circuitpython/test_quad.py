@@ -28,7 +28,7 @@ if __name__ == '__main__':
         display.draw()
         a += 1
         time.sleep(0.5)
-    time.sleep(9)
+    time.sleep(5)
 
     a = 97
     while (a < 120):
@@ -40,7 +40,7 @@ if __name__ == '__main__':
         display.draw()
         a += 1
         time.sleep(0.5)
-    time.sleep(9)
+    time.sleep(5)
 
     a = 0
     while (a < 7):
@@ -51,4 +51,17 @@ if __name__ == '__main__':
         display.set_number(a + 3, 3)
         display.draw()
         a += 1
-        time.sleep(1)
+        time.sleep(0.5)
+    time.sleep(5)
+
+    a = 63
+    while (a < 75):
+        display.clear()
+        display.set_code(a, 0)
+        display.set_code(a + 1, 1)
+        display.set_code(a + 2, 2)
+        display.set_code(a + 3, 3)
+        display.draw()
+        a += 1
+        time.sleep(0.5)
+    time.sleep(5)
