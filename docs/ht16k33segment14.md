@@ -1,4 +1,4 @@
-# HT16K33Quad 3.1.0 #
+# HT16K33Segment14 3.1.0 #
 
 This is a hardware driver for the [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916)., which is based on the VK16K33, a clone of the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
@@ -9,7 +9,7 @@ It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPytho
 The driver comprises a parent generic HT16K33 driver and a child driver for the 14-segment display itself. All your code needs to do is `import` the latter:
 
 ```python
-from ht16k33quad import HT16K33Quad
+from HT16K33segment14 import HT16K33Segment14
 ```
 
 You can then instantiate the driver.
@@ -40,9 +40,9 @@ led.clear().set_number(4, 0).set_number(3, 1).draw()
 
 ## Class Usage ##
 
-### Constructor: HT16K33Quad(*i2C_bus[, i2c_address]*) ###
+### Constructor: HT16K33Segment14(*i2C_bus[, i2c_address]*) ###
 
-To instantiate a HT16K33Quad object pass the I&sup2;C bus to which the display is connected and, optionally, its I&sup2;C address. If no address is passed, the default value, `0x70` will be used. Pass an alternative address if you have changed the display’s address using the solder pads on rear of the LED’s circuit board.
+To instantiate a HT16K33Segment14 object pass the I&sup2;C bus to which the display is connected and, optionally, its I&sup2;C address. If no address is passed, the default value, `0x70` will be used. Pass an alternative address if you have changed the display’s address using the solder pads on rear of the LED’s circuit board.
 
 The passed I&sup2;C bus must be configured before the HT16K33Segment object is created.
 
@@ -50,7 +50,7 @@ The passed I&sup2;C bus must be configured before the HT16K33Segment object is c
 
 ```python
 # Micropython
-from ht16k33quad import HT16K33Quad
+from HT16K33segment14 import HT16K33Segment14
 from machine import I2C
 
 # Update the pin values for your board
@@ -58,19 +58,19 @@ DEVICE_I2C_SCL_PIN = 5
 DEVICE_I2C_SDA_PIN = 4
 
 i2c = I2C(scl=Pin(DEVICE_I2C_SCL_PIN), sda=Pin(DEVICE_I2C_SDA_PIN))
-led = HT16K33Quad(i2c)
+led = HT16K33Segment14(i2c)
 ```
 
 ```python
 # Circuitpython
-from ht16k33quad import HT16K33Quad
+from HT16K33segment14 import HT16K33Segment14
 import busio
 import board
 
 i2c = busio.I2C(board.SCL, board.SDA)
 while not i2c.try_lock():
     pass
-led = HT16K33Quad(i2c)
+led = HT16K33Segment14(i2c)
 ```
 
 ## Class Methods ##

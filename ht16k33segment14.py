@@ -1,6 +1,6 @@
 from ht16k33 import HT16K33
 
-class HT16K33Quad(HT16K33):
+class HT16K33Segment14(HT16K33):
     """
     Micro/Circuit Python class for the SparkFun Qwiic Alphanumeric Display,
     a four-digit, 14-segment LED displays driven by the VK16K33 controller,
@@ -14,14 +14,14 @@ class HT16K33Quad(HT16K33):
 
     # *********** CONSTANTS **********
 
-    HT16K33_QUAD_DP_VALUE    = 0x4000
-    HT16K33_QUAD_BLANK_CHAR  = 62
-    HT16K33_QUAD_MINUS_CHAR  = 71
-    HT16K33_QUAD_DOLLAR_CHAR = 66
-    HT16K33_QUAD_PLUS_CHAR   = 70
-    HT16K33_QUAD_MINUS_CHAR  = 71
-    HT16K33_QUAD_DIVN_CHAR   = 72
-    HT16K33_QUAD_CHAR_COUNT  = 73
+    HT16K33_SEG14_DP_VALUE    = 0x4000
+    HT16K33_SEG14_BLANK_CHAR  = 62
+    HT16K33_SEG14_MINUS_CHAR  = 71
+    HT16K33_SEG14_DOLLAR_CHAR = 66
+    HT16K33_SEG14_PLUS_CHAR   = 70
+    HT16K33_SEG14_MINUS_CHAR  = 71
+    HT16K33_SEG14_DIVN_CHAR   = 72
+    HT16K33_SEG14_CHAR_COUNT  = 73
 
     # CHARSET store character matrices for 0-9, A-F, a-z, space and various symbols
     CHARSET = b'\x00\x3F\x12\x00\x00\xDB\x00\x8F\x12\xE0\x00\xED\x00\xFD\x14\x01\x00\xFF\x00\xEF\x00\xF7\x12\x8F\x00\x39\x12\x0F\x00\x79\x00\x71\x00\xBD\x00\xF6\x12\x09\x00\x1E\x0C\x70\x00\x38\x05\x36\x09\x36\x00\x3F\x00\xF3\x08\x3F\x08\xF3\x00\xED\x12\x01\x00\x3E\x24\x30\x28\x36\x2D\x00\x15\x00\x24\x09\x10\x58\x20\x78\x00\xD8\x08\x8E\x08\x58\x0C\x80\x04\x8E\x10\x70\x10\x00\x00\x0E\x36\x00\x00\x30\x10\xD4\x10\x50\x00\xDC\x01\x70\x04\x86\x00\x50\x20\x88\x00\x78\x00\x1C\x20\x04\x28\x14\x28\xC0\x20\x0C\x08\x48\x00\x00\x00\x06\x02\x20\x10\x83\x12\xED\x24\x24\x00\xE3\x04\x00\x09\x00\x20\x00\x3F\xC0\x12\xC0\x00\xC0\x24\x00'
@@ -33,7 +33,7 @@ class HT16K33Quad(HT16K33):
 
     def __init__(self, i2c, i2c_address=0x70):
         self.buffer = bytearray(16)
-        super(HT16K33Quad, self).__init__(i2c, i2c_address)
+        super(HT16K33Segment14, self).__init__(i2c, i2c_address)
 
     def set_glyph(self, glyph, digit=0, has_dot=False):
         """
@@ -66,7 +66,7 @@ class HT16K33Quad(HT16K33):
         assert 0 <= glyph < 0xFFFF, "ERROR - Invalid glyph (0x0000-0xFFFF) set in set_glyph()"
 
         # Write the character to the buffer
-        if has_dot: glyph |= HT16K33_QUAD_DP_VALUE
+        if has_dot: glyph |= HT16K33_SEG14_DP_VALUE
         self.buffer[digit << 1] = (glyph >> 8) & 0xFF
         self.buffer[(digit << 1 + 1)] = glyph & 0xFF
 
@@ -108,26 +108,25 @@ class HT16K33Quad(HT16K33):
         assert 0 <= digit < 4, "ERROR - Invalid digit set in set_character()"
         char_val = 0xFFFF
         if char == '-':
-            char_val = self.HT16K33_QUAD_MINUS_CHAR
+            char_val = self.HT16K33_SEG14_MINUS_CHAR
         elif char == '*':
-            char_val = self.HT16K33_QUAD_STAR_CHAR
+            char_val = self.HT16K33_SEG14_STAR_CHAR
         elif char == '+':
-            char_val = self.HT16K33_QUAD_PLUS_CHAR
+            char_val = self.HT16K33_SEG14_PLUS_CHAR
         elif char == ' ':
-            char_val = self.HT16K33_QUAD_BLANK_CHAR
+            char_val = self.HT16K33_SEG14_BLANK_CHAR
         elif char == '/':
-            char_val = self.HT16K33_QUAD_DIVN_CHAR
+            char_val = self.HT16K33_SEG14_DIVN_CHAR
         elif char == '$':
-            char_val = self.HT16K33_QUAD_DOLLAR_CHAR
+            char_val = self.HT16K33_SEG14_DOLLAR_CHAR
         elif char in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
             char_val = ord(char) - 55
         elif char in 'abcdefghijklmnopqrstuvwxyz':
             char_val = ord(char) - 61
         elif char in '0123456789':
             char_val = ord(char) - 48
-        assert char_val != 0xFFFF, "ERROR - Invalid char string set in set_character() " + char
+        assert char_val != 0xFFFF, "ERROR - Invalid char string set in set_character() " + char + " (" + str(ord(char)) + ")"
 
-        print(char_val)
         self.set_digit((self.CHARSET[char_val << 1] << 8) | self.CHARSET[(char_val << 1) + 1], digit)
         return self
 

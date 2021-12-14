@@ -2,7 +2,7 @@
 import time
 import board
 import busio
-from ht16k33quad import HT16K33Quad
+from HT16K33segment14 import HT16K33Segment14
 
 # CONSTANTS
 DELAY = 0.01
@@ -13,7 +13,7 @@ if __name__ == '__main__':
     i2c = busio.I2C(board.SCL, board.SDA)
     while not i2c.try_lock():
         pass
-    display = HT16K33Quad(i2c)
+    display = HT16K33Segment14(i2c)
     display.set_brightness(2)
     display.clear()
     #display.set_digit(0x003F,3)
