@@ -127,7 +127,7 @@ class HT16K33Segment(HT16K33):
         char = char.lower()
         char_val = 0xFF
         if char == "deg":
-            char_val = HT16K33_SEGMENT_DEGREE_CHAR
+            char_val = self.HT16K33_SEGMENT_DEGREE_CHAR
         elif char == '-':
             char_val = self.HT16K33_SEGMENT_MINUS_CHAR
         elif char == ' ':

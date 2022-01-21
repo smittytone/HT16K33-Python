@@ -21,16 +21,15 @@ if __name__ == '__main__':
     time.sleep(PAUSE)
 
     # Write 'SYNC' to the LED -- this time with decimal points
-    sync_text = b"\x6D\x6E\x37\x39"
     for i in range(len(sync_text)):
         display.set_glyph(sync_text[i], i)
-    display.draw()
+    display.set_colon(display.COLON_CENTRE | display.COLON_LEFT | display.DECIMAL_POINT).draw()
     time.sleep(PAUSE)
 
     # Write 'BEEF' to the display using the charset characters
     display.set_character("B", 0).set_character("E", 1)
     display.set_character("E", 2).set_character("F", 3)
-    display.draw()
+    display.set_colon(0).draw()
     time.sleep(PAUSE)
 
     # Show a countdown using the charset numbers

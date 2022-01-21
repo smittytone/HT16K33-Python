@@ -20,6 +20,12 @@ class HT16K33SegmentBig(HT16K33):
     HT16K33_SEGMENT_DEGREE_CHAR = 0x11
     HT16K33_SEGMENT_SPACE_CHAR = 0x00
 
+    COLON_CENTRE = 0x02
+    COLON_LEFT_UPPER = 0x04
+    COLON_LEFT_LOWER = 0x08
+    COLON_LEFT = 0x0C
+    DECIMAL_POINT = 0x10
+
     # The positions of the segments within the buffer
     POS = (0, 2, 6, 8)
 
@@ -132,7 +138,7 @@ class HT16K33SegmentBig(HT16K33):
         char = char.lower()
         char_val = 0xFF
         if char == "deg":
-            char_val = HT16K33_SEGMENT_DEGREE_CHAR
+            char_val = self.HT16K33_SEGMENT_DEGREE_CHAR
         elif char == '-':
             char_val = self.HT16K33_SEGMENT_MINUS_CHAR
         elif char == ' ':
