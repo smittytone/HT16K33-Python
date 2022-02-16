@@ -37,7 +37,7 @@ Further drivers may be added in due course.
 
 ## Release Notes
 
-- 3.1.0 *Unreleased*
+- 3.1.0 *16 February 2022*
     - Add `ht16k33segment14.py` to support the [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916).
 - 3.0.2 *23 November 2020*
     - Refactor out some `ht16k33matrix.py` code.
