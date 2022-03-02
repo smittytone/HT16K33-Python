@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:ht16k33.py">
+   </FileRef>
+   <FileRef
+      location = "group:ht16k33matrix.py">
+   </FileRef>
+   <FileRef
+      location = "group:ht16k33matrixcolour.py">
+   </FileRef>
+   <FileRef
+      location = "group:ht16k33matrixfeatherwing.py">
+   </FileRef>
+   <FileRef
+      location = "group:ht16k33segment.py">
+   </FileRef>
+   <FileRef
+      location = "group:ht16k33segment14.py">
+   </FileRef>
+   <FileRef
+      location = "group:ht16k33segmentbig.py">
+   </FileRef>
+   <FileRef
+      location = "group:/Users/smitty/GitHub/ht16k33-python/README.md">
+   </FileRef>
+   <FileRef
+      location = "group:docs">
+   </FileRef>
+   <Group
+      location = "group:tools"
+      name = "tools">
+      <FileRef
+         location = "group:colour-glyph-maker.py">
+      </FileRef>
+   </Group>
+</Workspace>
