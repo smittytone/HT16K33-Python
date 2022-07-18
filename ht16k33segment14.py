@@ -46,14 +46,14 @@ class HT16K33Segment14(HT16K33):
         adding a decimal point if required. Character matrix value is calculated by
         setting the bit(s) representing the segment(s) you want illuminated:
 
-                0			    9
+                0                9
                 _
-            5 |   | 1		8 \ | / 10
-              |   |			   \|/
-                            6  - -  7
-            4 |   | 2		   /|\
-              | _ |		   13 / | \ 11		. 14
-                3			    12
+            5 |   | 1        8 \ | / 10
+              |   |             \|/
+                             6  - -  7
+            4 |   | 2           /|\
+              | _ |         13 / | \ 11    . 14
+                3                12
 
         Bit 14 is the period, but this is set with parameter 3
         Nb. Bit 15 is not read by the display
