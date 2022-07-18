@@ -46,15 +46,14 @@ class HT16K33Segment14ada(HT16K33):
         adding a decimal point if required. Character matrix value is calculated by
         setting the bit(s) representing the segment(s) you want illuminated:
 
-                0			    9
+                0                9
                 _
-            5 |   | 1		8 \ | / 10
-              |   |			   \|/
-                            6  - -  7
-            4 |   | 2		   /|\
-              | _ |		   11 / | \ 13		. 14
-                3			    12
-
+            5 |   | 1        8 \ | / 10
+              |   |             \|/
+                             6  - -  7
+            4 |   | 2           /|\
+              | _ |         11 / | \ 13    . 14
+                3                12
         Bit 14 is the period, but this is set with parameter 3
         Nb. Bit 15 is not read by the display
 
@@ -164,7 +163,8 @@ class HT16K33Segment14ada(HT16K33):
 
     def _set_digit(self, value, digit):
         if self.is_ada:
-            # Output for HT16K33: swap bits 11 and 13
+            # Output for HT16K33: swap bits 11 and 13,
+            # and sequence becomes LSB, MSB
             msb = (value >> 8) & 0xFF
             lsb = value & 0xFF
             b11 = msb & 0x08
@@ -172,8 +172,8 @@ class HT16K33Segment14ada(HT16K33):
             msb &= 0xD7
             msb |= (b11 << 2)
             msb |= (b13 >> 2)
-            self.buffer[digit * 2] = lsb
-            self.buffer[digit * 2 + 1] = msb
+            self.buffer[digit << 1] = lsb
+            self.buffer[digit << 1 + 1] = msb
         else:
             # Output for VK16K33
             a = 0
