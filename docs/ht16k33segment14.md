@@ -14,7 +14,7 @@ The driver comprises a parent generic HT16K33 driver and a child driver for the 
 from HT16K33segment14 import HT16K33Segment14
 ```
 
-You can then instantiate the driver.
+You can then instantiate the driver — see [Class Usage](#class-usage), below.
 
 You will need both the display driver file and `ht16k33.py` in your project folder.
 
@@ -46,7 +46,7 @@ led.clear().set_number(4, 0).set_number(3, 1).draw()
 
 To instantiate a HT16K33Segment14 object pass the I&sup2;C bus to which the display is connected and, optionally, its I&sup2;C address. If no address is passed, the default value, `0x70` will be used. Pass an alternative address if you have changed the display’s address using the solder pads on rear of the LED’s circuit board.
 
-A second optional parameter, *is_adafruit*, allows you to specify the Adafruit 0.5in Alphanumeric Display: pass `True` to use this display. The default value is `False`, which specifies a VT16K33-based display.
+A second optional parameter, *is_adafruit*, allows you to specify the Adafruit 0.54in Alphanumeric Display: pass `True` to use this display. The default value is `False`, which implies you are using a VT16K33-based display.
 
 The passed I&sup2;C bus must be configured before the HT16K33Segment object is created.
 
