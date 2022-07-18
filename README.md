@@ -31,12 +31,14 @@ The repo’s `mpy` directory contains pre-compiled versions for CircuitPython ap
 | [8x8 monochrome matrix LED](./docs/ht16k33matrix.md) | [Adafruit Mini 0.8-inch 8x8 LED Matrix](https://www.adafruit.com/product/872) |
 | [8x8 bi-colour matrix LED](./docs/ht16k33matrixcolour.md) | [Adafruit 1.2-inch 8x8 bi-color LED matrix backpack](https://www.adafruit.com/product/902) |
 | [16x8 FeatherWing matrix LED](./docs/ht16k33matrixfeatherwing.md) | [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149) |
-| [Small 4-digit, 14-segment LED](./docs/HT16K33Segment14.md) | [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916) |
+| [Small 4-digit, 14-segment LED](./docs/ht16k33segment14.md) | [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916) |
 
 Further drivers may be added in due course.
 
 ## Release Notes
 
+- 3.2.0 *Unreleased*
+    - Support the [Adafruit 0.54in Alphanumeric Display](https://www.adafruit.com/product/1911) via `ht16k33segment14.py`.
 - 3.1.0 *16 February 2022*
     - Add `ht16k33segment14.py` to support the [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916).
 - 3.0.2 *23 November 2020*

@@ -20,10 +20,13 @@
       location = "group:ht16k33segment14.py">
    </FileRef>
    <FileRef
+      location = "group:ht16k33segment14ada.py">
+   </FileRef>
+   <FileRef
       location = "group:ht16k33segmentbig.py">
    </FileRef>
    <FileRef
-      location = "group:/Users/smitty/GitHub/ht16k33-python/README.md">
+      location = "container:README.md">
    </FileRef>
    <FileRef
       location = "group:docs">

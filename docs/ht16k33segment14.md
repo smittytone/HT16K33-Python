@@ -1,6 +1,8 @@
-# HT16K33Segment14 3.1.0 #
+# HT16K33Segment14 3.2.0 #
 
 This is a hardware driver for the [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916)., which is based on the VK16K33, a clone of the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
+
+It also supports the HT16K33-based [Adafruit 0.54in Alphanumeric Display](https://www.adafruit.com/product/1911) (version 3.2.0 and up).
 
 It is compatible with [CircuitPython](https://circuitpython.org) and [MicroPython](https://micropython.org).
 
@@ -40,9 +42,11 @@ led.clear().set_number(4, 0).set_number(3, 1).draw()
 
 ## Class Usage ##
 
-### Constructor: HT16K33Segment14(*i2C_bus[, i2c_address]*) ###
+### Constructor: HT16K33Segment14(*i2C_bus[, i2c_address][, is_adafruit]*) ###
 
 To instantiate a HT16K33Segment14 object pass the I&sup2;C bus to which the display is connected and, optionally, its I&sup2;C address. If no address is passed, the default value, `0x70` will be used. Pass an alternative address if you have changed the display’s address using the solder pads on rear of the LED’s circuit board.
+
+A second optional parameter, *is_adafruit*, allows you to specify the Adafruit 0.5in Alphanumeric Display: pass `True` to use this display. The default value is `False`, which specifies a VT16K33-based display.
 
 The passed I&sup2;C bus must be configured before the HT16K33Segment object is created.
 
@@ -130,6 +134,8 @@ Calculate the glyph pattern value using the following chart. The segment number 
 Bit 14 is the period, but this is set with parameter 3
 Nb. Bit 15 is not read by the display
 ```
+
+**Important** This is the encoding for the VT16K33. For the HT16K33, bits 11 and 13 are swapped. For pre-defined characters, the driver swaps these bits this for you.
 
 For example, to define the letter `P`, we need to set segments 0, 1, 4, 5 and 6. In bit form that makes `0x73`, and this is the value passed into *glyph*.
 
