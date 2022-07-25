@@ -153,7 +153,7 @@ class HT16K33Segment14(HT16K33):
             The instance (self)
         """
         assert 0 <= digit < 4, "ERROR - Invalid digit (0-3) set in set_code()"
-        assert 0 <= code < HT16K33_SEG14_CHAR_COUNT, "ERROR - Invalid code (0-75) set in set_code()"
+        assert 0 <= code < HT16K33_SEG14_CHAR_COUNT, "ERROR - Invalid code (0-{:d}) set in set_code()".format(self.HT16K33_SEG14_CHAR_COUNT - 1)
         self._set_digit((self.CHARSET[code << 1] << 8) | self.CHARSET[(code << 1) + 1], digit)
         return self
 
@@ -165,16 +165,15 @@ class HT16K33Segment14(HT16K33):
             # Output for HT16K33: swap bits 11 and 13,
             # and sequence becomes LSB, MSB
             msb = (value >> 8) & 0xFF
-            lsb = value & 0xFF
             b11 = msb & 0x08
             b13 = msb & 0x20
             msb &= 0xD7
             msb |= (b11 << 2)
             msb |= (b13 >> 2)
-            self.buffer[digit << 1] = lsb
             self.buffer[(digit << 1) + 1] = msb
+            self.buffer[digit << 1] = value & 0xFF
         else:
-            # Output for VK16K33
+            # Output for VT16K33
             a = 0
             d = 1
             for i in range(0, 16):

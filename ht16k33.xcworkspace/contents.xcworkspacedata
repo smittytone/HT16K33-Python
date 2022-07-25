@@ -20,9 +20,6 @@
       location = "group:ht16k33segment14.py">
    </FileRef>
    <FileRef
-      location = "group:ht16k33segment14ada.py">
-   </FileRef>
-   <FileRef
       location = "group:ht16k33segmentbig.py">
    </FileRef>
    <FileRef

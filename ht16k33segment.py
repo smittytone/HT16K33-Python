@@ -80,7 +80,7 @@ class HT16K33Segment(HT16K33):
             The instance (self)
         """
         assert 0 <= digit < 4, "ERROR - Invalid digit (0-3) set in set_glyph()"
-        assert 0 <= glyph < 0xFF, "ERROR - Invalid glyph (0x00-0xFF) set in set_glyph()"
+        assert 0 <= glyph < 0x80, "ERROR - Invalid glyph (0x00-0x80) set in set_glyph()"
         self.buffer[self.POS[digit]] = glyph
         if has_dot is True: self.buffer[self.POS[digit]] |= 0x80
         return self
