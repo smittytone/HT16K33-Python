@@ -39,7 +39,7 @@ Further drivers may be added in due course.
 
 - 3.2.0 *Unreleased*
     - Support the [Adafruit 0.54in Alphanumeric Display](https://www.adafruit.com/product/1911) via `ht16k33segment14.py`.
-- 3.1.0 *16 February 2022*
+- 3.2.0 *16 February 2022*
     - Add `ht16k33segment14.py` to support the [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916).
 - 3.0.2 *23 November 2020*
     - Refactor out some `ht16k33matrix.py` code.

@@ -3,7 +3,7 @@ class HT16K33:
     A simple, generic driver for the I2C-connected Holtek HT16K33 controller chip.
     This release supports MicroPython and CircuitPython
 
-    Version:    3.1.0
+    Version:    3.2.0
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
