@@ -2,10 +2,9 @@ from ht16k33 import HT16K33
 
 class HT16K33Segment14(HT16K33):
     """
-    Micro/Circuit Python class for the SparkFun Qwiic Alphanumeric Display,
-    a four-digit, 14-segment LED displays driven by the VK16K33 controller,
-    a HT16K33 clone
-    Version:    3.1.0
+    Micro/Circuit Python class for the Adafruit 0.54in Quad Alphanumeric Display,
+    a four-digit, 14-segment LED displays driven by the HT16K33 controller
+    Version:    3.2.0
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
@@ -33,8 +32,9 @@ class HT16K33Segment14(HT16K33):
 
     # *********** CONSTRUCTOR **********
 
-    def __init__(self, i2c, i2c_address=0x70):
+    def __init__(self, i2c, i2c_address=0x70, is_ht16k33=False):
         self.buffer = bytearray(16)
+        self.is_ht16k33 = is_ht16k33
         super(HT16K33Segment14, self).__init__(i2c, i2c_address)
 
 
@@ -52,9 +52,8 @@ class HT16K33Segment14(HT16K33):
               |   |             \|/
                              6  - -  7
             4 |   | 2           /|\
-              | _ |         13 / | \ 11    . 14
+              | _ |         11 / | \ 13    . 14
                 3                12
-
         Bit 14 is the period, but this is set with parameter 3
         Nb. Bit 15 is not read by the display
 
@@ -133,7 +132,6 @@ class HT16K33Segment14(HT16K33):
         elif char in 'abcdefghijklmnopqrstuvwxyz':
             char_val = ord(char) - 61   # 36-61
         assert char_val != 0xFFFF, "ERROR - Invalid char string set in set_character() " + char + " (" + str(ord(char)) + ")"
-
         self._set_digit((self.CHARSET[char_val << 1] << 8) | self.CHARSET[(char_val << 1) + 1], digit)
         return self
 
@@ -155,7 +153,7 @@ class HT16K33Segment14(HT16K33):
             The instance (self)
         """
         assert 0 <= digit < 4, "ERROR - Invalid digit (0-3) set in set_code()"
-        assert 0 <= code < 78, "ERROR - Invalid code (0-78) set in set_code()"
+        assert 0 <= code < HT16K33_SEG14_CHAR_COUNT, "ERROR - Invalid code (0-75) set in set_code()"
         self._set_digit((self.CHARSET[code << 1] << 8) | self.CHARSET[(code << 1) + 1], digit)
         return self
 
@@ -163,13 +161,27 @@ class HT16K33Segment14(HT16K33):
     # *********** PRIVATE FUNCTIONS (DO NOT CALL) **********
 
     def _set_digit(self, value, digit):
-        a = 0
-        d = 1
-        for i in range(0, 16):
-            if (value & (1 << i)):
-                self.buffer[a] |= (d << digit)
-            a += 2
-            if i == 6:
-                a = 0
-                d = 16
+        if self.is_ht16k33:
+            # Output for HT16K33: swap bits 11 and 13,
+            # and sequence becomes LSB, MSB
+            msb = (value >> 8) & 0xFF
+            lsb = value & 0xFF
+            b11 = msb & 0x08
+            b13 = msb & 0x20
+            msb &= 0xD7
+            msb |= (b11 << 2)
+            msb |= (b13 >> 2)
+            self.buffer[digit << 1] = lsb
+            self.buffer[(digit << 1) + 1] = msb
+        else:
+            # Output for VK16K33
+            a = 0
+            d = 1
+            for i in range(0, 16):
+                if (value & (1 << i)):
+                    self.buffer[a] |= (d << digit)
+                a += 2
+                if i == 6:
+                    a = 0
+                    d = 16
         return self

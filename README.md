@@ -1,4 +1,4 @@
-# HT16K33 Drivers 3.1.0 #
+# HT16K33 Drivers 3.2.0 #
 
 This repo provides Python drivers for the Holtek HT16K33 controller chip and various display devices based upon it, such as the [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149) and the [Raspberry Pi Pico](https://www.raspberrypi.org/documentation/pico/getting-started/).
 
@@ -31,7 +31,7 @@ The repo’s `mpy` directory contains pre-compiled versions for CircuitPython ap
 | [8x8 monochrome matrix LED](./docs/ht16k33matrix.md) | [Adafruit Mini 0.8-inch 8x8 LED Matrix](https://www.adafruit.com/product/872) |
 | [8x8 bi-colour matrix LED](./docs/ht16k33matrixcolour.md) | [Adafruit 1.2-inch 8x8 bi-color LED matrix backpack](https://www.adafruit.com/product/902) |
 | [16x8 FeatherWing matrix LED](./docs/ht16k33matrixfeatherwing.md) | [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149) |
-| [Small 4-digit, 14-segment LED](./docs/ht16k33segment14.md) | [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916) |
+| [Small 4-digit, 14-segment LED](./docs/ht16k33segment14.md) | [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916),<br />[Adafruit 0.54in Alphanumeric Display](https://www.adafruit.com/product/1911) |
 
 Further drivers may be added in due course.
 
