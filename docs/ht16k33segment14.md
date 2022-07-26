@@ -46,7 +46,7 @@ led.clear().set_number(4, 0).set_number(3, 1).draw()
 
 To instantiate a HT16K33Segment14 object pass the I&sup2;C bus to which the display is connected and, optionally, its I&sup2;C address. If no address is passed, the default value, `0x70` will be used. Pass an alternative address if you have changed the display’s address using the solder pads on rear of the LED’s circuit board.
 
-A second optional parameter, *is_ht16k33*, allows you to specify the Adafruit 0.54in Alphanumeric Display: pass `True` to use this display. The default value is `False`, which implies you are using a VK16K33-based display.
+A second optional parameter, *is_ht16k33*, allows you to specify the Adafruit 0.54in Alphanumeric Display: pass `True` to use this display. The default value is `False`, which implies you are using a VK16K33-based display. This is to maintain compatibility with existing code.
 
 The passed I&sup2;C bus must be configured before the HT16K33Segment object is created.
 
