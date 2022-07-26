@@ -37,7 +37,7 @@ Further drivers may be added in due course.
 
 ## Release Notes
 
-- 3.2.0 *Unreleased*
+- 3.2.0 *26 July 2022*
     - Support the [Adafruit 0.54in Alphanumeric Display](https://www.adafruit.com/product/1911) via `ht16k33segment14.py`.
     - Bug fixes.
 - 3.2.0 *16 February 2022*
