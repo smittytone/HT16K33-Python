@@ -1,6 +1,6 @@
 # HT16K33Segment14 3.2.0 #
 
-This is a hardware driver for the [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916)., which is based on the VT16K33, a clone of the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
+This is a hardware driver for the [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916)., which is based on the Freenove VK16K33, a clone of the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
 It also supports the HT16K33-based [Adafruit 0.54in Alphanumeric Display](https://www.adafruit.com/product/1911) (version 3.2.0 and up).
 
@@ -46,7 +46,7 @@ led.clear().set_number(4, 0).set_number(3, 1).draw()
 
 To instantiate a HT16K33Segment14 object pass the I&sup2;C bus to which the display is connected and, optionally, its I&sup2;C address. If no address is passed, the default value, `0x70` will be used. Pass an alternative address if you have changed the display’s address using the solder pads on rear of the LED’s circuit board.
 
-A second optional parameter, *is_ht16k33*, allows you to specify the Adafruit 0.54in Alphanumeric Display: pass `True` to use this display. The default value is `False`, which implies you are using a VT16K33-based display.
+A second optional parameter, *is_ht16k33*, allows you to specify the Adafruit 0.54in Alphanumeric Display: pass `True` to use this display. The default value is `False`, which implies you are using a VK16K33-based display.
 
 The passed I&sup2;C bus must be configured before the HT16K33Segment object is created.
 
@@ -66,7 +66,7 @@ led = HT16K33Segment14(i2c)
 ```
 
 ```python
-# Circuitpython - VT16K33 device
+# Circuitpython - VK16K33 device
 from HT16K33segment14 import HT16K33Segment14
 import busio
 import board
@@ -149,7 +149,7 @@ Nb. Bit 15 is not read by the display
 
 For example, to define the letter `P`, we need to set segments 0, 1, 4, 5 and 6. In bit form that makes `0x73`, and this is the value passed into *glyph*.
 
-**Important** This is the encoding for the VT16K33. For the HT16K33, bits 11 and 13 are swapped. For pre-defined characters, the driver swaps these bits this for you.
+**Important** This is the encoding for the VK16K33. For the HT16K33, bits 11 and 13 are swapped. For pre-defined characters, the driver swaps these bits this for you.
 
 This method returns *self*.
 

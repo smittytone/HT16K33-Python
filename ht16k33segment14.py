@@ -173,7 +173,7 @@ class HT16K33Segment14(HT16K33):
             self.buffer[(digit << 1) + 1] = msb
             self.buffer[digit << 1] = value & 0xFF
         else:
-            # Output for VT16K33
+            # Output for VK16K33
             a = 0
             d = 1
             for i in range(0, 16):
