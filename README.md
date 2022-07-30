@@ -35,6 +35,10 @@ The repo’s `mpy` directory contains pre-compiled versions for CircuitPython ap
 
 Further drivers may be added in due course.
 
+## Documentation
+
+You can find documentation for all of the drivers [at smittytone.net](https://smittytone.net/docs/ht16k33.html).
+
 ## Release Notes
 
 - 3.2.0 *26 July 2022*
