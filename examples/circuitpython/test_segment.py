@@ -8,13 +8,10 @@ from ht16k33segment import HT16K33Segment
 DELAY = 0.01
 PAUSE = 3
 
-# START
-if __name__ == '__main__':
-    i2c = busio.I2C(board.SCL, board.SDA)
-    while not i2c.try_lock():
-        pass
-    display = HT16K33Segment(i2c)
-    display.set_brightness(2)
+# FUNCTIONS
+def run_tests(display=None):
+    if display == None:
+        assert display != None, "ERROR = No display supplied"
 
     # Write 'SYNC' to the LED using custom glyphs
     sync_text = b"\x6D\x6E\x37\x39"
@@ -58,6 +55,22 @@ if __name__ == '__main__':
 
         # Pause for breath
         time.sleep(DELAY)
+
+# START
+if __name__ == '__main__':
+    i2c = busio.I2C(board.SCL, board.SDA)
+    while not i2c.try_lock():
+        pass
+    display = HT16K33Segment(i2c)
+    display.set_brightness(2)
+
+    # Test pass 1
+    run_tests(display)
+    time.sleep(2)
+
+    # Test pass 2
+    display.rotate()
+    run_tests(display)
 
     # Flash the LED
     display.set_blink_rate(1)

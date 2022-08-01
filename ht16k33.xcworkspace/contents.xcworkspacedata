@@ -35,4 +35,52 @@
          location = "group:colour-glyph-maker.py">
       </FileRef>
    </Group>
+   <Group
+      location = "group:/Users/tsmith/GitHub/ht16k33-python/examples"
+      name = "examples">
+      <Group
+         location = "group:circuitpython"
+         name = "circuitpython">
+         <FileRef
+            location = "group:test_segmentbig.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_segement14_vt16k33.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_segement14_ht16k33.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_matrixcolour.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_matrix.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_matrixfeatherwing.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_segment.py">
+         </FileRef>
+      </Group>
+      <Group
+         location = "group:micropython"
+         name = "micropython">
+         <FileRef
+            location = "group:test_segmentbig.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_matrixcolour.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_matrix.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_matrixfeatherwing.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_segment.py">
+         </FileRef>
+      </Group>
+   </Group>
 </Workspace>
