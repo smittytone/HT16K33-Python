@@ -1,4 +1,4 @@
-# HT16K33Segment14 3.2.0 #
+# HT16K33Segment14 3.3.0 #
 
 This is a hardware driver for the [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916)., which is based on the Freenove VK16K33, a clone of the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 

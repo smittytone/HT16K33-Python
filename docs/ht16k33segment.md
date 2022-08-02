@@ -1,4 +1,4 @@
-# HT16K33Segment 3.2.0 #
+# HT16K33Segment 3.3.0 #
 
 This is a hardware driver for the [Adafruit 0.56-inch 4-digit, 7-segment LED display](http://www.adafruit.com/products/878), which is based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
@@ -109,6 +109,25 @@ This method returns *self*.
 # Set the display to --:--
 led.set_char("-", 0).set_char("-", 1).set_char("-", 2).set_char("-", 3)
 led.set_colon().draw()
+```
+
+### rotate() ###
+
+Rotate the display orientation by 180 degrees. Once called, the display will remain rotated until you call `rotate()` again. It is expected that `rotate()` will be called once, right after instantiation, but it does give some scope for interesting effects.
+
+`rotate()` does not update the display, only the buffer. Call [*draw()*](#draw) to refresh the LED.
+
+This method returns *self*.
+
+#### Example ####
+
+```python
+# Present error 2 -> 'Err2'
+led.set_character("E", 0).set_glyph(0x50, 1)
+led.set_glyph(0x50, 2).set_number(2, 3).draw()
+
+# Flip message upside down
+led.rotate().draw()
 ```
 
 ### set_glyph(*glyph[, digit][, has_dot]*) ###

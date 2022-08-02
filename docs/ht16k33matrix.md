@@ -1,4 +1,4 @@
-# HT16K33Matrix 3.2.0 #
+# HT16K33Matrix 3.3.0 #
 
 This is a hardware driver for the [Adafruit 1.2-inch 8x8 monochrome LED matrix backpack](https://www.adafruit.com/product/1048) or the [Adafruit Mini 0.8-inch 8x8 LED Matrix](https://www.adafruit.com/product/872), which are based on the Holtek HT16K33 controller. The driver communicates using I&sup2;C.
 
