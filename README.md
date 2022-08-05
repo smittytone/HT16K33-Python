@@ -41,7 +41,7 @@ You can find documentation for all of the drivers [at smittytone.net](https://sm
 
 ## Release Notes
 
-- 3.3.0 *Unreleased*
+- 3.3.0 *5 August 2022*
     - Add `rotate()` method to HT16K33Segment.
 - 3.2.0 *26 July 2022*
     - Support the [Adafruit 0.54in Alphanumeric Display](https://www.adafruit.com/product/1911) via `ht16k33segment14.py`.
