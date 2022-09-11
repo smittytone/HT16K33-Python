@@ -1,4 +1,4 @@
-# Import the base class
+# Import the base class       # note this is akb modified version
 from ht16k33 import HT16K33
 
 class HT16K33Segment14(HT16K33):
@@ -28,8 +28,8 @@ class HT16K33Segment14(HT16K33):
     HT16K33_SEG14_CHAR_COUNT  = 76
 
     # CHARSET store character matrices for 0-9, A-Z, a-z, space and various symbols
-    CHARSET = b'\x00\x3F\x12\x00\x00\xDB\x00\x8F\x12\xE0\x00\xED\x00\xFD\x14\x01\x00\xFF\x00\xEF\x00\xF7\x12\x8F\x00\x39\x12\x0F\x00\x79\x00\x71\x00\xBD\x00\xF6\x12\x09\x00\x1E\x0C\x70\x00\x38\x05\x36\x09\x36\x00\x3F\x00\xF3\x08\x3F\x08\xF3\x00\xED\x12\x01\x00\x3E\x24\x30\x28\x36\x2D\x00\x15\x00\x24\x09\x10\x58\x08\x78\x00\xD8\x20\x8E\x20\x58\x24\x80\x04\x8E\x10\x70\x10\x00\x08\x06\x1E\x00\x20\x30\x10\xD4\x10\x50\x00\xDC\x01\x70\x04\x86\x00\x50\x08\x88\x00\x78\x00\x1C\x08\x04\x28\x14\x2D\x00\x25\x00\x20\x48\x00\x00\x00\x06\x02\x20\x10\x83\x12\xED\x24\x24\x00\xE3\x04\x00\x09\x00\x20\x00\x3F\xC0\x12\xC0\x00\xC0\x24\x00'
-
+    CHARSET = b'\x00\x3F\x00\x06\x00\xDB\x00\x8F\x00\xE6\x00\xED\x00\xFD\x00\x07\x00\xFF\x00\xEF\x00\xF7\x12\x8F\x00\x39\x12\x0F\x00\x79\x00\x71\x00\xBD\x00\xF6\x12\x09\x00\x1E\x0C\x70\x00\x38\x05\x36\x09\x36\x00\x3F\x00\xF3\x08\x3F\x08\xF3\x00\xED\x12\x01\x00\x3E\x24\x30\x28\x36\x2D\x00\x15\x00\x24\x09\x10\x58\x08\x78\x00\xD8\x20\x8E\x20\x58\x24\x80\x04\x8E\x10\x70\x10\x00\x08\x06\x1E\x00\x20\x30\x10\xD4\x10\x50\x00\xDC\x01\x70\x04\x86\x00\x50\x08\x88\x00\x78\x00\x1C\x08\x04\x28\x14\x2D\x00\x25\x00\x20\x48\x00\x00\x00\x06\x02\x20\x10\x83\x12\xED\x24\x24\x00\xE3\x04\x00\x09\x00\x20\x00\x3F\xC0\x12\xC0\x00\xC0\x24\x00'
+# akb modified 0, 4 and 7 to be like 7 segment presentations
 
     # *********** CONSTRUCTOR **********
 
@@ -71,9 +71,10 @@ class HT16K33Segment14(HT16K33):
         assert 0 <= glyph < 0xFFFF, "ERROR - Invalid glyph (0x0000-0xFFFF) set in set_glyph()"
 
         # Write the character to the buffer
-        if has_dot: glyph |= self.HT16K33_SEG14_DP_VALUE
-        self.buffer[digit << 1] = (glyph >> 8) & 0xFF
-        self.buffer[(digit << 1 + 1)] = glyph & 0xFF
+        #if has_dot: glyph |= self.HT16K33_SEG14_DP_VALUE #akb
+        #self.buffer[digit << 1] = (glyph >> 8) & 0xFF #akb
+        #self.buffer[(digit << 1 + 1)] = glyph & 0xFF #akb
+        self._set_digit(glyph, digit, has_dot) #akb
 
     def set_number(self, number, digit=0, has_dot=False):
         """
@@ -91,9 +92,9 @@ class HT16K33Segment14(HT16K33):
         """
         assert 0 <= digit < 4, "ERROR - Invalid digit (0-3) set in set_number()"
         assert 0 <= number < 10, "ERROR - Invalid value (0-9) set in set_number()"
-        return self.set_character(str(number), digit)
+        return self.set_character(str(number), digit, has_dot) #akb
 
-    def set_character(self, char, digit=0):
+    def set_character(self, char, digit=0, has_dot=False):  #akb
         """
         Present single alphanumeric character at the specified digit.
 
@@ -133,10 +134,10 @@ class HT16K33Segment14(HT16K33):
         elif char in 'abcdefghijklmnopqrstuvwxyz':
             char_val = ord(char) - 61   # 36-61
         assert char_val != 0xFFFF, "ERROR - Invalid char string set in set_character() " + char + " (" + str(ord(char)) + ")"
-        self._set_digit((self.CHARSET[char_val << 1] << 8) | self.CHARSET[(char_val << 1) + 1], digit)
+        self._set_digit((self.CHARSET[char_val << 1] << 8) | self.CHARSET[(char_val << 1) + 1], digit, has_dot) #akb
         return self
 
-    def set_code(self, code, digit):
+    def set_code(self, code, digit, has_dot=False):  #alb
         """
         Present single alphanumeric character at the specified digit.
 
@@ -154,14 +155,15 @@ class HT16K33Segment14(HT16K33):
             The instance (self)
         """
         assert 0 <= digit < 4, "ERROR - Invalid digit (0-3) set in set_code()"
-        assert 0 <= code < HT16K33_SEG14_CHAR_COUNT, "ERROR - Invalid code (0-{:d}) set in set_code()".format(self.HT16K33_SEG14_CHAR_COUNT - 1)
-        self._set_digit((self.CHARSET[code << 1] << 8) | self.CHARSET[(code << 1) + 1], digit)
+        assert 0 <= code < 76, "ERROR - Invalid code (0-{:d}) set in set_code()".format(self.HT16K33_SEG14_CHAR_COUNT - 1) #akb
+        self._set_digit((self.CHARSET[code << 1] << 8) | self.CHARSET[(code << 1) + 1], digit, has_dot) #akb
         return self
 
 
     # *********** PRIVATE FUNCTIONS (DO NOT CALL) **********
 
-    def _set_digit(self, value, digit):
+    def _set_digit(self, value, digit, has_dot): #akb
+        if has_dot: value |= self.HT16K33_SEG14_DP_VALUE  #akb
         if self.is_ht16k33:
             # Output for HT16K33: swap bits 11 and 13,
             # and sequence becomes LSB, MSB
