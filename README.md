@@ -42,10 +42,10 @@ You can find documentation for all of the drivers [at smittytone.net](https://sm
 ## Release Notes
 
 - 3.3.1 *Unreleased*
-    - 14-segment character set numerals now match 7-segment equivalents.
+    - 14-segment character-set numerals now match 7-segment equivalents.
     - Assorted code tweaks.
     - Remove old docs.
-    - Thanks to [`@akbiocca`](https://github.com/akbiocca) for assistance with this release.
+    - Big thanks to [`@akbiocca`](https://github.com/akbiocca) for assistance with this release.
 - 3.3.0 *5 August 2022*
     - Add `rotate()` method to HT16K33Segment.
 - 3.2.0 *26 July 2022*

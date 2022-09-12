@@ -53,11 +53,13 @@ class HT16K33Segment14(HT16K33):
               |   |             \|/
                              6  - -  7
             4 |   | 2           /|\
-              | _ |         11 / | \ 13    . 14
+              | _ |         13 / | \ 11    . 14
                 3                12
 
-        For HT16K33-based devices, swap bits 11 and 13: ie. set bit 11
-        for a bottom right stroke, and bit 13 for a bottom left stroke.
+        For HT16K33-based devices, swap bits 11 and 13: ie. set bit 13
+        for a bottom right stroke, and bit 11 for a bottom left stroke.
+        The diagram above is for the VT16K33. For the library's character
+        set, this switch is done for you.
 
         Bit 14 is the period, but this is set with parameter 3.
         Bit 15 is not read by the display.
