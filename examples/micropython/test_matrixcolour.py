@@ -10,7 +10,10 @@ PAUSE = 3
 
 # START
 if __name__ == '__main__':
-    i2c = I2C(scl=Pin(5), sda=Pin(4))
+    # Delete or comment out all but one of the following i2c instantiations
+    i2c = I2C(0, scl=Pin(9), sda=Pin(8)) # Raspberry Pi Pico
+    i2c = I2C(scl=Pin(5), sda=Pin(4))    # Adafruit Feather Huzzah ESP8256
+    i2c = I2C(scl=Pin(7), sda=Pin(6))    # SparkFun ProMicro 2040
     display = HT16K33MatrixColour(i2c)
     display.set_brightness(2)
 
