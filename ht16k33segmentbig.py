@@ -6,7 +6,7 @@ class HT16K33SegmentBig(HT16K33):
     Micro/Circuit Python class for the Adafruit 1.2-in 4-digit,
     7-segment LED matrix backpack and equivalent Featherwing.
 
-    Version:    3.3.0
+    Version:    3.3.1
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
@@ -60,7 +60,9 @@ class HT16K33SegmentBig(HT16K33):
         Returns:
             The instance (self)
         """
+        # Bail on incorrect pattern values
         assert 0 <= pattern < 0x1F, "ERROR - bad patter passed to set_colon()"
+        
         self.point_pattern = pattern
         self.buffer[self.HT16K33_SEGMENT_COLON_ROW] = pattern
         return self
@@ -92,8 +94,10 @@ class HT16K33SegmentBig(HT16K33):
         Returns:
             The instance (self)
         """
+        # Bail on incorrect row numbers or character values
         assert 0 <= digit < 4, "ERROR - Invalid digit (0-3) set in set_glyph()"
         assert 0 <= glyph < 0x80, "ERROR - Invalid glyph (0x00-0xFF) set in set_glyph()"
+        
         self.buffer[self.POS[digit]] = glyph & 0x7F
         return self
 
@@ -111,8 +115,10 @@ class HT16K33SegmentBig(HT16K33):
         Returns:
             The instance (self)
         """
+        # Bail on incorrect row numbers or character values
         assert 0 <= digit < 4, "ERROR - Invalid digit (0-3) set in set_number()"
         assert 0 <= number < 10, "ERROR - Invalid value (0-9) set in set_number()"
+        
         return self.set_character(str(number), digit)
 
     def set_character(self, char, digit=0):
@@ -134,7 +140,9 @@ class HT16K33SegmentBig(HT16K33):
         Returns:
             The instance (self)
         """
+        # Bail on incorrect row numbers
         assert 0 <= digit < 4, "ERROR - Invalid digit set in set_character()"
+        
         char = char.lower()
         char_val = 0xFF
         if char == "deg":
@@ -147,6 +155,9 @@ class HT16K33SegmentBig(HT16K33):
             char_val = ord(char) - 87
         elif char in '0123456789':
             char_val = ord(char) - 48
+        
+        # Bail on incorrect character values
         assert char_val != 0xFF, "ERROR - Invalid char string set in set_character()"
+        
         self.buffer[self.POS[digit]] = self.CHARSET[char_val]
         return self

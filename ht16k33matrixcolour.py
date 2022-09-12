@@ -5,7 +5,7 @@ class HT16K33MatrixColour(HT16K33):
     """
     Micro/Circuit Python class for the Adafruit 8x8 bi-colour LED matrix
 
-    Version:    3.3.0
+    Version:    3.3.1
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
@@ -180,8 +180,10 @@ class HT16K33MatrixColour(HT16K33):
         Returns:
             The instance (self)
         """
+        # Bail on incorrect values
         length = len(glyph)
         assert (0 < length <= self.width * 2) and (length % 2 == 0), "ERROR - Invalid glyph set in set_icon()"
+
         offset = 0
         if centre: offset = self._calc_offset(length)
         for i in range(length):
@@ -224,9 +226,12 @@ class HT16K33MatrixColour(HT16K33):
         Returns:
             None on error
         """
+        # Just in case it hasn't been imported
         import time
-
+        
+        # Bail on incorrect values
         assert (the_line is not None) and (len(the_line) > 0), "ERROR - Invalid text set in scroll_text()"
+        
         # Calculate the source buffer size
         length = 0
         for i in range(len(the_line)):
@@ -278,8 +283,10 @@ class HT16K33MatrixColour(HT16K33):
                               with bit 0 at the bottom and bit 7 at the top
             char_code (int)   Character's ID Ascii code 0-31. Default: 0
         """
+        # Bail on incorrect values
         assert 0 < len(glyph) <= self.width * 2, "ERROR - Invalid glyph data set in define_character()"
         assert 0 <= char_code < 32, "ERROR - Invalid character code set in define_character()"
+        
         self.def_chars[char_code] = glyph
         return self
 
@@ -295,8 +302,9 @@ class HT16K33MatrixColour(HT16K33):
         Returns:
             The instance (self)
         """
-        # Check argument range and value
+        # Bail on incorrect values
         assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in plot()"
+        
         if ink not in (0, 1, 2, 3): ink = 1
         for i in range(2):
             a = x * 2 + i
@@ -318,7 +326,9 @@ class HT16K33MatrixColour(HT16K33):
         Returns:
             Whether the pixel is set (True) or not (False)
         """
+        # Bail on incorrect values
         assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in is_set()"
+
         val_left = self.buffer[x * 2]
         val_right = self.buffer[x * 2 + 1]
         bit = ((val_left >> y) & 1) > 0 or ((val_right >> y) & 1) > 0
