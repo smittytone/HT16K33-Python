@@ -10,6 +10,7 @@ PAUSE = 3
 
 # START
 if __name__ == '__main__':
+    # For any supported board's default I2C bus
     i2c = busio.I2C(board.SCL, board.SDA, frequency=10000)
     while not i2c.try_lock():
         pass

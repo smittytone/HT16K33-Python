@@ -1,7 +1,8 @@
 # IMPORTS
-import utime as time
-from machine import I2C, Pin, RTC
-from HT16K33segment14 import HT16K33Segment14
+import time
+import board
+import busio
+from ht16k33segment14 import HT16K33Segment14
 
 # CONSTANTS
 DELAY = 0.01
@@ -9,11 +10,11 @@ PAUSE = 3
 
 # START
 if __name__ == '__main__':
-    # Delete or comment out all but one of the following i2c instantiations
-    i2c = I2C(0, scl=Pin(9), sda=Pin(8)) # Raspberry Pi Pico
-    i2c = I2C(scl=Pin(5), sda=Pin(4))    # Adafruit Feather Huzzah ESP8256
-    i2c = I2C(scl=Pin(7), sda=Pin(6))    # SparkFun ProMicro 2040
-    display = HT16K33Segment14(i2c, is_ht16k33=True)
+    # For any supported board's default I2C bus
+    i2c = busio.I2C(scl=board.D7, sda=board.D6)
+    while not i2c.try_lock():
+        pass
+    display = HT16K33Segment14(i2c,is_ht16k33=True)
     display.set_brightness(2)
     display.clear()
 

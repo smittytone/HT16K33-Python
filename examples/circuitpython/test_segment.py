@@ -58,6 +58,7 @@ def run_tests(display=None):
 
 # START
 if __name__ == '__main__':
+    # For any supported board's default I2C bus
     i2c = busio.I2C(board.SCL, board.SDA)
     while not i2c.try_lock():
         pass
