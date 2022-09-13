@@ -39,44 +39,50 @@
          location = "group:circuitpython"
          name = "circuitpython">
          <FileRef
-            location = "group:test_segmentbig.py">
-         </FileRef>
-         <FileRef
-            location = "group:test_segement14_vt16k33.py">
-         </FileRef>
-         <FileRef
-            location = "group:test_segement14_ht16k33.py">
+            location = "group:test_matrix.py">
          </FileRef>
          <FileRef
             location = "group:test_matrixcolour.py">
-         </FileRef>
-         <FileRef
-            location = "group:test_matrix.py">
          </FileRef>
          <FileRef
             location = "group:test_matrixfeatherwing.py">
          </FileRef>
          <FileRef
             location = "group:test_segment.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_segment14_ht16k33.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_segment14_vt16k33.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_segmentbig.py">
          </FileRef>
       </Group>
       <Group
          location = "group:micropython"
          name = "micropython">
          <FileRef
-            location = "group:test_segmentbig.py">
+            location = "group:test_matrix.py">
          </FileRef>
          <FileRef
             location = "group:test_matrixcolour.py">
-         </FileRef>
-         <FileRef
-            location = "group:test_matrix.py">
          </FileRef>
          <FileRef
             location = "group:test_matrixfeatherwing.py">
          </FileRef>
          <FileRef
             location = "group:test_segment.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_segment14_ht16k33.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_segment14_vt16k33.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_segmentbig.py">
          </FileRef>
       </Group>
    </Group>

@@ -41,9 +41,10 @@ You can find documentation for all of the drivers [at smittytone.net](https://sm
 
 ## Release Notes
 
-- 3.3.1 *Unreleased*
+- 3.3.1 *13 September 2022*
     - 14-segment character-set numerals now match 7-segment equivalents.
     - Assorted code tweaks.
+    - Wrangle and extend examples.
     - Remove old docs.
     - Big thanks to [`@akbiocca`](https://github.com/akbiocca) for assistance with this release.
 - 3.3.0 *5 August 2022*
