@@ -41,7 +41,7 @@ You can find documentation for all of the drivers [at smittytone.net](https://sm
 
 ## Release Notes
 
-- 3.4.0 *Unreleased*
+- 3.4.0 *6 October 2022*
     - Allow the colon and decimal point on [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916)).
 - 3.3.1 *13 September 2022*
     - 14-segment character-set numerals now match 7-segment equivalents.
