@@ -180,6 +180,15 @@ class HT16K33Segment14(HT16K33):
         return self._set_digit((self.CHARSET[code << 1] << 8) | self.CHARSET[(code << 1) + 1], digit, has_dot)
 
     def set_colon(self, is_on=True):
+        """
+        Set or unset the colon symbol on the SparkFun Alphamnumeric Display.
+
+       Args:
+            is_on (bool): Should the colon be illuminated?
+
+        Returns:
+            The instance (self)
+        """
         # This doesn't work on the HT16K33
         if self.is_ht16k33: return self
         if is_on:
@@ -190,6 +199,15 @@ class HT16K33Segment14(HT16K33):
 
 
     def set_decimal(self, is_on=True):
+        """
+        Set or unset the decimal point symbol on the SparkFun Alphamnumeric Display.
+
+       Args:
+            is_on (bool): Should the decimal point be illuminated?
+
+        Returns:
+            The instance (self)
+        """
         # This doesn't work on the HT16K33
         if self.is_ht16k33: return self
         if is_on:
@@ -201,7 +219,7 @@ class HT16K33Segment14(HT16K33):
     # *********** PRIVATE FUNCTIONS (DO NOT CALL) **********
 
     def _set_digit(self, value, digit, has_dot=False):
-        
+
         if self.is_ht16k33:
             if has_dot: value |= self.HT16K33_SEG14_DP_VALUE
             # Output for HT16K33: swap bits 11 and 13,
@@ -215,7 +233,6 @@ class HT16K33Segment14(HT16K33):
             self.buffer[(digit << 1) + 1] = msb
             self.buffer[digit << 1] = value & 0xFF
         else:
-            if has_dot: value |= 0x4000
             # Output for VK16K33
             a = 0
             d = 1
