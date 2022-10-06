@@ -5,7 +5,7 @@ class HT16K33Segment14(HT16K33):
     """
     Micro/Circuit Python class for the Adafruit 0.54in Quad Alphanumeric Display,
     a four-digit, 14-segment LED displays driven by the HT16K33 controller
-    Version:    3.3.1
+    Version:    3.4.0
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
@@ -14,18 +14,21 @@ class HT16K33Segment14(HT16K33):
 
     # *********** CONSTANTS **********
 
-    HT16K33_SEG14_DP_VALUE    = 0x4000
-    HT16K33_SEG14_BLANK_CHAR  = 62
-    HT16K33_SEG14_DQUOTE_CHAR = 64
-    HT16K33_SEG14_QUESTN_CHAR = 65
-    HT16K33_SEG14_DOLLAR_CHAR = 66
-    HT16K33_SEG14_PRCENT_CHAR = 67
-    HT16K33_SEG14_DEGREE_CHAR = 68
-    HT16K33_SEG14_STAR_CHAR   = 72
-    HT16K33_SEG14_PLUS_CHAR   = 73
-    HT16K33_SEG14_MINUS_CHAR  = 74
-    HT16K33_SEG14_DIVSN_CHAR  = 75
-    HT16K33_SEG14_CHAR_COUNT  = 76
+    HT16K33_SEG14_DP_VALUE      = 0x4000
+    HT16K33_SEG14_BLANK_CHAR    = 62
+    HT16K33_SEG14_DQUOTE_CHAR   = 64
+    HT16K33_SEG14_QUESTN_CHAR   = 65
+    HT16K33_SEG14_DOLLAR_CHAR   = 66
+    HT16K33_SEG14_PRCENT_CHAR   = 67
+    HT16K33_SEG14_DEGREE_CHAR   = 68
+    HT16K33_SEG14_STAR_CHAR     = 72
+    HT16K33_SEG14_PLUS_CHAR     = 73
+    HT16K33_SEG14_MINUS_CHAR    = 74
+    HT16K33_SEG14_DIVSN_CHAR    = 75
+    HT16K33_SEG14_CHAR_COUNT    = 76
+
+    VT16K33_SEG14_COLON_BYTE    = 1
+    VT16K33_SEG14_DECIMAL_BYTE  = 3
 
     # CHARSET store character matrices for 0-9, A-Z, a-z, space and various symbols
     CHARSET = b'\x24\x3F\x00\x06\x00\xDB\x00\x8F\x00\xE6\x00\xED\x00\xFD\x00\x07\x00\xFF\x00\xEF\x00\xF7\x12\x8F\x00\x39\x12\x0F\x00\x79\x00\x71\x00\xBD\x00\xF6\x12\x09\x00\x1E\x0C\x70\x00\x38\x05\x36\x09\x36\x00\x3F\x00\xF3\x08\x3F\x08\xF3\x00\xED\x12\x01\x00\x3E\x24\x30\x28\x36\x2D\x00\x15\x00\x24\x09\x10\x58\x08\x78\x00\xD8\x20\x8E\x20\x58\x24\x80\x04\x8E\x10\x70\x10\x00\x08\x06\x1E\x00\x20\x30\x10\xD4\x10\x50\x00\xDC\x01\x70\x04\x86\x00\x50\x08\x88\x00\x78\x00\x1C\x08\x04\x28\x14\x2D\x00\x25\x00\x20\x48\x00\x00\x00\x06\x02\x20\x10\x83\x12\xED\x24\x24\x00\xE3\x04\x00\x09\x00\x20\x00\x3F\xC0\x12\xC0\x00\xC0\x24\x00'
@@ -176,12 +179,31 @@ class HT16K33Segment14(HT16K33):
         # Write the character to the buffer
         return self._set_digit((self.CHARSET[code << 1] << 8) | self.CHARSET[(code << 1) + 1], digit, has_dot)
 
+    def set_colon(self, is_on=True):
+        # This doesn't work on the HT16K33
+        if self.is_ht16k33: return self
+        if is_on:
+            self.buffer[self.VT16K33_SEG14_COLON_BYTE] |= 0x01
+        else:
+            self.buffer[self.VT16K33_SEG14_COLON_BYTE] &= 0x7F
+        return self
+
+
+    def set_decimal(self, is_on=True):
+        # This doesn't work on the HT16K33
+        if self.is_ht16k33: return self
+        if is_on:
+            self.buffer[self.VT16K33_SEG14_DECIMAL_BYTE] |= 0x01
+        else:
+            self.buffer[self.VT16K33_SEG14_DECIMAL_BYTE] &= 0x7F
+        return self
 
     # *********** PRIVATE FUNCTIONS (DO NOT CALL) **********
 
     def _set_digit(self, value, digit, has_dot=False):
-        if has_dot: value |= self.HT16K33_SEG14_DP_VALUE
+        
         if self.is_ht16k33:
+            if has_dot: value |= self.HT16K33_SEG14_DP_VALUE
             # Output for HT16K33: swap bits 11 and 13,
             # and sequence becomes LSB, MSB
             msb = (value >> 8) & 0xFF
@@ -193,6 +215,7 @@ class HT16K33Segment14(HT16K33):
             self.buffer[(digit << 1) + 1] = msb
             self.buffer[digit << 1] = value & 0xFF
         else:
+            if has_dot: value |= 0x4000
             # Output for VK16K33
             a = 0
             d = 1

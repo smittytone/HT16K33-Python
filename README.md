@@ -1,4 +1,4 @@
-# HT16K33 Drivers 3.3.1 #
+# HT16K33 Drivers 3.4.0 #
 
 This repo provides Python drivers for the Holtek HT16K33 controller chip and various display devices based upon it, such as the [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149) and the [Raspberry Pi Pico](https://www.raspberrypi.org/documentation/pico/getting-started/).
 
@@ -41,6 +41,8 @@ You can find documentation for all of the drivers [at smittytone.net](https://sm
 
 ## Release Notes
 
+- 3.4.0 *Unreleased*
+    - Allow the colon and decimal point on [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916)).
 - 3.3.1 *13 September 2022*
     - 14-segment character-set numerals now match 7-segment equivalents.
     - Assorted code tweaks.

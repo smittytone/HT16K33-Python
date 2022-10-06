@@ -5,7 +5,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
     """
     Micro/Circuit Python class for the Adafruit 0.8-in 16x8 LED matrix FeatherWing.
 
-    Version:    3.3.1
+    Version:    3.4.0
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
