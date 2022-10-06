@@ -54,7 +54,7 @@
             location = "group:test_segment14_ht16k33.py">
          </FileRef>
          <FileRef
-            location = "group:test_segment14_vt16k33.py">
+            location = "group:/Users/smitty/GitHub/ht16k33-python/examples/circuitpython/test_segment14_vk16k33.py">
          </FileRef>
          <FileRef
             location = "group:test_segmentbig.py">
@@ -79,7 +79,7 @@
             location = "group:test_segment14_ht16k33.py">
          </FileRef>
          <FileRef
-            location = "group:test_segment14_vt16k33.py">
+            location = "group:/Users/smitty/GitHub/ht16k33-python/examples/micropython/test_segment14_vk16k33.py">
          </FileRef>
          <FileRef
             location = "group:test_segmentbig.py">
