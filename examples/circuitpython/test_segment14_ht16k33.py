@@ -14,6 +14,7 @@ if __name__ == '__main__':
     i2c = busio.I2C(scl=board.D7, sda=board.D6)
     while not i2c.try_lock():
         pass
+    
     display = HT16K33Segment14(i2c,is_ht16k33=True)
     display.set_brightness(2)
     display.clear()

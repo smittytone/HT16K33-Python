@@ -15,6 +15,7 @@ if __name__ == '__main__':
     i2c = busio.I2C(board.SCL, board.SDA)
     while not i2c.try_lock():
         pass
+    
     display = HT16K33MatrixColour(i2c)
     display.set_brightness(2)
 

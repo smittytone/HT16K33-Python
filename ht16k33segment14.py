@@ -5,7 +5,7 @@ class HT16K33Segment14(HT16K33):
     """
     Micro/Circuit Python class for the Adafruit 0.54in Quad Alphanumeric Display,
     a four-digit, 14-segment LED displays driven by the HT16K33 controller
-    Version:    3.4.0
+    Version:    3.4.1
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
