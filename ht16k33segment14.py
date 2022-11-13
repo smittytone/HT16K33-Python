@@ -194,7 +194,7 @@ class HT16K33Segment14(HT16K33):
         if is_on:
             self.buffer[self.VK16K33_SEG14_COLON_BYTE] |= 0x01
         else:
-            self.buffer[self.VK16K33_SEG14_COLON_BYTE] &= 0x7F
+            self.buffer[self.VK16K33_SEG14_COLON_BYTE] &= 0xFE
         return self
 
 

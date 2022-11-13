@@ -43,6 +43,7 @@ You can find documentation for all of the drivers [at smittytone.net](https://sm
 
 - 3.4.1 *Unreleased*
     - Correct VK16K33 naming.
+    - Fix VK16K33 colon setting and unsetting.
 - 3.4.0 *6 October 2022*
     - Allow the colon and decimal point on [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916)).
 - 3.3.1 *13 September 2022*
