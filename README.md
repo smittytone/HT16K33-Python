@@ -41,7 +41,7 @@ You can find documentation for all of the drivers [at smittytone.net](https://sm
 
 ## Release Notes
 
-- 3.4.1 *Unreleased*
+- 3.4.1 *14 November 2022*
     - Correct VK16K33 naming.
     - Fix VK16K33 colon setting and unsetting.
 - 3.4.0 *6 October 2022*
