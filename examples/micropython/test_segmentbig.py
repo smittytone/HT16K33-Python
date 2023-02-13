@@ -37,6 +37,9 @@ if __name__ == '__main__':
     display.set_colon(0).draw()
     time.sleep(PAUSE)
 
+    display.set_character(" ", 0).set_character(" ", 3).draw()
+    time.sleep(PAUSE)
+
     # Show a countdown using the charset numbers
     # (also uses 'set_colon()')
     count = 9999

@@ -9,7 +9,7 @@ class HT16K33MatrixColour(HT16K33):
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
-    Copyright:  2022
+    Copyright:  2023
     """
 
     # *********** CONSTANTS **********
@@ -228,10 +228,10 @@ class HT16K33MatrixColour(HT16K33):
         """
         # Just in case it hasn't been imported
         import time
-        
+
         # Bail on incorrect values
         assert (the_line is not None) and (len(the_line) > 0), "ERROR - Invalid text set in scroll_text()"
-        
+
         # Calculate the source buffer size
         length = 0
         for i in range(len(the_line)):
@@ -286,7 +286,7 @@ class HT16K33MatrixColour(HT16K33):
         # Bail on incorrect values
         assert 0 < len(glyph) <= self.width * 2, "ERROR - Invalid glyph data set in define_character()"
         assert 0 <= char_code < 32, "ERROR - Invalid character code set in define_character()"
-        
+
         self.def_chars[char_code] = glyph
         return self
 
@@ -304,7 +304,7 @@ class HT16K33MatrixColour(HT16K33):
         """
         # Bail on incorrect values
         assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in plot()"
-        
+
         if ink not in (0, 1, 2, 3): ink = 1
         for i in range(2):
             a = x * 2 + i

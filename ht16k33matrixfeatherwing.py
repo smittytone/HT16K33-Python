@@ -9,7 +9,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
-    Copyright:  2022
+    Copyright:  2023
     """
 
     # *********** CONSTANTS **********
@@ -160,7 +160,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
         # Bail on incorrect row numbers or character values
         assert 0 < len(glyph) <= self.width * 2, "ERROR - Invalid glyph set in set_icon()"
         assert 0 <= column < self.width, "ERROR - Invalid column number set in set_icon()"
-        
+
         for i in range(len(glyph)):
             buf_column = self._get_row(column + i)
             if buf_column is False: break
@@ -181,7 +181,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
         # Bail on incorrect row numbers or character values
         assert 0 <= ascii_value < 128, "ERROR - Invalid ascii code set in set_character()"
         assert 0 <= column < self.width, "ERROR - Invalid column number set in set_icon()"
-        
+
         glyph = None
         if ascii_value < 32:
             # A user-definable character has been chosen
@@ -259,7 +259,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
         # Bail on incorrect row numbers or character values
         assert 0 < len(glyph) < self.width * 2, "ERROR - Invalid glyph set in define_character()"
         assert 0 <= char_code < 32, "ERROR - Invalid character code set in define_character()"
-        
+
         self.def_chars[char_code] = glyph
         return self
 
@@ -278,7 +278,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
         """
         # Bail on incorrect row numbers or character values
         assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in plot()"
-        
+
         if ink not in (0, 1): ink = 1
         x2 = self._get_row(x)
         if ink == 1:
@@ -306,7 +306,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
         """
         # Bail on incorrect row numbers or character values
         assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in is_set()"
-        
+
         x = self._get_row(x)
         bit = (self.buffer[x] >> y) & 1
         return True if bit > 0 else False

@@ -7,7 +7,7 @@ class HT16K33:
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
-    Copyright:  2022
+    Copyright:  2023
     """
 
     # *********** CONSTANTS **********

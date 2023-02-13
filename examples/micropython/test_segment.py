@@ -14,7 +14,7 @@ if __name__ == '__main__':
     i2c = I2C(0, scl=Pin(5), sda=Pin(4))    # Adafruit Feather Huzzah ESP8256
     i2c = I2C(0, scl=Pin(17), sda=Pin(16))  # SparkFun ProMicro 2040
     i2c = I2C(1, scl=Pin(23), sda=Pin(22))  # Adafruit QTPy RP2040
-    
+
     display = HT16K33Segment(i2c)
     display.set_brightness(2)
 
@@ -36,6 +36,9 @@ if __name__ == '__main__':
     display.set_character("B", 0).set_character("E", 1)
     display.set_character("E", 2).set_character("F", 3)
     display.draw()
+    time.sleep(PAUSE)
+
+    display.set_character(" ", 0).set_character(" ", 3).draw()
     time.sleep(PAUSE)
 
     # Show a countdown using the charset numbers

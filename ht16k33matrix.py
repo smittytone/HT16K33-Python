@@ -10,7 +10,7 @@ class HT16K33Matrix(HT16K33):
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
-    Copyright:  2022
+    Copyright:  2023
     """
 
     # *********** CONSTANTS **********
@@ -191,7 +191,7 @@ class HT16K33Matrix(HT16K33):
         # Bail on incorrect values
         length = len(glyph)
         assert 0 < length <= self.width, "ERROR - Invalid glyph set in set_icon()"
-        
+
         for i in range(length):
             a = i
             if centre: a = i + ((8 - length) >> 1)
@@ -211,7 +211,7 @@ class HT16K33Matrix(HT16K33):
         """
         # Bail on incorrect values
         assert 0 <= ascii_value < 128, "ERROR - Invalid ascii code set in set_character()"
-        
+
         glyph = None
         if ascii_value < 32:
             # A user-definable character has been chosen
@@ -293,7 +293,7 @@ class HT16K33Matrix(HT16K33):
         # Bail on incorrect values
         assert 0 < len(glyph) <= self.width, "ERROR - Invalid glyph set in define_character()"
         assert 0 <= char_code < 32, "ERROR - Invalid character code set in define_character()"
-        
+
         self.def_chars[char_code] = glyph
         return self
 
@@ -312,7 +312,7 @@ class HT16K33Matrix(HT16K33):
         """
         # Bail on incorrect values
         assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in plot()"
-        
+
         if ink not in (0, 1): ink = 1
         if ink == 1:
             if self.is_set(x ,y) and xor:
@@ -339,7 +339,7 @@ class HT16K33Matrix(HT16K33):
         """
         # Bail on incorrect values
         assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in is_set()"
-        
+
         bit = (self.buffer[x] >> y) & 1
         return True if bit > 0 else False
 
