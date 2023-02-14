@@ -41,7 +41,7 @@ You can find documentation for all of the drivers [at smittytone.net](https://sm
 
 ## Release Notes
 
-- 3.4.2 *Unreleased*
+- 3.4.2 *14 February 2023*
     - Fix an error when a space is shown as a zero — thanks, [`@asasine`](https://github.com/asasine).
 - 3.4.1 *14 November 2022*
     - Correct VK16K33 naming.
