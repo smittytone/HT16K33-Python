@@ -1,10 +1,11 @@
 # Import the base class
 from ht16k33 import HT16K33
 
-class HT16K33SegmentBig(HT16K33):
+class HT16K33Segment8(HT16K33):
     """
-    Micro/Circuit Python class for the Adafruit 1.2-in 4-digit,
-    7-segment LED matrix backpack and equivalent Featherwing.
+    Micro/Circuit Python class for a generic 1-8-digit, 7-segment display.
+    It assumes each digit has a decimal point, but there are no other
+    symbol LEDs included.
 
     Version:    3.5.0
     Bus:        I2C
@@ -15,59 +16,37 @@ class HT16K33SegmentBig(HT16K33):
 
     # *********** CONSTANTS **********
 
-    HT16K33_SEGMENT_COLON_ROW = 0x04
     HT16K33_SEGMENT_MINUS_CHAR = 0x10
     HT16K33_SEGMENT_DEGREE_CHAR = 0x11
-    HT16K33_SEGMENT_SPACE_CHAR = 0x13
-
-    COLON_CENTRE = 0x02
-    COLON_LEFT_UPPER = 0x04
-    COLON_LEFT_LOWER = 0x08
-    COLON_LEFT = 0x0C
-    DECIMAL_POINT = 0x10
-
-    # The positions of the segments within the buffer
-    POS = (0, 2, 6, 8)
+    HT16K33_SEGMENT_SPACE_CHAR = 0x12
 
     # Bytearray of the key alphanumeric characters we can show:
-    # 0-9, A-F, minus, degree
+    # 0-9, A-F, minus, degree, space
     CHARSET = b'\x3F\x06\x5B\x4F\x66\x6D\x7D\x07\x7F\x6F\x5F\x7C\x58\x5E\x7B\x71\x40\x63\x00'
 
     # *********** CONSTRUCTOR **********
 
-    def __init__(self, i2c, i2c_address=0x70):
+    def __init__(self, i2c, i2c_address=0x70, digits=8):
         self.buffer = bytearray(16)
-        self.point_pattern = 0x00
-        super(HT16K33SegmentBig, self).__init__(i2c, i2c_address)
+        self.is_rotated = False
+        # Check digits specified (must be 1 - 8)
+        assert 0 < digits < 9, "ERROR - Invalid number of digits (1-8) in HT16K33Segment8()"
+        self.max_digits = digits
+        super(HT16K33Segment, self).__init__(i2c, i2c_address)
 
     # *********** PUBLIC METHODS **********
 
-    def set_colon(self, pattern=0x02):
+    def rotate(self):
         """
-        Set or unset the segment LED display's colon and decimal point lights.
-
-        This method updates the display buffer, but does not send the buffer to the display itself.
-        Call 'draw()' to render the buffer on the display.
-
-        Args:
-            patter (int) An integer indicating which elements to light (OR the values required). Default: 0x00
-                         0x00: no colon
-                         0x02: centre colon
-                         0x04: left colon, lower dot
-                         0x08: left colon, upper dot
-                         0x10: decimal point (upper)
+        Rotate/flip the segment display.
 
         Returns:
             The instance (self)
         """
-        # Bail on incorrect pattern values
-        assert 0 <= pattern < 0x1F, "ERROR - bad patter passed to set_colon()"
-
-        self.point_pattern = pattern
-        self.buffer[self.HT16K33_SEGMENT_COLON_ROW] = pattern
+        self.is_rotated = not self.is_rotated
         return self
 
-    def set_glyph(self, glyph, digit=0):
+    def set_glyph(self, glyph, digit=0, has_dot=False):
         """
         Present a user-defined character glyph at the specified digit.
 
@@ -90,18 +69,20 @@ class HT16K33SegmentBig(HT16K33):
         Args:
             glyph (int):   The glyph pattern.
             digit (int):   The digit to show the glyph. Default: 0 (leftmost digit).
+            has_dot (bool): Whether the decimal point to the right of the digit should be lit. Default: False.
 
         Returns:
             The instance (self)
         """
         # Bail on incorrect row numbers or character values
-        assert 0 <= digit < 4, "ERROR - Invalid digit (0-3) set in set_glyph()"
-        assert 0 <= glyph < 0x80, "ERROR - Invalid glyph (0x00-0xFF) set in set_glyph()"
+        assert 0 <= digit < self.max_digits, "ERROR - Invalid digit set in set_glyph()"
+        assert 0 <= glyph < 0x80, "ERROR - Invalid glyph (0x00-0x80) set in set_glyph()"
 
-        self.buffer[self.POS[digit]] = glyph & 0x7F
+        self.buffer[digit << 1] = glyph
+        if has_dot is True: self.buffer[digit << 1] |= 0x80
         return self
 
-    def set_number(self, number, digit=0):
+    def set_number(self, number, digit=0, has_dot=False):
         """
         Present single decimal value (0-9) at the specified digit.
 
@@ -111,17 +92,18 @@ class HT16K33SegmentBig(HT16K33):
         Args:
             number (int):  The number to show.
             digit (int):   The digit to show the number. Default: 0 (leftmost digit).
+            has_dot (bool): Whether the decimal point to the right of the digit should be lit. Default: False.
 
         Returns:
             The instance (self)
         """
         # Bail on incorrect row numbers or character values
-        assert 0 <= digit < 4, "ERROR - Invalid digit (0-3) set in set_number()"
+        assert 0 <= digit < self.max_digits, "ERROR - Invalid digit set in set_number()"
         assert 0 <= number < 10, "ERROR - Invalid value (0-9) set in set_number()"
 
-        return self.set_character(str(number), digit)
+        return self.set_character(str(number), digit, has_dot)
 
-    def set_character(self, char, digit=0):
+    def set_character(self, char, digit=0, has_dot=False):
         """
         Present single alphanumeric character at the specified digit.
 
@@ -130,7 +112,7 @@ class HT16K33SegmentBig(HT16K33):
         Other characters can be defined and presented using 'set_glyph()'.
 
         This method updates the display buffer, but does not send the buffer to the display itself.
-        Call 'draw()' to render the buffer on the display.
+        Call 'update()' to render the buffer on the display.
 
         Args:
             char (string):  The character to show.
@@ -141,7 +123,7 @@ class HT16K33SegmentBig(HT16K33):
             The instance (self)
         """
         # Bail on incorrect row numbers
-        assert 0 <= digit < 4, "ERROR - Invalid digit set in set_character()"
+        assert 0 <= digit < self.max_digits, "ERROR - Invalid digit set in set_character()"
 
         char = char.lower()
         char_val = 0xFF
@@ -159,5 +141,32 @@ class HT16K33SegmentBig(HT16K33):
         # Bail on incorrect character values
         assert char_val != 0xFF, "ERROR - Invalid char string set in set_character()"
 
-        self.buffer[self.POS[digit]] = self.CHARSET[char_val]
+        self.buffer[digit << 1] = self.CHARSET[char_val]
+        if has_dot is True: self.buffer[digit << 1] |= 0x80
         return self
+
+    def draw(self):
+        """
+        Writes the current display buffer to the display itself.
+
+        Call this method after updating the buffer to update
+        the LED itself. Rotation handled here.
+        """
+        if self.is_rotated:
+            # Swap digits 0,(max - 1), 1,(max - 2) etc
+            if self.max_digits > 1:
+                for i in range(0, self.max_digits):
+                    swap = self.max_digits - i - 1
+                    if i != swap:
+                        a = self.buffer[i << 1]
+                        self.buffer[i << i] = self.buffer[swap << 1]
+                        self.buffer[swap << 1] = a
+
+            # Flip each digit
+            for i in range(0, self.max_digits):
+                a = self.buffer[i << 1]
+                b = (a & 0x07) << 3
+                c = (a & 0x38) >> 3
+                a &= 0xC0
+                self.buffer[i << 1] = (a | b | c)
+        self._render()

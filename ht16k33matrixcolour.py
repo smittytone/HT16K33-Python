@@ -5,7 +5,7 @@ class HT16K33MatrixColour(HT16K33):
     """
     Micro/Circuit Python class for the Adafruit 8x8 bi-colour LED matrix
 
-    Version:    3.4.2
+    Version:    3.5.0
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
