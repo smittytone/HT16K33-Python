@@ -1,7 +1,7 @@
 # Import the base class
 from ht16k33 import HT16K33
 
-class HT16K33Segment8(HT16K33):
+class HT16K33SegmentGen(HT16K33):
     """
     Micro/Circuit Python class for a generic 1-8-digit, 7-segment display.
     It assumes each digit has a decimal point, but there are no other

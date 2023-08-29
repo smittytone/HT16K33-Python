@@ -42,7 +42,7 @@ You can find documentation for all of the drivers [at smittytone.net](https://sm
 ## Release Notes
 
 - 3.5.0 *Unreleased*
-    - Add `HT16K33Segment8` a generic, 1-8 digit 7-segment driver.
+    - Add `HT16K33SegmentGen` a generic, 1-8 digit 7-segment driver.
 - 3.4.2 *14 February 2023*
     - Fix an error when a space is shown as a zero — thanks, [`@asasine`](https://github.com/asasine).
 - 3.4.1 *14 November 2022*
