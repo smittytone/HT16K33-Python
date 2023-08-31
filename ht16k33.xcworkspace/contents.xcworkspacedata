@@ -20,13 +20,13 @@
          location = "group:/Users/smitty/GitHub/HT16K33-Python/ht16k33segment.py">
       </FileRef>
       <FileRef
-         location = "group:/Users/smitty/GitHub/HT16K33-Python/ht16k33segment8.py">
-      </FileRef>
-      <FileRef
          location = "group:/Users/smitty/GitHub/HT16K33-Python/ht16k33segment14.py">
       </FileRef>
       <FileRef
          location = "group:/Users/smitty/GitHub/HT16K33-Python/ht16k33segmentbig.py">
+      </FileRef>
+      <FileRef
+         location = "group:ht16k33segmentGen.py">
       </FileRef>
    </Group>
    <Group
@@ -97,6 +97,12 @@
          </FileRef>
          <FileRef
             location = "group:test_segmentbig.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_segmentgen-01.py">
+         </FileRef>
+         <FileRef
+            location = "group:test_segmentgen-02.py">
          </FileRef>
       </Group>
    </Group>
