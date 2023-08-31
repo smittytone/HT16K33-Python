@@ -303,8 +303,8 @@ def clear(d):
 
 # START
 if __name__ == '__main__':
-    # Delete or comment out all but one of the following i2c instantiations
-    i2c = I2C(1, scl=Pin(3), sda=Pin(2))  # Adafruit QTPy RP2040
+    # This uses the Pico -- check the pins on your device
+    i2c = I2C(1, scl=Pin(3), sda=Pin(2))  # Pico
 
     display = HT16K33SegmentGen(i2c)
     display.set_brightness(2)
