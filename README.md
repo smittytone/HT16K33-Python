@@ -2,7 +2,11 @@
 
 This repo provides Python drivers for the Holtek HT16K33 controller chip and various display devices based upon it, such as the [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149) and the [Raspberry Pi Pico](https://www.raspberrypi.org/documentation/pico/getting-started/).
 
-The drivers supports both [CircuitPython](https://circuitpython.org) and [MicroPython](https://micropython.org) applications. They communicate using I&sup2;C.
+The library also supports generic seven-segment displays wired up to an HT16K33, which can drive up to eight these LEDs. The HT16K33 may be on a board of your own design, or on a third-part one, such as the [Adafruit 16x8 LED Matrix Driver Backpack ](https://www.adafruit.com/product/1427). LED units you can connect range from [single digits](https://www.sparkfun.com/products/8546) up to combinations of [multi-digit units](https://www.sparkfun.com/products/11409).
+
+Connect your HT16K33 column pins to each LED's digit selection pin, and its row pins to the LED's segement selection pins.
+
+The drivers support both [CircuitPython](https://circuitpython.org) and [MicroPython](https://micropython.org) applications. They communicate using I&sup2;C.
 
 ## Importing the Drivers ##
 
@@ -32,6 +36,7 @@ The repo’s `mpy` directory contains pre-compiled versions for CircuitPython ap
 | [8x8 monochrome matrix LED](https://smittytone.net/docs/ht16k33_matrix.html) | [Adafruit Mini 0.8-inch 8x8 LED Matrix](https://www.adafruit.com/product/872) |
 | [8x8 bi-colour matrix LED](https://smittytone.net/docs/ht16k33_matrixcolour.html) | [Adafruit 1.2-inch 8x8 bi-color LED matrix backpack](https://www.adafruit.com/product/902) |
 | [16x8 FeatherWing matrix LED](https://smittytone.net/docs/ht16k33_matrixfeatherwing.html) | [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149) |
+[ Standalone HT16K33 | [Adafruit 16x8 LED Matrix Driver Backpack ](https://www.adafruit.com/product/1427) |
 
 Further drivers may be added in due course.
 
@@ -42,7 +47,7 @@ You can find documentation for all of the drivers [at smittytone.net](https://sm
 ## Release Notes
 
 - 3.5.0 *Unreleased*
-    - Add `HT16K33SegmentGen` a generic, 1-8 digit 7-segment driver.
+    - Add `HT16K33SegmentGen` a generic, 1-8 digit 7-segment driver — thanks, [`@vader7071`](https://github.com/vader7071).
 - 3.4.2 *14 February 2023*
     - Fix an error when a space is shown as a zero — thanks, [`@asasine`](https://github.com/asasine).
 - 3.4.1 *14 November 2022*
