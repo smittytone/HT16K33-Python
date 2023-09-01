@@ -153,14 +153,19 @@ class HT16K33SegmentGen(HT16K33):
         the LED itself. Rotation handled here.
         """
         if self.is_rotated:
+            # Preserve the unrotated buffer
+            tmpbuffer = bytearray(16)
+            for i in range(0, self.max_digits << 1):
+                tmpbuffer[i] = self.buffer[i]
             # Swap digits 0,(max - 1), 1,(max - 2) etc
             if self.max_digits > 1:
-                for i in range(0, self.max_digits):
-                    swap = self.max_digits - i - 1
-                    if i != swap:
-                        a = self.buffer[i << 1]
-                        self.buffer[i << i] = self.buffer[swap << 1]
-                        self.buffer[swap << 1] = a
+                for i in range(0, (self.max_digits >> 1)):
+                    right = (self.max_digits - i - 1) << 1
+                    left = i << 1
+                    if left != right:
+                        a = self.buffer[left]
+                        self.buffer[left] = self.buffer[right]
+                        self.buffer[right] = a
 
             # Flip each digit
             for i in range(0, self.max_digits):
@@ -169,4 +174,10 @@ class HT16K33SegmentGen(HT16K33):
                 c = (a & 0x38) >> 3
                 a &= 0xC0
                 self.buffer[i << 1] = (a | b | c)
-        self._render()
+            self._render()
+            # Restore the buffer
+            for i in range(0, self.max_digits << 1):
+                self.buffer[i] = tmpbuffer[i]
+        else:
+            self._render()
+            

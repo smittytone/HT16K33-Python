@@ -271,14 +271,19 @@ class HT16K33SegmentGen(HT16K33):
         the LED itself. Rotation handled here.
         """
         if self.is_rotated:
+            # Preserve the unrotated buffer
+            tmpbuffer = bytearray(16)
+            for i in range(0, self.max_digits << 1):
+                tmpbuffer[i] = self.buffer[i]
             # Swap digits 0,(max - 1), 1,(max - 2) etc
             if self.max_digits > 1:
-                for i in range(0, self.max_digits):
-                    swap = self.max_digits - i - 1
-                    if i != swap:
-                        a = self.buffer[i << 1]
-                        self.buffer[i << i] = self.buffer[swap << 1]
-                        self.buffer[swap << 1] = a
+                for i in range(0, (self.max_digits >> 1)):
+                    right = (self.max_digits - i - 1) << 1
+                    left = i << 1
+                    if left != right:
+                        a = self.buffer[left]
+                        self.buffer[left] = self.buffer[right]
+                        self.buffer[right] = a
 
             # Flip each digit
             for i in range(0, self.max_digits):
@@ -287,8 +292,13 @@ class HT16K33SegmentGen(HT16K33):
                 c = (a & 0x38) >> 3
                 a &= 0xC0
                 self.buffer[i << 1] = (a | b | c)
-        self._render()
-        
+            self._render()
+            # Restore the buffer
+            for i in range(0, self.max_digits << 1):
+                self.buffer[i] = tmpbuffer[i]
+        else:
+            self._render()
+
  # IMPORTS
 import utime as time
 from machine import I2C, Pin, RTC
@@ -304,10 +314,13 @@ if __name__ == '__main__':
 
     display = HT16K33SegmentGen(i2c)
     display.set_brightness(2)
+    #display.rotate()
 
+    sync_text = b"\x6D\x6E\x37\x39"
+    runs = 2
     while True:
         # Write 'SYNC' to the LED using custom glyphs
-        sync_text = b"\x6D\x6E\x37\x39"
+        display.clear()
         for i in range(len(sync_text)):
             display.set_glyph(sync_text[i], i)
             display.set_glyph(sync_text[i], i + 4)
@@ -317,7 +330,7 @@ if __name__ == '__main__':
         # Write 'SYNC' to the LED -- this time with decimal points
         for i in range(len(sync_text)):
             display.set_glyph(sync_text[i], i, True)
-            display.set_glyph(sync_text[3 - i], i + 4, True)
+            display.set_glyph(sync_text[i], i + 4, True)
         display.draw()
         time.sleep(PAUSE)
 
@@ -329,31 +342,30 @@ if __name__ == '__main__':
         display.draw()
         time.sleep(PAUSE)
 
-        display.set_character(" ", 0).set_character(" ", 3).set_character(" ", 4).set_character(" ", 7).draw()
+        display.set_character(" ", 2).set_character(" ", 3)
+        display.set_character(" ", 6).set_character(" ", 7)
+        display.draw()
         time.sleep(PAUSE)
 
         # Show a countdown using the charset numbers
         # (also uses 'set_colon()')
         count = 1100
-        colon_state = True
         while True:
             # Convert 'count' into Binary-Coded Decimal (BCD)
             bcd = int(str(count), 16)
 
             # Display 'count' as decimal digits
-            display.set_number((bcd & 0xF000) >> 12, 0, colon_state)
-            display.set_number((bcd & 0x0F00) >> 8, 1, colon_state)
-            display.set_number((bcd & 0xF0) >> 4, 2, colon_state)
-            display.set_number((bcd & 0x0F), 3, colon_state)
+            display.set_number((bcd & 0xF000) >> 12, 0)
+            display.set_number((bcd & 0x0F00) >> 8, 1)
+            display.set_number((bcd & 0xF0) >> 4, 2)
+            display.set_number((bcd & 0x0F), 3)
             
             bcd = int(str(1100 - count), 16)
-            display.set_number((bcd & 0xF000) >> 12, 4, colon_state)
-            display.set_number((bcd & 0x0F00) >> 8, 5, colon_state)
-            display.set_number((bcd & 0xF0) >> 4, 6, colon_state)
-            display.set_number((bcd & 0x0F), 7, colon_state)
-
-            if count % 10 == 0: colon_state = not colon_state
-            display.update()
+            display.set_number((bcd & 0xF000) >> 12, 4)
+            display.set_number((bcd & 0x0F00) >> 8, 5)
+            display.set_number((bcd & 0xF0) >> 4, 6)
+            display.set_number((bcd & 0x0F), 7)
+            display.draw()
 
             count -= 1
             if count < 0: break
@@ -366,7 +378,8 @@ if __name__ == '__main__':
         time.sleep(PAUSE)
         display.set_blink_rate(0)
         time.sleep(PAUSE)
-        
-        time.sleep(DELAY)
-        
-    
+
+        runs -= 1
+        if runs < 1:
+            break
+
