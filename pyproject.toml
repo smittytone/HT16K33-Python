@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: 2023 Tony Smith (@smittytone)
+#
+# SPDX-License-Identifier: MIT
+
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ht16k33-python"
+description = "MicroPython and CircuitPython library for HT16K33 LED matrices and segment displays."
+version = "3.5.0"
+readme = "README.md"
+authors = [
+    {name = "Tony Smith", email = "support@smittytone.net"}
+]
+urls = {Homepage = "https://github.com/smittytone/HT16K33-Python"}
+keywords = [
+    "ht16k33",
+    "led",
+    "matrix",
+    "segment",
+    "displays",
+    "hardware",
+    "micropython",
+    "circuitpython",
+]
+license = {text = "MIT"}
+classifiers = [
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Embedded Systems",
+    "Topic :: System :: Hardware",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
