@@ -7,7 +7,6 @@ class HT16K33SegmentGen(HT16K33):
     It assumes each digit has a decimal point, but there are no other
     symbol LEDs included.
 
-    Version:    3.5.0
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT

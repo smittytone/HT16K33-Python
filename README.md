@@ -1,4 +1,4 @@
-# HT16K33 Drivers 3.5.0 #
+# HT16K33 Drivers 3.5.1 #
 
 This repo provides Python drivers for the Holtek HT16K33 controller chip and various display devices based upon it, such as the [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149) and the [Raspberry Pi Pico](https://www.raspberrypi.org/documentation/pico/getting-started/).
 
@@ -44,8 +44,14 @@ Further drivers may be added in due course.
 
 You can find documentation for all of the drivers [at smittytone.net](https://smittytone.net/docs/ht16k33.html).
 
+## Python Package Index
+
+This code is now available [via the Python Package Index](https://pypi.org/project/ht16k33-python/) for folks using Thonny and other code-pulling IDEs.
+
 ## Release Notes
 
+- 3.5.1 *30 October 2023*
+    - Add provisional [PyPi](https://pypi.org/) support.
 - 3.5.0 *2 September 2023*
     - Add `HT16K33SegmentGen` a generic, 1-8 digit 7-segment driver — thanks, [`@vader7071`](https://github.com/vader7071).
 - 3.4.2 *14 February 2023*
