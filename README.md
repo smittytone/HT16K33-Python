@@ -51,7 +51,7 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 ## Release Notes
 
 - 3.5.1 *30 October 2023*
-    - Add provisional [PyPi](https://pypi.org/) support.
+    - Add provisional [PyPi](https://pypi.org/) support (no code changes).
 - 3.5.0 *2 September 2023*
     - Add `HT16K33SegmentGen` a generic, 1-8 digit 7-segment driver — thanks, [`@vader7071`](https://github.com/vader7071).
 - 3.4.2 *14 February 2023*
