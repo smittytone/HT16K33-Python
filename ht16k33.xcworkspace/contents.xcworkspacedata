@@ -40,6 +40,13 @@
       </FileRef>
    </Group>
    <Group
+      location = "container:"
+      name = "PyPI">
+      <FileRef
+         location = "group:pyproject.toml">
+      </FileRef>
+   </Group>
+   <Group
       location = "group:tools"
       name = "tools">
       <FileRef
