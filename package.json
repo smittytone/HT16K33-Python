@@ -1,0 +1,18 @@
+{
+  "urls": [
+    [
+      "/lib/ht16k33/i2c_lcd.mpy",
+      "github:smittytone/HT16K33-Python/mpy/i2c_lcd.mpy"
+    ],
+    [
+      "/lib/ht16k33/i2c_lcd_backlight.mpy",
+      "github:smittytone/HT16K33-Python/mpy/i2c_lcd_backlight.mpy"
+    ],
+    [
+      "/lib/ht16k33/i2c_lcd_screen.mpy",
+      "github:smittytone/HT16K33-Python/mpy/i2c_lcd_screen.mpy"
+    ]
+  ],
+  "deps": [],
+  "version": "3.5.0"
+}
