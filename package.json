@@ -1,8 +1,8 @@
 {
   "urls": [
     [
-      "/lib/ht16k33/__init__.py.mpy",
-      "github:smittytone/HT16K33-Python/mpy/__init__.py.mpy"
+      "/lib/ht16k33/__init__.py",
+      "github:smittytone/HT16K33-Python/mpy/__init__.py"
     ],
     [
       "/lib/ht16k33/ht16k33.mpy",
