@@ -1,16 +1,40 @@
 {
   "urls": [
     [
-      "/lib/ht16k33/i2c_lcd.mpy",
-      "github:smittytone/HT16K33-Python/mpy/i2c_lcd.mpy"
+      "/lib/ht16k33/__init__.py.mpy",
+      "github:smittytone/HT16K33-Python/mpy/__init__.py.mpy"
     ],
     [
-      "/lib/ht16k33/i2c_lcd_backlight.mpy",
-      "github:smittytone/HT16K33-Python/mpy/i2c_lcd_backlight.mpy"
+      "/lib/ht16k33/ht16k33.mpy",
+      "github:smittytone/HT16K33-Python/mpy/ht16k33.mpy"
     ],
     [
-      "/lib/ht16k33/i2c_lcd_screen.mpy",
-      "github:smittytone/HT16K33-Python/mpy/i2c_lcd_screen.mpy"
+      "/lib/ht16k33/ht16k33matrix.mpy",
+      "github:smittytone/HT16K33-Python/mpy/ht16k33matrix.mpy"
+    ],
+    [
+      "/lib/ht16k33/ht16k33matrixcolour.mpy",
+      "github:smittytone/HT16K33-Python/mpy/ht16k33matrixcolour.mpy"
+    ],
+    [
+      "/lib/ht16k33/ht16k33matrixfeatherwing.mpy",
+      "github:smittytone/HT16K33-Python/mpy/ht16k33matrixfeatherwing.mpy"
+    ],
+    [
+      "/lib/ht16k33/ht16k33segment.mpy",
+      "github:smittytone/HT16K33-Python/mpy/ht16k33segment.mpy"
+    ],
+    [
+      "/lib/ht16k33/ht16k33segment14.mpy",
+      "github:smittytone/HT16K33-Python/mpy/ht16k33segment14.mpy"
+    ],
+    [
+      "/lib/ht16k33/ht16k33segmentbig.mpy",
+      "github:smittytone/HT16K33-Python/mpy/ht16k33segmentbig.mpy"
+    ],
+    [
+      "/lib/ht16k33/ht16k33segmentgen.mpy",
+      "github:smittytone/HT16K33-Python/mpy/ht16k33segmentgen.mpy"
     ]
   ],
   "deps": [],
