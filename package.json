@@ -2,7 +2,7 @@
   "urls": [
     [
       "/lib/ht16k33/__init__.py",
-      "github:ubidefeo/HT16K33-Python/mpy/__init__.py"
+      "github:ubidefeo/HT16K33-Python/__init__.py"
     ],
     [
       "/lib/ht16k33/ht16k33.mpy",
