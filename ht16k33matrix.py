@@ -1,5 +1,5 @@
 # Import the base class
-from .ht16k33 import HT16K33
+from ht16k33 import HT16K33
 
 class HT16K33Matrix(HT16K33):
     """
