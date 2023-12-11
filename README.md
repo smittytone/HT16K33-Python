@@ -8,7 +8,7 @@ Connect your HT16K33 column pins to each LED's digit selection pin, and its row 
 
 The drivers support both [CircuitPython](https://circuitpython.org) and [MicroPython](https://micropython.org) applications. They communicate using I&sup2;C.
 
-## Importing the Drivers ##
+## Import the Drivers ##
 
 The driver package comprises a parent generic HT16K33 class and child classes for various displays themselves. All your code needs to do is `import` the latter. For example:
 
@@ -19,6 +19,27 @@ from ht16k33segment import HT16K33Segment
 You can then instantiate the driver object. This requires a configured I2C bus object.
 
 You will need both the display driver file and `ht16k33.py` in your project folder.
+
+## Install the Drivers ##
+
+### MicroPython MIP Install ###
+
+From version 3.5.2, you can install the drivers using [MicroPython's MIP module](https://docs.micropython.org/en/v1.21.0/reference/packages.html). This requires a board running MicroPython 1.2.0 or above and connected to the Internet. Add the following to your code:
+
+```python
+import mip
+mip.install('github:smittytone/HT16K33-Python')
+```
+
+If your board is not Internet-capable, you can install locally using [the `mpremote` tool](https://docs.micropython.org/en/latest/reference/mpremote.html):
+
+```python
+mpremote mip install github:smittytone/HT16K33-Python
+```
+
+### CircuitPython Install ###
+
+Copy `ht16k33.py` and your required driver `.py` file(s) to the mounted board's `lib` folder.
 
 ## Reducing Memory Usage ##
 
@@ -51,7 +72,7 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 ## Release Notes
 
 - 3.5.2 *Unreleased*
-    - Add `mip` support — thanks, [`@ubidefeo`](https://github.com/ubidefeo).
+    - Add `mip` support — thanks, [`@ubidefeo`](https://github.com/ubidefeo) (no code changes).
 - 3.5.1 *30 October 2023*
     - Add provisional [PyPI](https://pypi.org/) support (no code changes).
 - 3.5.0 *2 September 2023*
@@ -74,7 +95,7 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 - 3.2.0 *26 July 2022*
     - Support the [Adafruit 0.54in Alphanumeric Display](https://www.adafruit.com/product/1911) via `ht16k33segment14.py`.
     - Bug fixes.
-- 3.2.0 *16 February 2022*
+- 3.1.0 *16 February 2022*
     - Add `ht16k33segment14.py` to support the [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916).
 - 3.0.2 *23 November 2020*
     - Refactor out some `ht16k33matrix.py` code.
