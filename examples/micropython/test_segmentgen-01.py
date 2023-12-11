@@ -3,7 +3,6 @@ class HT16K33:
     A simple, generic driver for the I2C-connected Holtek HT16K33 controller chip.
     This release supports MicroPython and CircuitPython
 
-    Version:    3.5.0
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
@@ -118,14 +117,13 @@ class HT16K33:
         Writes a single command to the HT16K33. A private method.
         """
         self.i2c.writeto(self.address, bytes([byte]))
-        
+
 class HT16K33SegmentGen(HT16K33):
     """
     Micro/Circuit Python class for a generic 1-8-digit, 7-segment display.
     It assumes each digit has a decimal point, but there are no other
     symbol LEDs included.
 
-    Version:    3.5.0
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
@@ -359,7 +357,7 @@ if __name__ == '__main__':
             display.set_number((bcd & 0x0F00) >> 8, 1)
             display.set_number((bcd & 0xF0) >> 4, 2)
             display.set_number((bcd & 0x0F), 3)
-            
+
             bcd = int(str(1100 - count), 16)
             display.set_number((bcd & 0xF000) >> 12, 4)
             display.set_number((bcd & 0x0F00) >> 8, 5)
