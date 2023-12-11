@@ -71,7 +71,7 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 
 ## Release Notes
 
-- 3.5.2 *Unreleased*
+- 3.5.2 *11 December 2023*
     - Add `mip` support — thanks, [`@ubidefeo`](https://github.com/ubidefeo) (no code changes).
 - 3.5.1 *30 October 2023*
     - Add provisional [PyPI](https://pypi.org/) support (no code changes).
