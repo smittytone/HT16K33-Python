@@ -10,7 +10,7 @@ class HT16K33SegmentGen(HT16K33):
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
-    Copyright:  2023
+    Copyright:  2024
     """
 
     # *********** CONSTANTS **********
@@ -179,4 +179,4 @@ class HT16K33SegmentGen(HT16K33):
                 self.buffer[i] = tmpbuffer[i]
         else:
             self._render()
-            
+

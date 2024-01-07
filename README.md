@@ -1,10 +1,10 @@
-# HT16K33 Drivers 3.5.2 #
+# HT16K33 Drivers 3.5.3 #
 
 This repo provides Python drivers for the Holtek HT16K33 controller chip and various display devices based upon it, such as the [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149) and the [Raspberry Pi Pico](https://www.raspberrypi.org/documentation/pico/getting-started/).
 
 The library also supports generic seven-segment displays wired up to an HT16K33, which can drive up to eight these LEDs. The HT16K33 may be on a board of your own design, or on a third-part one, such as the [Adafruit 16x8 LED Matrix Driver Backpack ](https://www.adafruit.com/product/1427). LED units you can connect range from [single digits](https://www.sparkfun.com/products/8546) up to combinations of [multi-digit units](https://www.sparkfun.com/products/11409).
 
-Connect your HT16K33 column pins to each LED's digit selection pin, and its row pins to the LED's segement selection pins.
+Connect your HT16K33 column pins to each LED's digit selection pin, and its row pins to the LED's segment selection pins.
 
 The drivers support both [CircuitPython](https://circuitpython.org) and [MicroPython](https://micropython.org) applications. They communicate using I&sup2;C.
 
@@ -16,15 +16,19 @@ The driver package comprises a parent generic HT16K33 class and child classes fo
 from ht16k33segment import HT16K33Segment
 ```
 
-You can then instantiate the driver object. This requires a configured I2C bus object.
+You can then instantiate the driver object. This requires a **configured** I2C bus object.
 
 You will need both the display driver file and `ht16k33.py` in your project folder.
 
 ## Install the Drivers ##
 
+### MicroPython Manual ###
+
+Use the [`pyboard`](https://github.com/micropython/micropython/blob/master/tools/pyboard.py) or [`mpremote`](https://github.com/micropython/micropython/tree/master/tools/mpremote) command line tools to copy the `ht16k33.py` and your required device-specific driver to your board.
+
 ### MicroPython MIP Install ###
 
-From version 3.5.2, you can install the drivers using [MicroPython's MIP module](https://docs.micropython.org/en/v1.21.0/reference/packages.html). This requires a board running MicroPython 1.2.0 or above and connected to the Internet. Add the following to your code:
+From version 3.5.2, you can install the drivers using [MicroPython's MIP module](https://docs.micropython.org/en/v1.21.0/reference/packages.html). This requires a board running MicroPython 1.20 or above and connected to the Internet. Add the following to your code:
 
 ```python
 import mip
@@ -43,9 +47,13 @@ Copy `ht16k33.py` and your required driver `.py` file(s) to the mounted board's 
 
 ## Reducing Memory Usage ##
 
-Adding the driver code may prove too much for certain CircuitPython devices which have limited amounts of memory. To overcome this, run the `mpy-cross` compiler. This will compile the raw Python into a highly compact form in a `.mpy` file. Copy `ht16k33.mpy` and the device-specific `.mpy` file to your device in place of the `.py` versions.
+Adding the driver code may prove too much for certain CircuitPython devices which have limited amounts of memory. To overcome this, [use MicroPython’s `mpy-cross` compiler](https://github.com/micropython/micropython/tree/master/mpy-cross). This will compile the raw Python into a highly compact form as a `.mpy` file. Copy `ht16k33.mpy` and the device-specific `.mpy` file to your device in place of the `.py` versions.
 
-The repo’s `mpy` directory contains pre-compiled versions for CircuitPython applications.
+#### Example ####
+
+```shell
+./mpy-cross ht16k33.py ht16k33matrixcolour.py
+```
 
 ## Display Drivers ##
 
@@ -71,6 +79,8 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 
 ## Release Notes
 
+- 3.5.3 *Unreleased*
+    - Remove the `.mpy` versions and provide instructions instead.
 - 3.5.2 *11 December 2023*
     - Add `mip` support — thanks, [`@ubidefeo`](https://github.com/ubidefeo) (no code changes).
 - 3.5.1 *30 October 2023*
@@ -106,6 +116,6 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 
 ## Licence and Copyright
 
-This repository’s source code and documentation is copyright 2023, Tony Smith (@smittytone).
+This repository’s source code and documentation is copyright 2024, Tony Smith (@smittytone).
 
 The HTK16K33 driver and subsidiary display drivers are licensed under the [MIT License](LICENSE.md).
