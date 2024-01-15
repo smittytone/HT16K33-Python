@@ -79,7 +79,7 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 
 ## Release Notes
 
-- 3.5.3 *Unreleased*
+- 3.5.3 *15 January 2024*
     - Remove the `.mpy` versions and provide instructions instead.
     - Fix incorrect selection of blink rate 0.5Hz — thanks, [`@Karrp`](https://github.com/Karrp).
 - 3.5.2 *11 December 2023*
@@ -117,6 +117,6 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 
 ## Licence and Copyright
 
-This repository’s source code and documentation is copyright 2024, Tony Smith (@smittytone).
+This repository’s source code and documentation is copyright © 2024, Tony Smith (@smittytone).
 
 The HTK16K33 driver and subsidiary display drivers are licensed under the [MIT License](LICENSE.md).
