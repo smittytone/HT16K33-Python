@@ -81,6 +81,7 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 
 - 3.5.3 *Unreleased*
     - Remove the `.mpy` versions and provide instructions instead.
+    - Fix incorrect selection of blink rate 0.5Hz — thanks, [`@Karrp`](https://github.com/Karrp).
 - 3.5.2 *11 December 2023*
     - Add `mip` support — thanks, [`@ubidefeo`](https://github.com/ubidefeo) (no code changes).
 - 3.5.1 *30 October 2023*

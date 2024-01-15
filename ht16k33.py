@@ -40,14 +40,15 @@ class HT16K33:
         """
         Set the display's flash rate.
 
-        Only four values (in Hz) are permitted: 0, 2, 1, and 0,5.
+        Only four values (in Hz) are permitted: 0, 2, 1, and 0.5.
 
         Args:
             rate (int): The chosen flash rate. Default: 0Hz (no flash).
         """
-        assert rate in (0, 0.5, 1, 2), "ERROR - Invalid blink rate set in set_blink_rate()"
-        self.blink_rate = rate & 0x03
-        self._write_cmd(self.HT16K33_GENERIC_CMD_BLINK | rate << 1)
+        allowed_rates = (0, 2, 1, 0.5)
+        assert rate in allowed_rates, "ERROR - Invalid blink rate set in set_blink_rate()"
+        self.blink_rate = allowed_rates.index(rate) & 0x03
+        self._write_cmd(self.HT16K33_GENERIC_CMD_BLINK | self.blink_rate << 1)
 
     def set_brightness(self, brightness=15):
         """
