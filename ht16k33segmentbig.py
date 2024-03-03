@@ -37,6 +37,7 @@ class HT16K33SegmentBig(HT16K33):
     def __init__(self, i2c, i2c_address=0x70):
         self.buffer = bytearray(16)
         self.point_pattern = 0x00
+        self.is_rotated = False
         super(HT16K33SegmentBig, self).__init__(i2c, i2c_address)
 
     # *********** PUBLIC METHODS **********
@@ -160,3 +161,41 @@ class HT16K33SegmentBig(HT16K33):
 
         self.buffer[self.POS[digit]] = self.CHARSET[char_val]
         return self
+
+    def rotate(self):
+        """
+        Rotate/flip the segment display.
+        FROM 3.6.0
+
+        Returns:
+            The instance (self)
+        """
+        self.is_rotated = not self.is_rotated
+        return self
+
+    def draw(self):
+        """
+        Writes the current display buffer to the display itself.
+        FROM 3.6.0
+
+        Call this method after updating the buffer to update
+        the LED itself. Rotation handled here.
+        """
+        if self.is_rotated:
+            # Swap digits 0,3 and 1,2
+            a = self.buffer[self.POS[0]]
+            self.buffer[self.POS[0]] = self.buffer[self.POS[3]]
+            self.buffer[self.POS[3]] = a
+
+            a = self.buffer[self.POS[1]]
+            self.buffer[self.POS[1]] = self.buffer[self.POS[2]]
+            self.buffer[self.POS[2]] = a
+
+            # Rotate each digit
+            for i in range(0, 4):
+                a = self.buffer[self.POS[i]]
+                b = (a & 0x07) << 3
+                c = (a & 0x38) >> 3
+                a &= 0xC0
+                self.buffer[self.POS[i]] = (a | b | c)
+        self._render()
