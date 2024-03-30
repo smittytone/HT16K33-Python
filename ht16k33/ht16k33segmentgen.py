@@ -1,10 +1,11 @@
 # Import the base class
-from ht16k33 import HT16K33
+from .ht16k33 import HT16K33
 
-class HT16K33Segment(HT16K33):
+class HT16K33SegmentGen(HT16K33):
     """
-    Micro/Circuit Python class for the Adafruit 0.56-in 4-digit,
-    7-segment LED matrix backpack and equivalent Featherwing.
+    Micro/Circuit Python class for a generic 1-8-digit, 7-segment display.
+    It assumes each digit has a decimal point, but there are no other
+    symbol LEDs included.
 
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
@@ -14,13 +15,9 @@ class HT16K33Segment(HT16K33):
 
     # *********** CONSTANTS **********
 
-    HT16K33_SEGMENT_COLON_ROW = 0x04
     HT16K33_SEGMENT_MINUS_CHAR = 0x10
     HT16K33_SEGMENT_DEGREE_CHAR = 0x11
     HT16K33_SEGMENT_SPACE_CHAR = 0x12
-
-    # The positions of the segments within the buffer
-    POS = (0, 2, 6, 8)
 
     # Bytearray of the key alphanumeric characters we can show:
     # 0-9, A-F, minus, degree, space
@@ -28,10 +25,13 @@ class HT16K33Segment(HT16K33):
 
     # *********** CONSTRUCTOR **********
 
-    def __init__(self, i2c, i2c_address=0x70):
+    def __init__(self, i2c, i2c_address=0x70, digits=8):
         self.buffer = bytearray(16)
         self.is_rotated = False
-        super(HT16K33Segment, self).__init__(i2c, i2c_address)
+        # Check digits specified (must be 1 - 8)
+        assert 0 < digits < 9, "ERROR - Invalid number of digits (1-8) in HT16K33Segment8()"
+        self.max_digits = digits
+        super(HT16K33SegmentGen, self).__init__(i2c, i2c_address)
 
     # *********** PUBLIC METHODS **********
 
@@ -43,22 +43,6 @@ class HT16K33Segment(HT16K33):
             The instance (self)
         """
         self.is_rotated = not self.is_rotated
-        return self
-
-    def set_colon(self, is_set=True):
-        """
-        Set or unset the display's central colon symbol.
-
-        This method updates the display buffer, but does not send the buffer to the display itself.
-        Call 'update()' to render the buffer on the display.
-
-        Args:
-            isSet (bool): Whether the colon is lit (True) or not (False). Default: True.
-
-        Returns:
-            The instance (self)
-        """
-        self.buffer[self.HT16K33_SEGMENT_COLON_ROW] = 0x02 if is_set is True else 0x00
         return self
 
     def set_glyph(self, glyph, digit=0, has_dot=False):
@@ -90,11 +74,11 @@ class HT16K33Segment(HT16K33):
             The instance (self)
         """
         # Bail on incorrect row numbers or character values
-        assert 0 <= digit < 4, "ERROR - Invalid digit (0-3) set in set_glyph()"
+        assert 0 <= digit < self.max_digits, "ERROR - Invalid digit set in set_glyph()"
         assert 0 <= glyph < 0x80, "ERROR - Invalid glyph (0x00-0x80) set in set_glyph()"
 
-        self.buffer[self.POS[digit]] = glyph
-        if has_dot is True: self.buffer[self.POS[digit]] |= 0x80
+        self.buffer[digit << 1] = glyph
+        if has_dot is True: self.buffer[digit << 1] |= 0x80
         return self
 
     def set_number(self, number, digit=0, has_dot=False):
@@ -113,7 +97,7 @@ class HT16K33Segment(HT16K33):
             The instance (self)
         """
         # Bail on incorrect row numbers or character values
-        assert 0 <= digit < 4, "ERROR - Invalid digit (0-3) set in set_number()"
+        assert 0 <= digit < self.max_digits, "ERROR - Invalid digit set in set_number()"
         assert 0 <= number < 10, "ERROR - Invalid value (0-9) set in set_number()"
 
         return self.set_character(str(number), digit, has_dot)
@@ -138,7 +122,7 @@ class HT16K33Segment(HT16K33):
             The instance (self)
         """
         # Bail on incorrect row numbers
-        assert 0 <= digit < 4, "ERROR - Invalid digit set in set_character()"
+        assert 0 <= digit < self.max_digits, "ERROR - Invalid digit set in set_character()"
 
         char = char.lower()
         char_val = 0xFF
@@ -156,8 +140,8 @@ class HT16K33Segment(HT16K33):
         # Bail on incorrect character values
         assert char_val != 0xFF, "ERROR - Invalid char string set in set_character()"
 
-        self.buffer[self.POS[digit]] = self.CHARSET[char_val]
-        if has_dot is True: self.buffer[self.POS[digit]] |= 0x80
+        self.buffer[digit << 1] = self.CHARSET[char_val]
+        if has_dot is True: self.buffer[digit << 1] |= 0x80
         return self
 
     def draw(self):
@@ -168,20 +152,31 @@ class HT16K33Segment(HT16K33):
         the LED itself. Rotation handled here.
         """
         if self.is_rotated:
-            # Swap digits 0,3 and 1,2
-            a = self.buffer[self.POS[0]]
-            self.buffer[self.POS[0]] = self.buffer[self.POS[3]]
-            self.buffer[self.POS[3]] = a
+            # Preserve the unrotated buffer
+            tmpbuffer = bytearray(16)
+            for i in range(0, self.max_digits << 1):
+                tmpbuffer[i] = self.buffer[i]
+            # Swap digits 0,(max - 1), 1,(max - 2) etc
+            if self.max_digits > 1:
+                for i in range(0, (self.max_digits >> 1)):
+                    right = (self.max_digits - i - 1) << 1
+                    left = i << 1
+                    if left != right:
+                        a = self.buffer[left]
+                        self.buffer[left] = self.buffer[right]
+                        self.buffer[right] = a
 
-            a = self.buffer[self.POS[1]]
-            self.buffer[self.POS[1]] = self.buffer[self.POS[2]]
-            self.buffer[self.POS[2]] = a
-
-            # Rotate each digit
-            for i in range(0, 4):
-                a = self.buffer[self.POS[i]]
+            # Flip each digit
+            for i in range(0, self.max_digits):
+                a = self.buffer[i << 1]
                 b = (a & 0x07) << 3
                 c = (a & 0x38) >> 3
                 a &= 0xC0
-                self.buffer[self.POS[i]] = (a | b | c)
-        self._render()
+                self.buffer[i << 1] = (a | b | c)
+            self._render()
+            # Restore the buffer
+            for i in range(0, self.max_digits << 1):
+                self.buffer[i] = tmpbuffer[i]
+        else:
+            self._render()
+            
