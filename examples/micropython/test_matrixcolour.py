@@ -2,7 +2,7 @@
 import utime as time
 from machine import I2C, Pin, RTC
 from random import getrandbits
-from ht16k33matrixcolour import HT16K33MatrixColour
+from ht16k33 import HT16K33MatrixColour
 
 # CONSTANTS
 DELAY = 0.01

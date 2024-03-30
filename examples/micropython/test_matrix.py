@@ -1,7 +1,7 @@
 # IMPORTS
 import utime as time
 from machine import I2C, Pin, RTC
-from ht16k33matrix import HT16K33Matrix
+from ht16k33 import HT16K33Matrix
 
 # CONSTANTS
 DELAY = 0.01

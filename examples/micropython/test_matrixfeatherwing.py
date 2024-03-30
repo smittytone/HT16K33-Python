@@ -2,7 +2,7 @@
 import utime as time
 from machine import I2C, Pin, RTC
 from random import getrandbits
-from ht16k33matrixfeatherwing import HT16K33MatrixFeatherWing
+from ht16k33 import HT16K33MatrixFeatherWing
 
 # CONSTANTS
 DELAY = 0.01
