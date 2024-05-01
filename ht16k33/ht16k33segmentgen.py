@@ -179,4 +179,3 @@ class HT16K33SegmentGen(HT16K33):
                 self.buffer[i] = tmpbuffer[i]
         else:
             self._render()
-
