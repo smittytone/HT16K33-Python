@@ -14,7 +14,7 @@ def clear(d):
 # START
 if __name__ == '__main__':
     # This uses the Pico -- check the pins on your device
-    i2c = I2C(1, scl=Pin(3), sda=Pin(2))
+    i2c = I2C(0, scl=Pin(9), sda=Pin(8))
 
     display = HT16K33SegmentGen(i2c)
     display.set_brightness(2)
