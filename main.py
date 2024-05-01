@@ -54,11 +54,12 @@ if __name__ == '__main__':
             bcd = int(str(count), 16)
 
             # Display 'count' as decimal digits
-            # Include a decimal point on digit 5
             display.set_number((bcd & 0xF0000000) >> 28, 0)
             display.set_number((bcd & 0x0F000000) >> 24, 1)
             display.set_number((bcd & 0x00F00000) >> 20, 2)
             display.set_number((bcd & 0x000F0000) >> 16, 3)
+
+            #bcd = int(str(0000 - count), 16)
             display.set_number((bcd & 0x0000F000) >> 12, 4)
             display.set_number((bcd & 0x00000F00) >> 8, 5, True)
             display.set_number((bcd & 0x000000F0) >> 4, 6)
@@ -80,3 +81,4 @@ if __name__ == '__main__':
         runs -= 1
         if runs < 1:
             break
+

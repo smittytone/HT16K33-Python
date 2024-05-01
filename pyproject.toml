@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 Tony Smith (@smittytone)
+# SPDX-FileCopyrightText: 2024 Tony Smith (@smittytone)
 #
 # SPDX-License-Identifier: MIT
 
@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ht16k33-python"
 description = "MicroPython and CircuitPython library for HT16K33 LED matrices and segment displays."
-version = "3.5.3"
+version = "4.0.0"
 readme = "README.md"
 authors = [
     {name = "Tony Smith", email = "support@smittytone.net"}

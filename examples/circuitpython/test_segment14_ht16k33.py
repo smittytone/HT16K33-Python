@@ -2,7 +2,7 @@
 import time
 import board
 import busio
-from ht16k33segment14 import HT16K33Segment14
+from ht16k33 import HT16K33Segment14
 
 # CONSTANTS
 DELAY = 0.01
@@ -10,11 +10,11 @@ PAUSE = 3
 
 # START
 if __name__ == '__main__':
-    # For any supported board's default I2C bus
-    i2c = busio.I2C(scl=board.D7, sda=board.D6)
+    # Configured for the Raspberry Pi Pico -- update for your own setup
+    i2c = busio.I2C(scl=board.GP1, sda=board.GP0, frequency=10000)
     while not i2c.try_lock():
         pass
-    
+
     display = HT16K33Segment14(i2c,is_ht16k33=True)
     display.set_brightness(2)
     display.clear()

@@ -1,7 +1,7 @@
 # IMPORTS
 import utime as time
 from machine import I2C, Pin, RTC
-from ht16k33matrix import HT16K33Matrix
+from ht16k33 import HT16K33Matrix
 
 # CONSTANTS
 DELAY = 0.01
@@ -14,7 +14,7 @@ if __name__ == '__main__':
     i2c = I2C(0, scl=Pin(5), sda=Pin(4))    # Adafruit Feather Huzzah ESP8256
     i2c = I2C(0, scl=Pin(17), sda=Pin(16))  # SparkFun ProMicro 2040
     i2c = I2C(1, scl=Pin(23), sda=Pin(22))  # Adafruit QTPy RP2040
-    
+
     display = HT16K33Matrix(i2c)
     display.set_brightness(2)
 

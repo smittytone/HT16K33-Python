@@ -1,16 +1,23 @@
 # IMPORTS
-import utime as time
-from machine import I2C, Pin, RTC
+import time
+import board
+import busio
 from ht16k33 import HT16K33SegmentGen
 
 # CONSTANTS
 DELAY = 0.01
 PAUSE = 3
 
+def clear(d):
+    for i in range(0,8):
+        d.set_number(0, i, False)
+
 # START
 if __name__ == '__main__':
     # Configured for the Raspberry Pi Pico -- update for your own setup
-    i2c = I2C(0, scl=Pin(9), sda=Pin(8))
+    i2c = busio.I2C(scl=board.GP1, sda=board.GP0, frequency=10000)
+    while not i2c.try_lock():
+        pass
 
     display = HT16K33SegmentGen(i2c)
     display.set_brightness(2)

@@ -1,38 +1,15 @@
 {
     "urls": [
-        [
-            "ht16k33.py",
-            "github:smittytone/HT16K33-Python/ht16k33.py"
-        ],
-        [
-            "ht16k33matrix.py",
-            "github:smittytone/HT16K33-Python/ht16k33matrix.py"
-        ],
-        [
-            "ht16k33matrixcolour.py",
-            "github:smittytone/HT16K33-Python/ht16k33matrixcolour.py"
-        ],
-        [
-            "ht16k33matrixfeatherwing.py",
-            "github:smittytone/HT16K33-Python/ht16k33matrixfeatherwing.py"
-        ],
-        [
-            "ht16k33segment.py",
-            "github:smittytone/HT16K33-Python/ht16k33segment.py"
-        ],
-        [
-            "ht16k33segment14.py",
-            "github:smittytone/HT16K33-Python/ht16k33segment14.py"
-        ],
-        [
-            "ht16k33segmentbig.py",
-            "github:smittytone/HT16K33-Python/ht16k33segmentbig.py"
-        ],
-        [
-            "ht16k33segmentgen.py",
-            "github:smittytone/HT16K33-Python/ht16k33segmentgen.py"
-        ]
+        ["ht16k33/__init__.py", "github:smittytone/HT16K33-Python/ht16k33/__init__.py"],
+        ["ht16k33/ht16k33.py", "github:smittytone/HT16K33-Python/ht16k33/ht16k33.py"],
+        ["ht16k33/ht16k33matrix.py", "github:smittytone/HT16K33-Python/ht16k33/ht16k33matrix.py"],
+        ["ht16k33/ht16k33matrixcolour.py", "github:smittytone/HT16K33-Python/ht16k33/ht16k33matrixcolour.py"],
+        ["ht16k33/ht16k33matrixfeatherwing.py", "github:smittytone/HT16K33-Python/ht16k33/ht16k33matrixfeatherwing.py"],
+        ["ht16k33/ht16k33segment.py", "github:smittytone/HT16K33-Python/ht16k33/ht16k33segment.py"],
+        ["ht16k33/ht16k33segment14.py", "github:smittytone/HT16K33-Python/ht16k33/ht16k33segment14.py"],
+        ["ht16k33/ht16k33segmentbig.py", "github:smittytone/HT16K33-Python/ht16k33/ht16k33segmentbig.py"],
+        ["ht16k33/ht16k33segmentgen.py", "github:smittytone/HT16K33-Python/ht16k33/ht16k33segmentgen.py"]
     ],
     "deps": [],
-    "version": "3.5.3"
+    "version": "4.0.0"
 }
