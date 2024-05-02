@@ -10,7 +10,8 @@ PAUSE = 3
 
 # START
 if __name__ == '__main__':
-    i2c = I2C(0, scl=Pin(5), sda=Pin(4))    # Adafruit Feather Huzzah ESP8256
+    # Configured for the Raspberry Pi Pico -- update for your own setup
+    i2c = I2C(0, scl=Pin(9), sda=Pin(8))
     display = HT16K33MatrixFeatherWing(i2c)
     display.set_brightness(2)
 

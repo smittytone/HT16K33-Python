@@ -11,7 +11,6 @@ PAUSE = 3
 if __name__ == '__main__':
     # Configured for the Raspberry Pi Pico -- update for your own setup
     i2c = I2C(0, scl=Pin(9), sda=Pin(8))
-
     display = HT16K33SegmentGen(i2c)
     display.set_brightness(2)
 
