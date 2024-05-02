@@ -42,7 +42,7 @@ Use the [`pyboard`](https://github.com/micropython/micropython/blob/master/tools
 
 ### MicroPython MIP Install ###
 
-From version 3.5.2, you can install the drivers using [MicroPython's MIP module](https://docs.micropython.org/en/v1.21.0/reference/packages.html). This requires a board running MicroPython 1.20 or above and connected to the Internet. Add the following to your code:
+You can install the drivers using [MicroPython's MIP system](https://docs.micropython.org/en/v1.21.0/reference/packages.html). This requires a board running MicroPython 1.20 or above and connected to the Internet. Add the following to your code:
 
 ```python
 import mip
@@ -81,6 +81,7 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 
 - 4.0.0 *Unreleased*
     - Reorganise the library files into their own directory.
+    - Add device installation script for MicroPython users - thanks, `@ubidefeo`.
 - 3.5.3 *15 January 2024*
     - Remove the `.mpy` versions and provide instructions instead.
     - Fix incorrect selection of blink rate 0.5Hz — thanks, [`@Karrp`](https://github.com/Karrp).
