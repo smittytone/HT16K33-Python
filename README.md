@@ -27,18 +27,18 @@ Further drivers may be added in due course.
 The driver package comprises a parent generic HT16K33 class and child classes for various displays themselves. All your code needs to do is `import` the latter. For example:
 
 ```python
-from ht16k33segment import HT16K33Segment
+from ht16k33 import HT16K33Segment
 ```
 
 You can then instantiate the driver object. This requires a **configured** I2C bus object.
 
-You will need both the display driver file and `ht16k33.py` in your project folder.
+You will need both the display driver file, eg. `ht16k33segmentgen.py` and `ht16k33.py` in your project folder.
 
 ## Install the Drivers ##
 
 ### MicroPython Manual ###
 
-Use the [`pyboard`](https://github.com/micropython/micropython/blob/master/tools/pyboard.py) or [`mpremote`](https://github.com/micropython/micropython/tree/master/tools/mpremote) command line tools to copy the `ht16k33.py` and your required device-specific driver to your board.
+Use the [`pyboard`](https://github.com/micropython/micropython/blob/master/tools/pyboard.py) or [`mpremote`](https://github.com/micropython/micropython/tree/master/tools/mpremote) command line tools to copy the `ht16k33` directory to your board's `lib` directory.
 
 ### MicroPython MIP Install ###
 
@@ -55,6 +55,22 @@ If your board is not Internet-capable, you can install locally using [the `mprem
 mpremote mip install github:smittytone/HT16K33-Python
 ```
 
+#### Install Script ####
+
+Alternatively, use our convenient installer script:
+
+```shell
+./mpinstall.sh
+```
+
+To install pre-compiled versions of the library files, run:
+
+```shell
+./mpinstall.sh mpy
+```
+
+This requires MicroPython's `mpy-cross` tool installed on your computer.
+
 ### CircuitPython Install ###
 
 Copy `ht16k33.py` and your required driver `.py` file(s) to the mounted board's `lib` folder.
@@ -63,11 +79,7 @@ Copy `ht16k33.py` and your required driver `.py` file(s) to the mounted board's 
 
 Adding the driver code may prove too much for certain CircuitPython devices which have limited amounts of memory. To overcome this, [use MicroPython’s `mpy-cross` compiler](https://github.com/micropython/micropython/tree/master/mpy-cross). This will compile the raw Python into a highly compact form as a `.mpy` file. Copy `ht16k33.mpy` and the device-specific `.mpy` file to your device in place of the `.py` versions.
 
-#### Example ####
-
-```shell
-./mpy-cross ht16k33.py ht16k33matrixcolour.py
-```
+For MicroPython boards, I recommend you use the [`mpinstall.sh` script](#install-script) to compile and install `.mpy` versions if the library files all in one go.
 
 ## Documentation
 
