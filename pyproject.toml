@@ -12,6 +12,12 @@ description = "MicroPython and CircuitPython library for HT16K33 LED matrices an
 version = "4.0.0"
 readme = "README.md"
 authors = [
+    {name = "Tony Smith", email = "support@smittytone.net"},
+    {name = "Ubi de Feo"},
+    {name = "Sebastian Romero"},
+    {name = "akbiocca"}
+]
+maintainers = [
     {name = "Tony Smith", email = "support@smittytone.net"}
 ]
 urls = {Homepage = "https://github.com/smittytone/HT16K33-Python"}
