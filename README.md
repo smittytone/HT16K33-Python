@@ -60,20 +60,20 @@ mpremote mip install github:smittytone/HT16K33-Python
 Alternatively, use our convenient installer script:
 
 ```shell
-./mpinstall.sh
+./tools/mpinstall.sh
 ```
 
 To install pre-compiled versions of the library files, run:
 
 ```shell
-./mpinstall.sh mpy
+./tools/mpinstall.sh mpy
 ```
 
 This requires MicroPython's `mpy-cross` tool installed on your computer.
 
 ### CircuitPython Install ###
 
-Copy `ht16k33.py` and your required driver `.py` file(s) to the mounted board's `lib` folder.
+Copy `ht16k33.py` and your required driver `.py` file(s) to the mounted board's `lib` folder.git sta
 
 ## Reducing Memory Usage ##
 
