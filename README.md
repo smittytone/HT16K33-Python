@@ -1,12 +1,12 @@
 # HT16K33 Drivers 4.0.0 #
 
-This repo provides Python drivers for the Holtek HT16K33 controller chip and various display devices based upon it, such as the [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149) and the [Raspberry Pi Pico](https://www.raspberrypi.org/documentation/pico/getting-started/).
-
-The library also supports generic seven-segment displays wired up to an HT16K33, which can drive up to eight these LEDs. The HT16K33 may be on a board of your own design, or on a third-part one, such as the [Adafruit 16x8 LED Matrix Driver Backpack ](https://www.adafruit.com/product/1427). LED units you can connect range from [single digits](https://www.sparkfun.com/products/8546) up to combinations of [multi-digit units](https://www.sparkfun.com/products/11409).
-
-Connect your HT16K33 column pins to each LED's digit selection pin, and its row pins to the LED's segment selection pins.
+This repo provides Python drivers for the Holtek HT16K33 controller chip and various display devices based upon it, such as the [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149) and the [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916).
 
 The drivers support both [CircuitPython](https://circuitpython.org) and [MicroPython](https://micropython.org) applications. They communicate using I&sup2;C.
+
+The library also supports generic seven-segment displays wired up to an HT16K33, which can drive up to eight these LEDs. The HT16K33 may be on a board of your own design, or on a third-party one, such as the [Adafruit 16x8 LED Matrix Driver Backpack ](https://www.adafruit.com/product/1427). LED units you can connect range from [single digits](https://www.sparkfun.com/products/8546) up to combinations of [multi-digit units](https://www.sparkfun.com/products/11409).
+
+Connect your HT16K33 column pins to each LED's digit selection pin, and its row pins to the LED's segment selection pins.
 
 ## Display Drivers ##
 
@@ -32,11 +32,11 @@ from ht16k33 import HT16K33Segment
 
 You can then instantiate the driver object. This requires a **configured** I2C bus object.
 
-You will need both the display driver file, eg. `ht16k33segmentgen.py` and `ht16k33.py` in your project folder.
+You will need at least one display driver file, eg. `ht16k33segmentgen.py` and `ht16k33.py` in your project folder.
 
 ## Install the Drivers ##
 
-### MicroPython Manual ###
+### MicroPython Manual Install ###
 
 Use the [`pyboard`](https://github.com/micropython/micropython/blob/master/tools/pyboard.py) or [`mpremote`](https://github.com/micropython/micropython/tree/master/tools/mpremote) command line tools to copy the `ht16k33` directory to your board's `lib` directory.
 
@@ -71,9 +71,9 @@ To install pre-compiled versions of the library files, run:
 
 This requires MicroPython's `mpy-cross` tool installed on your computer.
 
-### CircuitPython Install ###
+### CircuitPython Manual Install ###
 
-Copy `ht16k33.py` and your required driver `.py` file(s) to the mounted board's `lib` folder.git sta
+Copy `ht16k33` directory to the mounted board's `lib` folder.
 
 ## Reducing Memory Usage ##
 
@@ -91,9 +91,11 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 
 ## Release Notes
 
-- 4.0.0 *Unreleased*
-    - Reorganise the library files into their own directory.
+- 4.0.0 *8 May 2024*
+    - Completely reorganise the library files into their own directory.
     - Add device installation script for MicroPython users - thanks, `@ubidefeo`.
+    - Add `HT16K33SegmentGen` CircuitPython examples.
+    - Use Raspberry Pi Pico for all examples.
 - 3.5.3 *15 January 2024*
     - Remove the `.mpy` versions and provide instructions instead.
     - Fix incorrect selection of blink rate 0.5Hz — thanks, [`@Karrp`](https://github.com/Karrp).
