@@ -386,7 +386,7 @@ class HT16K33Matrix(HT16K33):
                         output_matrix[x] = output_matrix[x] + (1 << (7 - y))
         return output_matrix
 
-    def _fill(value=0xFF):
+    def _fill(self, value=0xFF):
         """
         Fill the buffer, column by column with the specified byte value
         """
