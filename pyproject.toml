@@ -9,18 +9,16 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ht16k33-python"
 description = "MicroPython and CircuitPython library for HT16K33 LED matrices and segment displays."
-version = "4.0.0"
+version = "4.0.1"
 readme = "README.md"
 authors = [
-    {name = "Tony Smith", email = "support@smittytone.net"},
-    {name = "Ubi de Feo"},
-    {name = "Sebastian Romero"},
-    {name = "akbiocca"}
+    { name = "Tony Smith", email = "support@smittytone.net" },
+    { name = "Ubi de Feo" },
+    { name = "Sebastian Romero" },
+    { name = "akbiocca" },
 ]
-maintainers = [
-    {name = "Tony Smith", email = "support@smittytone.net"}
-]
-urls = {Homepage = "https://github.com/smittytone/HT16K33-Python"}
+maintainers = [{ name = "Tony Smith", email = "support@smittytone.net" }]
+urls = { Homepage = "https://github.com/smittytone/HT16K33-Python" }
 keywords = [
     "ht16k33",
     "led",
@@ -31,7 +29,7 @@ keywords = [
     "micropython",
     "circuitpython",
 ]
-license = {text = "MIT"}
+license = { text = "MIT" }
 classifiers = [
     "Intended Audience :: Developers",
     "Topic :: Software Development :: Libraries",
