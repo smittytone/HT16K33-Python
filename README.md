@@ -93,6 +93,7 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 
 = 4.0.1 *Unreleased*
     - Fixes.
+    - Add **experimental** `rotate()` method to `ht16k33Segmentbig.py`.
 - 4.0.0 *8 May 2024*
     - Completely reorganise the library files into their own directory.
     - Add device installation script for MicroPython users - thanks, `@ubidefeo`.
