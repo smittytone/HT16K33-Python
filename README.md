@@ -91,7 +91,7 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 
 ## Release Notes
 
-= 4.0.1 *16 August 2024*
+- 4.0.1 *16 August 2024*
     - Minor fixes/improvements.
     - Add **experimental** `rotate()` method to `ht16k33Segmentbig.py`.
 - 4.0.0 *8 May 2024*
