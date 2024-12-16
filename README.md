@@ -91,7 +91,7 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 
 ## Release Notes
 
-- 4.0.2 *Unreleased*
+- 4.0.2 *16 December 2024*
     - Fixed a character set indexing bug in `ht16k33Segmentbig.py` — thanks, `@jonhp`.
 - 4.0.1 *16 August 2024*
     - Minor fixes/improvements.
