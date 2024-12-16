@@ -17,7 +17,7 @@ class HT16K33SegmentBig(HT16K33):
     HT16K33_SEGMENT_COLON_ROW = 0x04
     HT16K33_SEGMENT_MINUS_CHAR = 0x10
     HT16K33_SEGMENT_DEGREE_CHAR = 0x11
-    HT16K33_SEGMENT_SPACE_CHAR = 0x13
+    HT16K33_SEGMENT_SPACE_CHAR = 0x12
 
     COLON_CENTRE = 0x02
     COLON_LEFT_UPPER = 0x04
@@ -29,7 +29,7 @@ class HT16K33SegmentBig(HT16K33):
     POS = (0, 2, 6, 8)
 
     # Bytearray of the key alphanumeric characters we can show:
-    # 0-9, A-F, minus, degree
+    # 0-9, A-F, minus, degree, space
     CHARSET = b'\x3F\x06\x5B\x4F\x66\x6D\x7D\x07\x7F\x6F\x5F\x7C\x58\x5E\x7B\x71\x40\x63\x00'
 
     # *********** CONSTRUCTOR **********
