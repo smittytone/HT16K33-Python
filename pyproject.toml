@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ht16k33-python"
 description = "MicroPython and CircuitPython library for HT16K33 LED matrices and segment displays."
-version = "4.0.2"
+version = "4.0.3"
 readme = "README.md"
 authors = [
     { name = "Tony Smith", email = "support@smittytone.net" },
