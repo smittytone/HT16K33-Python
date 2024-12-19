@@ -10,9 +10,6 @@ PAUSE = 3
 
 # FUNCTIONS
 def run_tests(display=None):
-    if display == None:
-        assert display != None, "ERROR = No display supplied"
-
     # Write 'SYNC' to the LED using custom glyphs
     sync_text = b"\x6D\x6E\x37\x39"
     for i in range(len(sync_text)):
@@ -33,14 +30,21 @@ def run_tests(display=None):
     display.draw()
     time.sleep(PAUSE)
 
+    display.set_character(" ", 0).set_character(" ", 3).draw()
+    time.sleep(PAUSE)
+
+    # FROM 4.1.0
+    # Write 'ACE' to the display, first uppercase then lowercase
     display.set_uppercase()
-    display.set_character("B", 0).set_character("E", 1)
-    display.set_character("E", 2).set_character("F", 3)
+    display.set_character("A", 0).set_character("C", 1)
+    display.set_character("E", 2).set_character(" ", 3)
     display.draw()
     time.sleep(PAUSE)
-     
+
     display.set_lowercase()
-    display.set_character(" ", 0).set_character(" ", 3).draw()
+    display.set_character("A", 0).set_character("C", 1)
+    display.set_character("E", 2).set_character(" ", 3)
+    display.draw()
     time.sleep(PAUSE)
 
     # Show a countdown using the charset numbers
@@ -69,7 +73,7 @@ def run_tests(display=None):
 # START
 if __name__ == '__main__':
     # Configured for the Raspberry Pi Pico -- update for your own setups
-    i2c = busio.I2C(scl=board.GP1, sda=board.GP0, frequency=10000)
+    i2c = busio.I2C(scl=board.GP9, sda=board.GP8, frequency=10000)
     while not i2c.try_lock():
         pass
     display = HT16K33Segment(i2c)

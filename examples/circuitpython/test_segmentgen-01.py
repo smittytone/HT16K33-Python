@@ -15,7 +15,7 @@ def clear(d):
 # START
 if __name__ == '__main__':
     # Configured for the Raspberry Pi Pico -- update for your own setup
-    i2c = busio.I2C(scl=board.GP1, sda=board.GP0, frequency=10000)
+    i2c = busio.I2C(scl=board.GP9, sda=board.GP8, frequency=10000)
     while not i2c.try_lock():
         pass
 

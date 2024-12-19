@@ -33,15 +33,22 @@ if __name__ == '__main__':
     display.set_character("E", 2).set_character("F", 3)
     display.draw()
     time.sleep(PAUSE)
-    
+
+    display.set_character(" ", 0).set_character(" ", 3).draw()
+    time.sleep(PAUSE)
+
+    # FROM 4.1.0
+    # Write 'ACE' to the display, first uppercase then lowercase
     display.set_uppercase()
-    display.set_character("B", 0).set_character("E", 1)
-    display.set_character("E", 2).set_character("F", 3)
+    display.set_character("A", 0).set_character("C", 1)
+    display.set_character("E", 2).set_character(" ", 3)
     display.draw()
     time.sleep(PAUSE)
-     
+
     display.set_lowercase()
-    display.set_character(" ", 0).set_character(" ", 3).draw()
+    display.set_character("A", 0).set_character("C", 1)
+    display.set_character("E", 2).set_character(" ", 3)
+    display.draw()
     time.sleep(PAUSE)
 
     # Show a countdown using the charset numbers

@@ -26,18 +26,18 @@ class HT16K33Segment(HT16K33):
     # 0-9, A-F, minus, degree, space
     CHARSET = b'\x3F\x06\x5B\x4F\x66\x6D\x7D\x07\x7F\x6F\x5F\x7C\x58\x5E\x7B\x71\x40\x63\x00'
     # FROM 4.1.0
-    UC_CHARSET = b'\x3F\x06\x5B\x4F\x66\x6D\x7D\x07\x7F\x6F\x77\x7C\x39\x5E\x79\x71\x40\x63\x00'
+    CHARSET_UC = b'\x3F\x06\x5B\x4F\x66\x6D\x7D\x07\x7F\x6F\x77\x7C\x39\x5E\x79\x71\x40\x63\x00'
 
     # *********** CONSTRUCTOR **********
 
     def __init__(self, i2c, i2c_address=0x70):
         self.buffer = bytearray(16)
         self.is_rotated = False
-        
+
         # FROM 4.1.0
         self.use_uppercase = False
         self.charset = self.CHARSET
-        
+
         super(HT16K33Segment, self).__init__(i2c, i2c_address)
 
     # *********** PUBLIC METHODS **********
@@ -71,26 +71,26 @@ class HT16K33Segment(HT16K33):
     def set_uppercase(self):
         """
         Set the character set used to display alpha characters.
-        
+
         FROM 4.1.0
-        
+
         Returns:
-            The instance (self) 
+            The instance (self)
         """
         if self.use_uppercase is False:
             self.charset = self.CHARSET_UC
-            self.use_uppercase = True 
+            self.use_uppercase = True
         return self
-        
+
     def set_lowercase(self):
         """
         See `set_uppercase()`.
         """
         if self.use_uppercase:
             self.charset = self.CHARSET
-            self.use_uppercase = False 
+            self.use_uppercase = False
         return self
-        
+
     def set_glyph(self, glyph, digit=0, has_dot=False):
         """
         Present a user-defined character glyph at the specified digit.

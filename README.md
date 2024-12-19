@@ -1,4 +1,4 @@
-# HT16K33 Drivers 4.0.3 #
+# HT16K33 Drivers 4.1.0 #
 
 This repo provides Python drivers for the Holtek HT16K33 controller chip and various display devices based upon it, such as the [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149) and the [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916).
 
