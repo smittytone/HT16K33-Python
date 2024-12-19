@@ -25,12 +25,19 @@ class HT16K33Segment(HT16K33):
     # Bytearray of the key alphanumeric characters we can show:
     # 0-9, A-F, minus, degree, space
     CHARSET = b'\x3F\x06\x5B\x4F\x66\x6D\x7D\x07\x7F\x6F\x5F\x7C\x58\x5E\x7B\x71\x40\x63\x00'
+    # FROM 4.1.0
+    UC_CHARSET = b'\x3F\x06\x5B\x4F\x66\x6D\x7D\x07\x7F\x6F\x77\x7C\x39\x5E\x79\x71\x40\x63\x00'
 
     # *********** CONSTRUCTOR **********
 
     def __init__(self, i2c, i2c_address=0x70):
         self.buffer = bytearray(16)
         self.is_rotated = False
+        
+        # FROM 4.1.0
+        self.use_uppercase = False
+        self.charset = self.CHARSET
+        
         super(HT16K33Segment, self).__init__(i2c, i2c_address)
 
     # *********** PUBLIC METHODS **********
@@ -61,6 +68,29 @@ class HT16K33Segment(HT16K33):
         self.buffer[self.HT16K33_SEGMENT_COLON_ROW] = 0x02 if is_set is True else 0x00
         return self
 
+    def set_uppercase(self):
+        """
+        Set the character set used to display alpha characters.
+        
+        FROM 4.1.0
+        
+        Returns:
+            The instance (self) 
+        """
+        if self.use_uppercase is False:
+            self.charset = self.CHARSET_UC
+            self.use_uppercase = True 
+        return self
+        
+    def set_lowercase(self):
+        """
+        See `set_uppercase()`.
+        """
+        if self.use_uppercase:
+            self.charset = self.CHARSET
+            self.use_uppercase = False 
+        return self
+        
     def set_glyph(self, glyph, digit=0, has_dot=False):
         """
         Present a user-defined character glyph at the specified digit.
@@ -156,7 +186,7 @@ class HT16K33Segment(HT16K33):
         # Bail on incorrect character values
         assert char_val != 0xFF, "ERROR - Invalid char string set in set_character()"
 
-        self.buffer[self.POS[digit]] = self.CHARSET[char_val]
+        self.buffer[self.POS[digit]] = self.charset[char_val]
         if has_dot is True: self.buffer[self.POS[digit]] |= 0x80
         return self
 

@@ -33,7 +33,14 @@ if __name__ == '__main__':
     display.set_character("E", 2).set_character("F", 3)
     display.draw()
     time.sleep(PAUSE)
-
+    
+    display.set_uppercase()
+    display.set_character("B", 0).set_character("E", 1)
+    display.set_character("E", 2).set_character("F", 3)
+    display.draw()
+    time.sleep(PAUSE)
+     
+    display.set_lowercase()
     display.set_character(" ", 0).set_character(" ", 3).draw()
     time.sleep(PAUSE)
 
