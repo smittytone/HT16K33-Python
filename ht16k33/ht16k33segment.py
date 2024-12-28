@@ -70,25 +70,41 @@ class HT16K33Segment(HT16K33):
 
     def set_uppercase(self):
         """
-        Set the character set used to display alpha characters.
+        Set the character set used to display upper case alpha characters.
 
         FROM 4.1.0
 
         Returns:
             The instance (self)
         """
-        if self.use_uppercase is False:
-            self.charset = self.CHARSET_UC
-            self.use_uppercase = True
-        return self
+        return self.set_case(True)
 
     def set_lowercase(self):
         """
-        See `set_uppercase()`.
+        Set the character set used to display lower case alpha characters.
+
+        FROM 4.1.0
+
+        Returns:
+            The instance (self)
         """
-        if self.use_uppercase:
-            self.charset = self.CHARSET
-            self.use_uppercase = False
+        return self.set_case(False)
+
+    def set_case(self, is_upper):
+        """
+        Set the character set used to display alpha characters.
+
+        FROM 4.1.0
+
+        Args:
+            is_upper (Bool): `True` for upper case characters; `False` for lower case.
+
+        Returns:
+            The instance (self)
+        """
+        if self.use_uppercase is not is_upper:
+            self.charset = self.CHARSET_UC if is_upper else self.CHARSET
+            self.use_uppercase = is_upper
         return self
 
     def set_glyph(self, glyph, digit=0, has_dot=False):
