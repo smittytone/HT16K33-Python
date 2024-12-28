@@ -10,8 +10,8 @@ PAUSE = 3
 # START
 if __name__ == '__main__':
     # Configured for the Raspberry Pi Pico -- update for your own setup
-    i2c = I2C(0, scl=Pin(9), sda=Pin(8))
-    display = HT16K33Segment14(i2c, is_ht16k33=True)
+    i2c = I2C(0,scl=Pin(9),sda=Pin(8))
+    display = HT16K33Segment14(i2c,board=HT16K33Segment14.ADAFRUIT_054)
     display.set_brightness(2)
     display.clear()
 

@@ -11,11 +11,11 @@ PAUSE = 3
 # START
 if __name__ == '__main__':
     # Configured for the Raspberry Pi Pico -- update for your own setup
-    i2c = busio.I2C(scl=board.GP9, sda=board.GP8, frequency=10000)
+    i2c = busio.I2C(scl=board.GP9,sda=board.GP8,frequency=10000)
     while not i2c.try_lock():
         pass
 
-    display = HT16K33Segment14(i2c)
+    display = HT16K33Segment14(i2c,board=HT16K33Segment14.SPARKFUN_ALPHA)
     display.set_brightness(2)
     display.clear()
 

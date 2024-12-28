@@ -4,7 +4,8 @@ from .ht16k33 import HT16K33
 class HT16K33Segment14(HT16K33):
     """
     Micro/Circuit Python class for the Adafruit 0.54in Quad Alphanumeric Display,
-    a four-digit, 14-segment LED displays driven by the HT16K33 controller
+    and otehrs: four-digit, 14-segment LED displays driven by the HT16K33 or
+    VK16K33 controller.
 
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
@@ -14,6 +15,14 @@ class HT16K33Segment14(HT16K33):
 
     # *********** CONSTANTS **********
 
+    # Supported boards - ie. those known to work
+    ADAFRUIT_054                = 0
+    ECBUYING_054                = 0
+    SPARKFUN_ALPHA              = 1
+    UNKNOWN                     = 99
+
+    # Misnamed: these work for all boards of value 0 above,
+    # whether HT16K33 or VK16K33 based.
     HT16K33_SEG14_DP_VALUE      = 0x4000
     HT16K33_SEG14_BLANK_CHAR    = 62
     HT16K33_SEG14_DQUOTE_CHAR   = 64
@@ -27,6 +36,7 @@ class HT16K33Segment14(HT16K33):
     HT16K33_SEG14_DIVSN_CHAR    = 75
     HT16K33_SEG14_CHAR_COUNT    = 76
 
+    # Misnamed: these are for the SPARKFUN_ALPHA board only
     VK16K33_SEG14_COLON_BYTE    = 1
     VK16K33_SEG14_DECIMAL_BYTE  = 3
 
@@ -36,9 +46,19 @@ class HT16K33Segment14(HT16K33):
 
     # *********** CONSTRUCTOR **********
 
-    def __init__(self, i2c, i2c_address=0x70, is_ht16k33=False):
+    def __init__(self, i2c, i2c_address=0x70, is_ht16k33=False, board=UNKNOWN):
         self.buffer = bytearray(16)
-        self.is_ht16k33 = is_ht16k33
+
+        # FROM 4.1.0
+        # Provide backwards compatibility with 4.0.x
+        if board == self.UNKNOWN:
+            # No board passed in as default: assume 4.0.x usage, ie.
+            # ADAFRUIT_054 or SPARKFUN_ALPHA
+            self.board = self.SPARKFUN_ALPHA if is_ht16k33 is False else self.ADAFRUIT_054
+        else:
+            # Use supplied board value
+            self.board = board
+
         super(HT16K33Segment14, self).__init__(i2c, i2c_address)
 
 
@@ -220,10 +240,12 @@ class HT16K33Segment14(HT16K33):
 
     def _set_digit(self, value, digit, has_dot=False):
 
-        if self.is_ht16k33:
+        # FROM 4.1.0 Use the `board` property rather than `is_ht16k33`.
+        #            See `constructor()`
+        if self.board != self.SPARKFUN_ALPHA:
             if has_dot: value |= self.HT16K33_SEG14_DP_VALUE
-            # Output for HT16K33: swap bits 11 and 13,
-            # and sequence becomes LSB, MSB
+            # Output for Adafruit 0.54in and EC Buyer 0.54in:
+            # swap bits 11 and 13, and sequence becomes LSB, MSB
             msb = (value >> 8) & 0xFF
             b11 = msb & 0x08
             b13 = msb & 0x20
@@ -233,7 +255,7 @@ class HT16K33Segment14(HT16K33):
             self.buffer[(digit << 1) + 1] = msb
             self.buffer[digit << 1] = value & 0xFF
         else:
-            # Output for VK16K33
+            # Output for SparkFun Alphanumeric
             a = 0
             d = 1
             for i in range(0, 16):
