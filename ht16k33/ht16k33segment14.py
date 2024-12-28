@@ -210,7 +210,7 @@ class HT16K33Segment14(HT16K33):
             The instance (self)
         """
         # This doesn't work on the HT16K33
-        if self.is_ht16k33: return self
+        if self.board is not self.SPARKFUN_ALPHA: return self
         if is_on:
             self.buffer[self.VK16K33_SEG14_COLON_BYTE] |= 0x01
         else:
@@ -229,7 +229,7 @@ class HT16K33Segment14(HT16K33):
             The instance (self)
         """
         # This doesn't work on the HT16K33
-        if self.is_ht16k33: return self
+        if self.board is not self.SPARKFUN_ALPHA: return self
         if is_on:
             self.buffer[self.VK16K33_SEG14_DECIMAL_BYTE] |= 0x01
         else:
