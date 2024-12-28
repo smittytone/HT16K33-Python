@@ -105,6 +105,7 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
     - Add alternative, all capitals character set for `ht16k33Segment.py`.
     - Support new board selection in `ht16k33Segment14.py`.
     - Support EC Buying 0.54in 4-digit, 14-segment display in `ht16k33Segment14.py`.
+    - Fix decimal point clearing `ht16k33Segment14.py`.
 - 4.0.3 *18 December 2024*
     - Fix typo breaking `mpremote` usage  — thanks, `@sebromero`.
 - 4.0.2 *16 December 2024*
