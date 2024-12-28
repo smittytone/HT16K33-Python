@@ -209,13 +209,9 @@ class HT16K33Segment14(HT16K33):
         Returns:
             The instance (self)
         """
-        # This doesn't work on the HT16K33
-        if self.board is not self.SPARKFUN_ALPHA: return self
-        if is_on:
-            self.buffer[self.VK16K33_SEG14_COLON_BYTE] |= 0x01
-        else:
-            self.buffer[self.VK16K33_SEG14_COLON_BYTE] &= 0xFE
-        return self
+        # FROM 4.1.0 Use the `board` property rather than `is_ht16k33`.
+        # This only works on SparkFun Alphanumeric.
+        return self._set_furniture(self.VK16K33_SEG14_COLON_BYTE, is_on)
 
 
     def set_decimal(self, is_on=True):
@@ -228,20 +224,34 @@ class HT16K33Segment14(HT16K33):
         Returns:
             The instance (self)
         """
-        # This doesn't work on the HT16K33
-        if self.board is not self.SPARKFUN_ALPHA: return self
-        if is_on:
-            self.buffer[self.VK16K33_SEG14_DECIMAL_BYTE] |= 0x01
-        else:
-            self.buffer[self.VK16K33_SEG14_DECIMAL_BYTE] &= 0x7F
-        return self
+        # FROM 4.1.0 Use the `board` property rather than `is_ht16k33`.
+        # This only works on SparkFun Alphanumeric.
+        return self._set_furniture(self.VK16K33_SEG14_DECIMAL_BYTE, is_on)
 
     # *********** PRIVATE FUNCTIONS (DO NOT CALL) **********
+
+    def _set_furniture(self, digit, state):
+        """
+        Set or unset the decimal point symbol or the colon.
+        SparkFun alpha display only.
+
+       Args:
+            digit (int):  The digit the item is part of.
+            state (bool): Should the decimal point be illuminated?
+
+        Returns:
+            The instance (self)
+        """
+        if self.board is not self.SPARKFUN_ALPHA: return self
+        if state:
+            self.buffer[digit] |= 0x01
+        else:
+            self.buffer[digit] &= 0xFE
+        return self
 
     def _set_digit(self, value, digit, has_dot=False):
 
         # FROM 4.1.0 Use the `board` property rather than `is_ht16k33`.
-        #            See `constructor()`
         if self.board != self.SPARKFUN_ALPHA:
             if has_dot: value |= self.HT16K33_SEG14_DP_VALUE
             # Output for Adafruit 0.54in and EC Buyer 0.54in:

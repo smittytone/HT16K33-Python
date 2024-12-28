@@ -69,9 +69,11 @@ if __name__ == '__main__':
         time.sleep(5)
 
         state = True
-        for i in range(0, 10):
-            display.clear()
-            display.set_colon(state).set_decimal(state).draw()
+        display.clear()
+        display.set_number(0, 0).set_number(0, 1)
+        display.set_number(0, 2).set_number(0, 3)
+        for i in range(0, 21):
+            display.set_colon(state).set_decimal(not state).draw()
             time.sleep(0.5)
             state = not state
         time.sleep(5)

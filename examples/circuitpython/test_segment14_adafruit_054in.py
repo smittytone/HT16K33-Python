@@ -69,3 +69,6 @@ if __name__ == '__main__':
             time.sleep(0.5)
         time.sleep(5)
         point_state = not point_state
+
+        # Check that the following call fails correctly on ADAFRUIT_054, etc.
+        assert display.set_colon(true) == display, "ERROR - display.set_colon() not returning self"
