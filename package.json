@@ -35,6 +35,10 @@
     [
       "ht16k33/ht16k33segmentgen.py",
       "github:smittytone/HT16K33-Python/ht16k33/ht16k33segmentgen.py"
+    ],
+    [
+      "ht16k33/ht16k33bar.py",
+      "github:smittytone/HT16K33-Python/ht16k33/ht16k33bar.py"
     ]
   ],
   "deps": [],

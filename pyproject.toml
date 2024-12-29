@@ -24,6 +24,7 @@ keywords = [
     "led",
     "matrix",
     "segment",
+    "bar graph",
     "displays",
     "hardware",
     "micropython",
