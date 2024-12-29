@@ -16,7 +16,7 @@ if __name__ == '__main__':
     while not i2c.try_lock():
         pass
 
-    display = HT16K33Bar(i2c, i2c_address=0x74)
+    display = HT16K33Bar(i2c)
     display.set_brightness(8)
 
     while True:
