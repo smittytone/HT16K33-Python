@@ -8,7 +8,9 @@ The library also supports generic seven-segment displays wired up to an HT16K33,
 
 Connect your HT16K33 column pins to each LED's digit selection pin, and its row pins to the LED's segment selection pins.
 
-## Major Change ##
+## Major Changes ##
+
+#### HT16K33Segment14 ####
 
 The HT16K33Segment14 module for 4-digit, 14-segment LEDs has changed. The existing constructor parameter `is_ht16k33` is now deprecated and will be removed in a future release. If you use this module, please update your code to use the `board` parameter instead. Set it to any of the following constants based on the display board you are using:
 
@@ -17,6 +19,10 @@ The HT16K33Segment14 module for 4-digit, 14-segment LEDs has changed. The existi
 * `HT16K33Segment14.ECBUYING_054` — [EC Buying 0.54-inch HT16K33 Digital Tube Module](https://www.amazon.com/EC-Buying-Digital-Display-Segment/dp/B0C1C6LKDB).
 
 Existing code will not break at this time, but I urge you to update your code as outlined above.
+
+#### HT16K33Bar ####
+
+This release introduces support for the [Adafruit Bi-Color 24-Bar Bargraph w/I2C Backpack](https://www.adafruit.com/product/1721).
 
 ## Display Drivers ##
 
@@ -29,6 +35,7 @@ Existing code will not break at this time, but I urge you to update your code as
 | [8x8 bi-colour matrix LED](https://smittytone.net/docs/ht16k33_matrixcolour.html) | [Adafruit 1.2-inch 8x8 bi-color LED matrix backpack](https://www.adafruit.com/product/902) |
 | [16x8 FeatherWing matrix LED](https://smittytone.net/docs/ht16k33_matrixfeatherwing.html) | [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149) |
 | [Standalone HT16K33](https://smittytone.net/docs/ht16k33_segmentgen.html) | [Adafruit 16x8 LED Matrix Driver Backpack ](https://www.adafruit.com/product/1427) |
+| Bar graph LED | [Adafruit Bi-Color 24-Bar Bargraph w/I2C Backpack](https://www.adafruit.com/product/1721) |
 
 Further drivers may be added in due course.
 
@@ -102,6 +109,7 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 ## Release Notes
 
 - 4.1.0 *Unreleased*
+    - Add `HT16K33Bar.py` bar graph driver.
     - Add alternative, all capitals character set for `ht16k33Segment.py`.
     - Support new board selection in `ht16k33Segment14.py`.
     - Support EC Buying 0.54in 4-digit, 14-segment display in `ht16k33Segment14.py`.
