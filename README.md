@@ -170,6 +170,6 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 
 ## Licence and Copyright
 
-This repository’s source code and documentation is copyright © 2024, Tony Smith (@smittytone).
+This repository’s source code and documentation is copyright © 2025, Tony Smith (@smittytone).
 
 The HTK16K33 driver and subsidiary display drivers are licensed under the [MIT License](LICENSE.md).

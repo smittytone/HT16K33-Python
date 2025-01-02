@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Tony Smith (@smittytone)
+# SPDX-FileCopyrightText: 2025 Tony Smith (@smittytone)
 #
 # SPDX-License-Identifier: MIT
 
@@ -21,6 +21,7 @@ maintainers = [{ name = "Tony Smith", email = "support@smittytone.net" }]
 urls = { Homepage = "https://github.com/smittytone/HT16K33-Python" }
 keywords = [
     "ht16k33",
+    "vk16k33",
     "led",
     "matrix",
     "segment",

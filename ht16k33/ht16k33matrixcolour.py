@@ -8,7 +8,7 @@ class HT16K33MatrixColour(HT16K33):
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
     License:    MIT
-    Copyright:  2024
+    Copyright:  2025
     """
 
     # *********** CONSTANTS **********
