@@ -30,6 +30,12 @@ Existing code will not break at this time, but I urge you to update your code as
 
 This release introduces support for the [Adafruit Bi-Color 24-Bar Bargraph w/I2C Backpack](https://www.adafruit.com/product/1721). For usage details, [please see the docs](https://smittytone.net/docs/ht16k33_bar.html).
 
+## Minor Changes ##
+
+#### HT16K33Segment ####
+
+The HT16K33Segment driver for 4-digit, 7-segment LEDs now provides a new, uppercase character set in addition to the default lowercase set.
+
 ## Display Drivers ##
 
 | Driver<br />(Click for docs) | Example&nbsp;Product |
