@@ -30,7 +30,8 @@ def run_tests(display=None):
     display.draw()
     time.sleep(PAUSE)
 
-    display.set_character(" ", 0).set_character(" ", 3).draw()
+    display.set_character(" ", 0).set_character(" ", 3)
+    display.set_character("E", 1).set_character("E", 2).draw()
     time.sleep(PAUSE)
 
     # FROM 4.1.0

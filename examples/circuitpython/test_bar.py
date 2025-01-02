@@ -9,6 +9,7 @@ DELAY = 0.1
 PAUSE = 3
 SUB_PAUSE = 1
 
+# FUNCTIONS
 def tests(display):
         # Run a single bar up the display in each colour
         display.clear().draw()
