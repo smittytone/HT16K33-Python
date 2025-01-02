@@ -77,7 +77,7 @@ class HT16K33Segment(HT16K33):
         Returns:
             The instance (self)
         """
-        return self.set_case(True)
+        return self._set_case(True)
 
     def set_lowercase(self):
         """
@@ -88,24 +88,7 @@ class HT16K33Segment(HT16K33):
         Returns:
             The instance (self)
         """
-        return self.set_case(False)
-
-    def set_case(self, is_upper):
-        """
-        Set the character set used to display alpha characters.
-
-        FROM 4.1.0
-
-        Args:
-            is_upper (Bool): `True` for upper case characters; `False` for lower case.
-
-        Returns:
-            The instance (self)
-        """
-        if self.use_uppercase is not is_upper:
-            self.charset = self.CHARSET_UC if is_upper else self.CHARSET
-            self.use_uppercase = is_upper
-        return self
+        return self._set_case(False)
 
     def set_glyph(self, glyph, digit=0, has_dot=False):
         """
@@ -231,3 +214,24 @@ class HT16K33Segment(HT16K33):
                 a &= 0xC0
                 self.buffer[self.POS[i]] = (a | b | c)
         self._render()
+    
+    # *********** PRIVATE METHODS **********
+    
+    def _set_case(self, is_upper):
+        """
+        Set the character set used to display alpha characters.
+
+        FROM 4.1.0
+
+        Args:
+            is_upper (Bool): `True` for upper case characters; `False` for lower case.
+
+        Returns:
+            The instance (self)
+        """
+        if self.use_uppercase is not is_upper:
+            self.charset = self.CHARSET_UC if is_upper else self.CHARSET
+            self.use_uppercase = is_upper
+        return self
+
+    
