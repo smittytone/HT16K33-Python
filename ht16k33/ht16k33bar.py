@@ -41,7 +41,7 @@ class HT16K33Bar(HT16K33):
         """
         Set a specific bar to the specified color.
 
-        NOTE Off is a colour.
+        NOTE Off is a colour. Colours listed above.
 
         Args:
             bar (int):    The index of the bar to colour.
@@ -58,7 +58,7 @@ class HT16K33Bar(HT16K33):
         """
         Fill the graph up to the specific bar with the specified color.
 
-        NOTE Off is a colour.
+        NOTE Off is a colour. Colours listed above.
 
         Args:
             bar (int):    The index of the bar to colour.
@@ -92,8 +92,8 @@ class HT16K33Bar(HT16K33):
         """
         Writes the current display buffer to the display itself.
 
-        Call this method after updating the buffer to update
-        the LED.
+        Call this method after updating the buffer in order to update
+        the LED itself.
         """
         output = bytearray(7)
         output[0] = self.BAR_DISPLAY_ADDRESS
