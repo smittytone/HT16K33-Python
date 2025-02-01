@@ -270,7 +270,7 @@ class HT16K33Matrix(HT16K33):
         while True:
             a = cursor
             for i in range(0, self.width):
-                self.buffer[i] = src_buffer[a];
+                self.buffer[i] = src_buffer[a]
                 a += 1
             self.draw()
             cursor += 1

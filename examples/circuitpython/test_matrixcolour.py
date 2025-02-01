@@ -74,35 +74,35 @@ if __name__ == '__main__':
     # Show an animation
     while True:
         x = 7
-        y = 0;
+        y = 0
         dx = 0
-        dy = 1;
+        dy = 1
         mx = 6
-        my = 7;
+        my = 7
         nx = 0
-        ny = 0;
+        ny = 0
         colour = randint(0,3) + 1
         for i in range(0,64):
-            display.plot(x, y, colour).draw();
+            display.plot(x, y, colour).draw()
 
             if dx == 1 and x == mx:
-                dy = 1;
-                dx = 0;
-                mx -= 1;
+                dy = 1
+                dx = 0
+                mx -= 1
             elif dx == -1 and x == nx:
-                nx += 1;
-                dy = -1;
-                dx = 0;
+                nx += 1
+                dy = -1
+                dx = 0
             elif dy == 1 and y == my:
-                dy = 0;
-                dx = -1;
-                my -= 1;
+                dy = 0
+                dx = -1
+                my -= 1
             elif dy == -1 and y == ny:
-                dx = 1;
-                dy = 0;
-                ny += 1;
+                dx = 1
+                dy = 0
+                ny += 1
 
-            x += dx;
+            x += dx
             y += dy
 
             time.sleep(DELAY)
@@ -119,23 +119,23 @@ if __name__ == '__main__':
             display.plot(x, y, 0).draw()
 
             if dx == 1 and x == mx:
-                dy = -1;
-                dx = 0;
-                mx += 1;
+                dy = -1
+                dx = 0
+                mx += 1
             elif dx == -1 and x == nx:
-                nx -= 1;
-                dy = 1;
-                dx = 0;
+                nx -= 1
+                dy = 1
+                dx = 0
             elif dy == 1 and y == my:
-                dy = 0;
-                dx = 1;
-                my += 1;
+                dy = 0
+                dx = 1
+                my += 1
             elif dy == -1 and y == ny:
-                dx = -1;
-                dy = 0;
-                ny -= 1;
+                dx = -1
+                dy = 0
+                ny -= 1
 
-            x += dx;
+            x += dx
             y += dy
 
             time.sleep(DELAY)

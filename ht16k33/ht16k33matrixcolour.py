@@ -266,7 +266,7 @@ class HT16K33MatrixColour(HT16K33):
         while True:
             a = cursor
             for i in range(self.width * 2):
-                self.buffer[i] = src_buffer[a];
+                self.buffer[i] = src_buffer[a]
                 a += 1
             self.draw()
             cursor += 2

@@ -237,7 +237,7 @@ class HT16K33MatrixFeatherWing(HT16K33):
         while True:
             a = cursor
             for i in range(self.width):
-                self.buffer[self._get_row(i)] = src_buffer[a];
+                self.buffer[self._get_row(i)] = src_buffer[a]
                 a += 1
             self.draw()
             cursor += 1
