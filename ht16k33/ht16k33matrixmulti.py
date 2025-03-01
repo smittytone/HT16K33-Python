@@ -3,19 +3,26 @@ from ht16k33 import HT16K33Matrix
 
 class HT16K33MatrixMulti:
 
-    width = 8
-    buffer_width = 0
-    brightness = 15
+    matrix_width = 8
+    window_width = 0
     
-    def __init__(self, i2c, count):
+    def __init__(self, i2c, count, addresses=[]):
         assert 0 < count < 5, "ERROR - Invalid matrix count [1-4]"
-        self.matrix_count = count
+        assert len(addresses) == 0 or len(addresses) == count, "ERROR - Invalid matrix I2C address count [1-4]"
+        
+        # Instantiate the required matrix objects, setting their
+        # I2C addresses automatically or to those supplied
         self.matrices = []
         baseAddress = 0x70
         for i in range(0, count):
-            self.matrices.append(HT16K33Matrix(i2c, baseAddress))
+            if len(addresses) == count:
+                address = addresses[i]
+            else:
+                address = baseAddress
+            self.matrices.append(HT16K33Matrix(i2c, address))
             baseAddress += 1
-        self.buffer_width = self.width * count
+        
+        self.window_width = self.matrix_width * count
 
     def set_brightness(self, brightness=15):
         """
@@ -27,18 +34,12 @@ class HT16K33MatrixMulti:
             brightness (int): The chosen flash rate. Default: 15 (100%).
         """
         if brightness < 0 or brightness > 15: brightness = 15
-        self.brightness = brightness
         for i in range(0, len(self.matrices)):
             self.matrices[i].set_brightness(brightness)
 
     def clear(self):
         """
-        Set the display's brightness (ie. duty cycle).
-
-        Brightness values range from 0 (dim, but not off) to 15 (max. brightness).
-
-        Args:
-            brightness (int): The chosen flash rate. Default: 15 (100%).
+        Clear all the matrices.
         """
         for i in range(0, len(self.matrices)):
             self.matrices[i].clear().draw()
@@ -103,36 +104,35 @@ class HT16K33MatrixMulti:
 
         # Bail on incorrect values
         length = len(the_image)
-        assert length > 0, "ERROR - Invalid image length in scroll_image()"
+        assert length >= self.window_width, "ERROR - Invalid image length in scroll_image()"
 
         # Finally, animate the image
         cursor = 0
-        window_width = self.width * len(self.matrices)
         while True:
             # Iterate over the matrices, setting each one as a window into the image
             for i in range(0, len(self.matrices)):
-                window = cursor + (i * self.width)
+                window = cursor + (i * self.matrix_width)
                 if do_loop:
                     g = bytearray(8)
                     if window > length:
                         # Window doesn't span the image boundary but is beyond it
                         g = the_image[window - length:window - length + 8]
-                    elif window + self.width > length:
+                    elif window + self.matrix_width > length:
                         # Window spans image boundary
                         g[:length - window] = the_image[window:]
-                        g[length - window:] = the_image[:self.width - (length - window)]
+                        g[length - window:] = the_image[:self.matrix_width - (length - window)]
                     else:
                         # Window doesn't span the image boundary and is not beyond it
-                        g = the_image[window:window + self.width]
+                        g = the_image[window:window + self.matrix_width]
                     self.matrices[i].set_icon(g).draw()
                 else:
-                    self.matrices[i].set_icon(the_image[window:window + self.width]).draw()
+                    self.matrices[i].set_icon(the_image[window:window + self.matrix_width]).draw()
             # Advance the image cursor and check we've reached its end
             cursor += 1
             if do_loop:
                 if cursor >= length:
                     cursor = 0
             else:
-                if cursor > length - window_width: 
+                if cursor > length - self.window_width: 
                     break
             time.sleep(speed)
