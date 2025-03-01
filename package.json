@@ -39,8 +39,12 @@
     [
       "ht16k33/ht16k33bar.py",
       "github:smittytone/HT16K33-Python/ht16k33/ht16k33bar.py"
+    ],
+    [
+      "ht16k33/ht16k33matrixmulti.py",
+      "github:smittytone/HT16K33-Python/ht16k33/ht16k33matrixmulti.py"
     ]
   ],
   "deps": [],
-  "version": "4.1.0"
+  "version": "4.2.0"
 }
