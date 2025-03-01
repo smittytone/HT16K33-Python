@@ -21,5 +21,5 @@ if __name__ == '__main__':
     image_bytes = bytes(image_ints)
 
     # Show an animation
-    #display.scroll_image(image_bytes, 0.1, True)
-    display.scroll_text("Rename an imported class using the as keyword. ", do_loop=True)
+    display.scroll_image(image_bytes, 0.1, True)
+    #display.scroll_text("Rename an imported class using the as keyword. ", do_loop=True)
