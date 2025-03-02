@@ -1,6 +1,7 @@
 # IMPORTS
-import utime as time
-from machine import I2C, Pin, RTC
+import time
+import board
+import busio
 from ht16k33 import HT16K33MatrixMulti
 
 # CONSTANTS
@@ -10,7 +11,9 @@ PAUSE = 3
 # START
 if __name__ == '__main__':
     # Configured for the Raspberry Pi Pico -- update for your own setup
-    i2c = I2C(0, scl=Pin(9), sda=Pin(8))
+    i2c = busio.I2C(scl=board.GP9, sda=board.GP8, frequency=10000)
+    while not i2c.try_lock():
+        pass
     
     # Assume four displays arranged left to right with addresses 0x70-0x73
     display = HT16K33MatrixMulti(i2c, 4)
