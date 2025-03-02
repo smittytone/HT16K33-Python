@@ -11,7 +11,7 @@ PAUSE = 3
 if __name__ == '__main__':
     # Configured for the Raspberry Pi Pico -- update for your own setup
     i2c = I2C(0, scl=Pin(9), sda=Pin(8))
-    display = HT16K33MatrixMulti(i2c, 2)
+    display = HT16K33MatrixMulti(i2c, 3, [0x70, 0x71, 0x74])
     display.set_brightness(2)
     display.clear()
 
@@ -21,5 +21,5 @@ if __name__ == '__main__':
     image_bytes = bytes(image_ints)
 
     # Show an animation
-    display.scroll_image(image_bytes, 0.1, True)
+    display.scroll_image(image_bytes, 0.05, True)
     #display.scroll_text("Rename an imported class using the as keyword. ", do_loop=True)
