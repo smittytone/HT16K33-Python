@@ -11,7 +11,7 @@ PAUSE = 3
 if __name__ == '__main__':
     # Configured for the Raspberry Pi Pico -- update for your own setup
     i2c = I2C(0, scl=Pin(9), sda=Pin(8))
-    display = HT16K33MatrixMulti(i2c, 3, [0x70, 0x71, 0x74])
+    display = HT16K33MatrixMulti(i2c, 4, [0x70, 0x71, 0x74, 0x72])
     display.set_brightness(2)
     display.clear()
 

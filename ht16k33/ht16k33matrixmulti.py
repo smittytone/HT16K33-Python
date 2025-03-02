@@ -15,13 +15,9 @@ class HT16K33MatrixMulti:
         self.matrices = []
         baseAddress = 0x70
         for i in range(0, count):
-            if len(addresses) == count:
-                address = addresses[i]
-            else:
-                address = baseAddress
+            address = addresses[i] if len(addresses) == count else baseAddress
             self.matrices.append(HT16K33Matrix(i2c, address))
             baseAddress += 1
-        
         self.window_width = self.matrix_width * count
 
     def set_brightness(self, brightness=15):
@@ -104,9 +100,21 @@ class HT16K33MatrixMulti:
 
         # Bail on incorrect values
         length = len(the_image)
-        assert length >= self.window_width, "ERROR - Invalid image length in scroll_image()"
+        #assert length >= self.window_width, "ERROR - Invalid image length in scroll_image()"
+        assert length > 0, "ERROR - Invalid image length in scroll_image()"
 
-        # Finally, animate the image
+        # Repeat too-small images to the full width (or beyond) of the display
+        if length < self.window_width:
+            count = int(self.window_width / length)
+            if self.window_width % length != 0:
+                count += 1
+            nu_image = bytearray(count * length)
+            for i in range(0, count):
+                nu_image[i * length:i * length + length] = the_image
+            the_image = nu_image
+            length = len(the_image)
+
+        # Animate the image
         cursor = 0
         while True:
             # Iterate over the matrices, setting each one as a window into the image
