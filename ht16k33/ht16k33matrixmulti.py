@@ -7,7 +7,8 @@ class HT16K33MatrixMulti:
     window_width = 0
     
     def __init__(self, i2c, count, addresses=[]):
-        assert 0 < count < 5, "ERROR - Invalid matrix count [1-4]"
+        assert 0 < count < 9, "ERROR - Invalid matrix count [1-4]"
+        assert count != 1, "ERROR - For a single LED use the HT16K33Matrix class"
         assert len(addresses) == 0 or len(addresses) == count, "ERROR - Invalid matrix I2C address count [1-4]"
         
         # Instantiate the required matrix objects, setting their
