@@ -12,7 +12,9 @@ Connect your HT16K33 column pins to each LED's digit selection pin, and its row 
 
 ### 4.2.0 ###
 
-A new component has been added: `ht16k33matrixmulti.py`. This provides multi-matrix message horizontal scrolling. The message can be a text string or a byte array containing an 'image' comprising column-by-column bit data of the kind you might present on a single matrix LED.
+A new component has been added: `ht16k33matrixmulti.py`. This provides horizontal message scrolling across two or more matrix LEDs. Up to eight matrix LEDs can be connected, based on the range of unique I&sup2;C addresses that the HT16K33 provides. The message can be a text string or a byte array containing an 'image' comprising column-by-column bit data of the kind you might present on a single matrix LED using the `HT16K33Matrix.set_icon()` function.
+
+For example, with MicroPython:
 
 ```python
 from machine import I2C, Pin, RTC
@@ -34,9 +36,11 @@ or for text:
 display.scroll_text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
 ```
 
-The constructor takes a pre-configured I2C instance (via CircuitPython or MicroPython) and the number of matrix LEDs in your custom display panel. By default, these are assumed to be oriented left to right, with the left-most matrix using the address `0x70` and each subsequent matrix at the next sequential address. Alternatively, you can pass in an array of addresses in the sequence in which they are mounted left to right.
+The constructor takes a pre-configured I&sup2;C instance (via CircuitPython or MicroPython) and the number of matrix LEDs in your custom display panel. By default, these are assumed to be oriented left to right, with the left-most matrix using the address `0x70` and each subsequent matrix using the next sequential address. Alternatively, you can pass in an array of addresses in the sequence in which they are mounted left to right. For example, my test rig has displays with the addresses `0x70`, `0x71`, `0x74` and, `0x72`.
 
-The key functions, `scroll_text()` and `scroll_image()` take a string and a byte array, respectively. Both have two optional parameters: a speed value: a float that provides the pause duration in seconds between each animation frame (the default is 0.1 seconds) and/or a boolean that sets whether the image or text auto-repeats once it has completely moved across the face of the display (default: `False`). the latter should be used carefully as it will cause the code to block infinitely.
+The key functions, `scroll_text()` and `scroll_image()` take a string and a byte array, respectively (see the examples above). Both have two optional parameters. First, a speed value: a float that provides the pause duration in seconds between each animation frame (the default is 0.1 seconds). Second, a boolean that determines whether the image or text auto-repeats once it has completely scrolled across the face of the display (default: `False`). `True` should be used carefully as it will cause the code to block infinitely.
+
+Finally, `clear()` and `set_brightness()` functions are provided which affect all the matrix LEDs in the display.
 
 ### 4.1.0 ###
 
