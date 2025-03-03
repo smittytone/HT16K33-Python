@@ -126,8 +126,8 @@ class HT16K33Matrix(HT16K33):
 
     def __init__(self, i2c, i2c_address=0x70):
         self.buffer = bytearray(self.width)
-        self.def_chars = []
-        for i in range(32): self.def_chars.append(b"\x00")
+        self.def_chars = {}
+        #for i in range(32): self.def_chars.append(b"\x00")
         super(HT16K33Matrix, self).__init__(i2c, i2c_address)
 
     # *********** PUBLIC METHODS **********

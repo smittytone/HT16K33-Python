@@ -88,6 +88,25 @@ class HT16K33MatrixMulti:
         matrix.plot(mx, y, ink, xor)
         return self
 
+    def define_character(self, glyph, char_code=0):
+        """
+        Set a user-definable character for later use.
+
+        Args:
+            glyph (bytearray)   1-8 8-bit values defining a pixel image. The data is passed as columns,
+                                with bit 0 at the bottom and bit 7 at the top
+            char_code (integer) Character's ID Ascii code 0-31. Default: 0
+
+        Returns:
+            The instance (self)
+        """
+        # Bail on incorrect values
+        assert 0 < len(glyph) <= self.matrix_width, "ERROR - Invalid glyph set in define_character()"
+        assert 0 <= char_code < 32, "ERROR - Invalid character code set in define_character()"
+
+        self.matrices[0].define_character(glyph, char_code)
+        return self
+    
     def set_character(self, ascii_value=32, column=0):
         """
         Display a single character specified by its Ascii value on the matrix.
@@ -100,11 +119,14 @@ class HT16K33MatrixMulti:
             The instance (self)
         """
         # Bail on incorrect values
-        assert 32 <= ascii_value < 128, "ERROR - Invalid ascii code set in set_character()"
+        assert 0 <= ascii_value < 128, "ERROR - Invalid ascii code set in set_character()"
 
-        ascii_value -= 32
-        if ascii_value < 0 or ascii_value >= len(self.matrices[0].CHARSET): ascii_value = 0
-        glyph = self.matrices[0].CHARSET[ascii_value]
+        if ascii_value < 32:
+            glyph = self.matrices[0].def_chars[ascii_value]
+        else:
+            ascii_value -= 32
+            if ascii_value < 0 or ascii_value >= len(self.matrices[0].CHARSET): ascii_value = 0
+            glyph = self.matrices[0].CHARSET[ascii_value]
         return self.set_image(glyph, column)
 
     def set_text(self, the_text, column=0):
@@ -119,7 +141,7 @@ class HT16K33MatrixMulti:
             The instance (self)
         """
         # Bail on incorrect values
-        assert len(the_text)> 0, "ERROR - Invalid text supplied to set_text()"
+        assert len(the_text) > 0, "ERROR - Invalid text supplied to set_text()"
 
         text_image = self.scroll_text(the_text, emit_buffer=True)
         return self.set_image(text_image, column)
@@ -172,15 +194,18 @@ class HT16K33MatrixMulti:
 
         # Bail on incorrect values
         assert len(the_line) > 0, "ERROR - Invalid string set in scroll_text()"
-
+    
         # Calculate the source buffer size
         length = 0
         for i in range(0, len(the_line)):
-            asc_val = ord(the_line[i])
-            assert 31 < asc_val < 128, "ERROR - Character out of range"
-            glyph = self.matrices[0].CHARSET[asc_val - 32]
+            ascii_value = ord(the_line[i])
+            assert 0 < ascii_value < 128, "ERROR - Character out of range in scroll_text()"
+            if ascii_value < 32:
+                glyph = self.matrices[0].def_chars[ascii_value]
+            else:
+                glyph = self.matrices[0].CHARSET[ascii_value - 32]
             length += len(glyph)
-            if asc_val > 32: length += 1
+            if ascii_value != 32 and len(glyph) != 0: length += 1
 
         # Draw the string to the source buffer
         src_buffer = bytearray(length)
