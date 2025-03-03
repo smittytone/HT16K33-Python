@@ -67,12 +67,43 @@ class HT16K33MatrixMulti:
         # Bail on incorrect values
         assert (0 <= x < self.window_width) and (0 <= y < self.window_height), "ERROR - Invalid coordinate set in plot()"
 
-        matrix_index = int(x / self.matrix_width)
-        mx = x - (matrix_index * self.matrix_width)
-        matrix = self.matrices[matrix_index]
+        matrix, mx = self._localise(x)
         matrix.plot(mx, y, ink, xor)
         return self
 
+    def set_icon(self, glyph, column):
+        """
+        Displays a custom character on the display.
+
+        Args:
+            glyph (array) 1-8 8-bit values defining a pixel image. The data is passed as columns
+                          0 through 7, left to right. Bit 0 is at the bottom, bit 7 at the top
+            column (int)  The column (x co-ordinate) at which to place the glyph
+
+        Returns:
+            The instance (self)
+        """
+        # Bail on incorrect values
+        length = len(glyph)
+        assert 0 < length <= self.window_width, "ERROR - Invalid glyph set in set_icon()"
+
+        local_column_offset = 0
+        display_column = column
+        matrix, x = self._localise(display_column)
+        for i in range(length):
+            local_column = x + local_column_offset
+            if local_column > 7:
+                # Gone beyond the current matrix, so get the next one
+                display_column += local_column_offset
+                matrix, x = self._localise(display_column)
+                # Break if we've reached the end of the display
+                if x == -1: break
+                local_column = x
+                local_column_offset = 0
+            matrix.buffer[local_column] = glyph[i]
+            local_column_offset += 1
+        return self
+    
     def scroll_text(self, the_line, speed=0.1, do_loop=False):
         """
         Scroll the specified line of text leftwards across the display.
@@ -177,3 +208,14 @@ class HT16K33MatrixMulti:
                 if cursor > length - self.window_width: 
                     break
             time.sleep(speed)
+
+    def _localise(self, x):
+        """
+        Return the local co-ordinates and matrix for global co-ordinates.
+        Return -1 if we are beyond the 
+        """
+        if x >= self.window_width: return self.matrices[0], -1
+        index = int(x / self.matrix_width)
+        local_x = x - (index * self.matrix_width)
+        if index >= len(self.matrices): return self.matrices[0], -1
+        return self.matrices[index], local_x
