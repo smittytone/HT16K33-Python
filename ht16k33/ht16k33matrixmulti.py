@@ -4,7 +4,9 @@ from ht16k33 import HT16K33Matrix
 class HT16K33MatrixMulti:
 
     matrix_width = 8
+    matrix_height = 8
     window_width = 0
+    window_height = 8
     
     def __init__(self, i2c, count, addresses=[]):
         assert 0 < count < 9, "ERROR - Invalid matrix count [1-4]"
@@ -39,7 +41,37 @@ class HT16K33MatrixMulti:
         Clear all the matrices.
         """
         for i in range(0, len(self.matrices)):
-            self.matrices[i].clear().draw()
+            self.matrices[i].clear()
+        return self
+
+    def draw(self):
+        """
+        Draw all the matrices.
+        """
+        for i in range(0, len(self.matrices)):
+            self.matrices[i].draw()
+
+    def plot(self, x, y, ink=1, xor=False):
+        """
+        Plot a point on the display. (0,0) is bottom left as viewed.
+
+        Args:
+            x (integer)   X co-ordinate,left to right
+            y (integer)   Y co-ordinate, bottom to top
+            ink (integer) Pixel color: 1 = 'white', 0 = black. Default: 1
+            xor (bool)    Whether an underlying pixel already of color ink should be inverted. Default: False
+
+        Returns:
+            The instance (self)
+        """
+        # Bail on incorrect values
+        assert (0 <= x < self.window_width) and (0 <= y < self.window_height), "ERROR - Invalid coordinate set in plot()"
+
+        matrix_index = int(x / self.matrix_width)
+        mx = x - (matrix_index * self.matrix_width)
+        matrix = self.matrices[matrix_index]
+        matrix.plot(mx, y, ink, xor)
+        return self
 
     def scroll_text(self, the_line, speed=0.1, do_loop=False):
         """

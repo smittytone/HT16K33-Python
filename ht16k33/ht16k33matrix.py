@@ -317,12 +317,12 @@ class HT16K33Matrix(HT16K33):
             if self.is_set(x ,y) and xor:
                 self.buffer[x] ^= (1 << y)
             else:
-                if self.buffer[x] & (1 << y) == 0: self.buffer[x] |= (1 << y)
+                self.buffer[x] |= (1 << y)
         else:
             if not self.is_set(x ,y) and xor:
                 self.buffer[x] ^= (1 << y)
             else:
-                if self.buffer[x] & (1 << y) != 0: self.buffer[x] &= ~(1 << y)
+                self.buffer[x] &= ~(1 << y)
         return self
 
     def is_set(self, x, y):

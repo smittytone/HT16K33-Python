@@ -6,6 +6,7 @@ from ht16k33 import HT16K33MatrixMulti
 # CONSTANTS
 DELAY = 0.01
 PAUSE = 3
+DISPLAY_COUNT = 4
 
 # START
 if __name__ == '__main__':
@@ -13,7 +14,7 @@ if __name__ == '__main__':
     i2c = I2C(0, scl=Pin(9), sda=Pin(8))
     
     # Assume four displays arranged left to right with addresses 0x70-0x73
-    display = HT16K33MatrixMulti(i2c, 4)
+    display = HT16K33MatrixMulti(i2c, DISPLAY_COUNT)
     display.set_brightness(2)
     display.clear()
 
