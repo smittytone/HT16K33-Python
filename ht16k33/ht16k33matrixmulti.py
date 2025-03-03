@@ -7,7 +7,8 @@ class HT16K33MatrixMulti:
     matrix_height = 8
     window_width = 0
     window_height = 8
-    
+    is_inverse = False
+
     def __init__(self, i2c, count, addresses=[]):
         assert 0 < count < 9, "ERROR - Invalid matrix count [1-4]"
         assert count != 1, "ERROR - For a single LED use the HT16K33Matrix class"
@@ -31,11 +32,27 @@ class HT16K33MatrixMulti:
 
         Args:
             brightness (int): The chosen flash rate. Default: 15 (100%).
+
+        Returns:
+            The instance (self)
         """
         if brightness < 0 or brightness > 15: brightness = 15
         for i in range(0, len(self.matrices)):
             self.matrices[i].set_brightness(brightness)
+        return self
 
+    def set_inverse(self):
+        """
+        Inverts the ink colour of the display.
+
+        Returns:
+            The instance (self)
+        """
+        self.is_inverse = not self.is_inverse
+        for i in range(0, len(self.matrices)):
+            self.matrices[i].set_inverse()
+        return self
+    
     def clear(self):
         """
         Clear all the matrices.
@@ -71,49 +88,84 @@ class HT16K33MatrixMulti:
         matrix.plot(mx, y, ink, xor)
         return self
 
-    def set_icon(self, glyph, column):
+    def set_character(self, ascii_value=32, column=0):
         """
-        Displays a custom character on the display.
+        Display a single character specified by its Ascii value on the matrix.
 
         Args:
-            glyph (array) 1-8 8-bit values defining a pixel image. The data is passed as columns
-                          0 through 7, left to right. Bit 0 is at the bottom, bit 7 at the top
-            column (int)  The column (x co-ordinate) at which to place the glyph
+            ascii_value (integer) Character Ascii code. Default: 32 (space)
+            column (int)          The column (x co-ordinate) at which to place the character
 
         Returns:
             The instance (self)
         """
         # Bail on incorrect values
-        length = len(glyph)
-        assert 0 < length <= self.window_width, "ERROR - Invalid glyph set in set_icon()"
+        assert 32 <= ascii_value < 128, "ERROR - Invalid ascii code set in set_character()"
 
-        local_column_offset = 0
+        ascii_value -= 32
+        if ascii_value < 0 or ascii_value >= len(self.matrices[0].CHARSET): ascii_value = 0
+        glyph = self.matrices[0].CHARSET[ascii_value]
+        return self.set_image(glyph, column)
+
+    def set_text(self, the_text, column=0):
+        """
+        Displays a string on the display at the specified column.
+
+        Args:
+            the_text (string) The characters to display
+            column (int)      The column (x co-ordinate) at which to place the characters
+        
+        Returns:
+            The instance (self)
+        """
+        # Bail on incorrect values
+        assert len(the_text)> 0, "ERROR - Invalid text supplied to set_text()"
+
+        text_image = self.scroll_text(the_text, emit_buffer=True)
+        return self.set_image(text_image, column)
+    
+    def set_image(self, the_image, column=0):
+        """
+        Displays a custom character on the display at the specified column.
+
+        Args:
+            the_image (array) 1+ 8-bit values defining a pixel image. The data is passed as columns
+                              0 through 7, left to right. Bit 0 is at the bottom, bit 7 at the top
+            column (int)      The column (x co-ordinate) at which to place the glyph
+
+        Returns:
+            The instance (self)
+        """
+        # Bail on incorrect values
+        length = len(the_image)
+        assert length > 0, "ERROR - Invalid glyph set in set_image()"
+
+        offset = 0
         display_column = column
         matrix, x = self._localise(display_column)
         for i in range(length):
-            local_column = x + local_column_offset
+            local_column = x + offset
             if local_column > 7:
                 # Gone beyond the current matrix, so get the next one
-                display_column += local_column_offset
+                display_column += offset
                 matrix, x = self._localise(display_column)
                 # Break if we've reached the end of the display
                 if x == -1: break
                 local_column = x
-                local_column_offset = 0
-            matrix.buffer[local_column] = glyph[i]
-            local_column_offset += 1
+                offset = 0
+            matrix.buffer[local_column] = the_image[i]
+            offset += 1
         return self
     
-    def scroll_text(self, the_line, speed=0.1, do_loop=False):
+    def scroll_text(self, the_line, speed=0.1, do_loop=False, emit_buffer=False):
         """
         Scroll the specified line of text leftwards across the display.
 
         Args:
-            the_line (string) The string to display
-            speed (float)     The delay between frames
-            do_loop (bool)    Should the scroll loop to the start
-        Returns:
-            The instance (self)
+            the_line (string)  The string to display
+            speed (float)      The delay between frames
+            do_loop (bool)     Should the scroll loop to the start
+            emit_buffer (bool) Should we just return the generated bitmap?
         """
         # Just in case it hasn't yet been imported
         import time
@@ -140,6 +192,7 @@ class HT16K33MatrixMulti:
                 src_buffer[row] = glyph[j]
                 row += 1
             if asc_val > 32: row += 1
+        if emit_buffer: return src_buffer
         assert row == length, "ERROR - Mismatched lengths in scroll_text()"
 
         # Finally, animate the line
@@ -155,16 +208,12 @@ class HT16K33MatrixMulti:
             the_image (byte array) The image data to display
             speed (float)          The delay between frames
             do_loop (bool)         Should the scroll loop to the start
-
-        Returns:
-            The instance (self)
         """
         # Just in case it hasn't yet been imported
         import time
 
         # Bail on incorrect values
         length = len(the_image)
-        #assert length >= self.window_width, "ERROR - Invalid image length in scroll_image()"
         assert length > 0, "ERROR - Invalid image length in scroll_image()"
 
         # Repeat too-small images to the full width (or beyond) of the display
@@ -209,13 +258,15 @@ class HT16K33MatrixMulti:
                     break
             time.sleep(speed)
 
+    # PRIVATE METHODS - DO NOT CALL
+
     def _localise(self, x):
         """
         Return the local co-ordinates and matrix for global co-ordinates.
         Return -1 if we are beyond the 
         """
-        if x >= self.window_width: return self.matrices[0], -1
+        if x >= self.window_width: return None, -1
         index = int(x / self.matrix_width)
         local_x = x - (index * self.matrix_width)
-        if index >= len(self.matrices): return self.matrices[0], -1
+        if index >= len(self.matrices): return None, -1
         return self.matrices[index], local_x
