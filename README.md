@@ -41,7 +41,7 @@ The key functions, `scroll_text()` and `scroll_image()` take a string and a byte
 
 The new driver also includes the functions `set_text()` and `set_image()`, which take, respectively, a text string and a byte array, and a column on the display at which to draw them. `set_character()` works the same way, but takes an Ascii value rather than a string or a byte array. `define_character()` allows you to store user-defined characters in Ascii values 0 through 31.
 
-And `plot()` sets or unsets a pixel on the display: pass the pixel's x and y co-ordinates (`0,0` is at the bottom left) and the ink colour (1 to set, 0 to clear). Optionally, pass `True` to reverse the target pixel if it is already set.
+And `plot()` sets or clears a pixel on the display: pass the pixel's x and y co-ordinates (`0,0` is at the bottom left) and the ink colour (1 to set, 0 to clear). Optionally, pass `True` to reverse the target pixel if it is already set.
 
 Finally, `clear()` and `set_brightness()` functions are provided which affect all the matrix LEDs in the display.
 
@@ -130,7 +130,7 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 
 ## Release Notes
 
-- 4.2.0 *Unreleased*
+- 4.2.0 *7 March 2025*
     - Add multi-matrix scrolling enabler class.
     - Code clean.
 - 4.1.0 *2 January 2025*
