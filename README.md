@@ -40,35 +40,11 @@ The constructor takes a pre-configured I&sup2;C instance (via CircuitPython or M
 
 The key functions, `scroll_text()` and `scroll_image()` take a string and a byte array, respectively (see the examples above). Both have two optional parameters. First, a speed value: a float that provides the pause duration in seconds between each animation frame (the default is 0.1 seconds). Second, a boolean that determines whether the image or text auto-repeats once it has completely scrolled across the face of the display (default: `False`). `True` should be used carefully as it will cause the code to block infinitely.
 
+The new driver also includes the functions `set_text()` and `set_image()`, which take, respectively, a text string and a byte array, and a column on the display at which to draw them. `set_character()` works the same way, but takes an Ascii value rather than a string or a byte array. `define_character()` allows you to store user-defined characters in Ascii values 0 through 31.
+
+And `plot()` sets or unsets a pixel on the display: pass the pixel's x and y co-ordinates ((0,0) is at the bottom left) and the ink colour (1 to set, 0 to clear). Optionally, pass `True` to reverse the target pixel if it is already set.
+
 Finally, `clear()` and `set_brightness()` functions are provided which affect all the matrix LEDs in the display.
-
-### 4.1.0 ###
-
-#### HT16K33Segment14 ####
-
-The HT16K33Segment14 driver for 4-digit, 14-segment LEDs has changed. The existing constructor parameter `is_ht16k33` is now deprecated and will be removed in an upcoming release. If you use this driver, please update your code to use the `board` parameter instead. Set it to any of the following constants based on the display board you are using:
-
-* `HT16K33Segment14.SPARKFUN_ALPHA` — [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916).
-* `HT16K33Segment14.ADAFRUIT_054` — [Adafruit 0.54in Alphanumeric Display](https://www.adafruit.com/product/1911).
-* `HT16K33Segment14.ECBUYING_054` — [EC Buying 0.54-inch HT16K33 Digital Tube Module](https://www.amazon.com/EC-Buying-Digital-Display-Segment/dp/B0C1C6LKDB).
-
-For example:
-
-```python
-graph = HT16K33Bar(i2c, board=HT16K33Segment14.ADAFRUIT_054)
-```
-
-Existing code will not break at this time, but I urge you to update your code as outlined above.
-
-#### HT16K33Bar ####
-
-This release introduces support for the [Adafruit Bi-Color 24-Bar Bargraph w/I2C Backpack](https://www.adafruit.com/product/1721). For usage details, [please see the docs](https://smittytone.net/docs/ht16k33_bar.html).
-
-## Minor Changes ##
-
-#### HT16K33Segment ####
-
-The HT16K33Segment driver for 4-digit, 7-segment LEDs now provides a new, uppercase character set in addition to the default lowercase set.
 
 ## Display Drivers ##
 
