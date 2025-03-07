@@ -22,8 +22,7 @@ from ht16k33 import HT16K33MatrixMulti
 
 i2c = I2C(0, scl=Pin(9), sda=Pin(8))
 display = HT16K33MatrixMulti(i2c)
-display.set_brightness(2)
-display.clear()
+display.set_brightness(2).clear()
 
 image = [0x01,0x03,0x07,0x0F,0x1D,0x3F,0x7F,0xEB,0xFF,0x77,0x3E,0x1F,0x0D,0x07,0x03,0x01,0x01,0x03,0x07,0x0D,0x0F,0x07,0x03,0x01,0x01,0x03,0x07,0x0F,0x1D,0x3F,0x7F,0xEB,0xFF,0x77,0x3E,0x1F,0x0D,0x07,0x03,0x01,0x01,0x03,0x07,0x0D,0x0F,0x07,0x03,0x01,0xC1,0xC3,0x07,0x0F,0x0F,0x07,0x03,0x01]
 image_bytes = bytes(image)
@@ -42,7 +41,7 @@ The key functions, `scroll_text()` and `scroll_image()` take a string and a byte
 
 The new driver also includes the functions `set_text()` and `set_image()`, which take, respectively, a text string and a byte array, and a column on the display at which to draw them. `set_character()` works the same way, but takes an Ascii value rather than a string or a byte array. `define_character()` allows you to store user-defined characters in Ascii values 0 through 31.
 
-And `plot()` sets or unsets a pixel on the display: pass the pixel's x and y co-ordinates ((0,0) is at the bottom left) and the ink colour (1 to set, 0 to clear). Optionally, pass `True` to reverse the target pixel if it is already set.
+And `plot()` sets or unsets a pixel on the display: pass the pixel's x and y co-ordinates (`0,0` is at the bottom left) and the ink colour (1 to set, 0 to clear). Optionally, pass `True` to reverse the target pixel if it is already set.
 
 Finally, `clear()` and `set_brightness()` functions are provided which affect all the matrix LEDs in the display.
 
