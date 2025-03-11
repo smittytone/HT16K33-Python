@@ -7,6 +7,8 @@ class HT16K33MatrixMulti:
     matrix_height = 8
     window_width = 0
     window_height = 8
+    rotation_angle = 0
+    is_rotated = False
     is_inverse = False
 
     def __init__(self, i2c, count, addresses=[]):
@@ -24,6 +26,44 @@ class HT16K33MatrixMulti:
             baseAddress += 1
         self.window_width = self.matrix_width * count
 
+    # *********** PUBLIC METHODS **********
+
+    def set_angle(self, angle=0):
+        """
+        Set the matrix orientation.
+
+        Args:
+            angle (integer) Display auto-rotation angle, 0-360 degrees. Default: 0
+
+        Returns:
+            The instance (self)
+        """
+        # Bring the supplied angle to with 0-360 degrees
+        if angle > 360:
+            while angle > 360:
+                angle -= 360
+
+        if angle < 0:
+            while angle < 360:
+                angle += 360
+
+        # Convert angle to internal value:
+        # 0 = none, 1 = 90 clockwise, 2 = 180, 3 = 90 anti-clockwise
+        if angle > 3:
+            if angle < 45 or angle > 360: angle = 0
+            if angle >= 45 and angle < 135: angle = 1
+            if angle >= 135 and angle < 225: angle = 2
+            if angle >= 225: angle = 3
+
+        # Only support flipping for now
+        assert angle == 0 or angle == 2
+
+        self.rotation_angle = angle
+        self.is_rotated = True if self.rotation_angle != 0 else False
+        for i in range(0, len(self.matrices)):
+            self.matrices[i].set_angle(angle)
+        return self
+    
     def set_brightness(self, brightness=15):
         """
         Set the display's brightness (ie. duty cycle).
@@ -63,7 +103,7 @@ class HT16K33MatrixMulti:
 
     def draw(self):
         """
-        Draw all the matrices.
+        Tell each member matrix to draw itself.
         """
         for i in range(0, len(self.matrices)):
             self.matrices[i].draw()

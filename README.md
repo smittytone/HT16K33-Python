@@ -1,4 +1,4 @@
-# HT16K33 Drivers 4.2.0 #
+# HT16K33 Drivers 4.2.1 #
 
 This repo provides Python drivers for the Holtek HT16K33 controller chip and various display devices based upon it, such as the [Adafruit 0.8-inch 8x16 LED Matrix FeatherWing](https://www.adafruit.com/product/3149) and the [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916).
 
@@ -130,6 +130,8 @@ This code is now available [via the Python Package Index](https://pypi.org/proje
 
 ## Release Notes
 
+- 4.2.1 *Unreleased*
+    - Add rotation to `ht16k33matrixmulti.py`
 - 4.2.0 *7 March 2025*
     - Add multi-matrix scrolling enabler class.
     - Code clean.
