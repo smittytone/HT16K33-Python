@@ -1,6 +1,9 @@
 # Import the base class
 from .ht16k33 import HT16K33
 
+BOARD_ADAFRUIT_1_2 = 1
+BOARD_KEYESTUDIO = 2
+
 class HT16K33Matrix(HT16K33):
     """
     Micro/Circuit Python class for the Adafruit 8x8 monochrome LED matrix
@@ -124,10 +127,10 @@ class HT16K33Matrix(HT16K33):
 
     # *********** CONSTRUCTOR **********
 
-    def __init__(self, i2c, i2c_address=0x70):
+    def __init__(self, i2c, i2c_address=0x70, board=BOARD_ADAFRUIT_1_2):
         self.buffer = bytearray(self.width)
         self.def_chars = {}
-        #for i in range(32): self.def_chars.append(b"\x00")
+        self.board = board
         super(HT16K33Matrix, self).__init__(i2c, i2c_address)
 
     # *********** PUBLIC METHODS **********
@@ -350,11 +353,15 @@ class HT16K33Matrix(HT16K33):
         if self.is_rotated:
             new_buffer = self._rotate_matrix(self.buffer, self.rotation_angle)
         else:
-            new_buffer = bytearray(len(self.buffer))
-            for i in range(8): new_buffer[i] = self.buffer[i]
+            new_buffer = self.buffer
         draw_buffer = bytearray(17)
         for i in range(len(new_buffer)):
-            draw_buffer[i * 2 + 1] = (new_buffer[i] >> 1) | ((new_buffer[i] << 7) & 0xFF)
+            if self.board == BOARD_ADAFRUIT_1_2:
+                draw_buffer[i * 2 + 1] = (new_buffer[i] >> 1) | ((new_buffer[i] << 7) & 0xFF)
+            elif self.board == BOARD_KEYESTUDIO:
+                draw_buffer[i * 2 + 1] = (new_buffer[i] & 0xFF)
+            else:
+                assert True == False, "You are using an unsupported LED matrix board"
         self.i2c.writeto(self.address, bytes(draw_buffer))
 
     # ********** PRIVATE METHODS **********
