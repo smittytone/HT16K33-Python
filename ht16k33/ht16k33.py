@@ -25,13 +25,18 @@ class HT16K33:
     address = 0
     brightness = 15
     flash_rate = 0
+    # HT16K33 Row pin to LED column mapping
+    map = []
 
     # *********** CONSTRUCTOR **********
 
-    def __init__(self, i2c, i2c_address):
+    def __init__(self, i2c, i2c_address, map=None):
         assert 0x00 <= i2c_address < 0x80, "ERROR - Invalid I2C address in HT16K33()"
         self.i2c = i2c
         self.address = i2c_address
+        if map is not None:
+            assert len(map) == 16
+            self.map = map
         self.power_on()
 
     # *********** PUBLIC METHODS **********
@@ -108,9 +113,19 @@ class HT16K33:
         """
         Write the display buffer out to I2C
         """
-        buffer = bytearray(len(self.buffer) + 1)
-        buffer[1:] = self.buffer
+        buffer = bytearray(17)
         buffer[0] = 0x00
+        if len(self.buffer) == 8:
+            src_buffer = bytearray(16)
+            for i in range(0,8):
+                src_buffer[i * 2] = self.buffer[i]
+        else:
+            src_buffer = self.buffer
+        # Apply mapping
+        for i in range(1,16,2):
+            k = self._map_word((src_buffer[i] << 8) | src_buffer[i - 1])
+            buffer[i] = k & 0xFF
+            buffer[i + 1] = (k >> 8) & 0xFF
         self.i2c.writeto(self.address, bytes(buffer))
 
     def _write_cmd(self, byte):
@@ -118,3 +133,18 @@ class HT16K33:
         Writes a single command to the HT16K33. A private method.
         """
         self.i2c.writeto(self.address, bytes([byte]))
+
+    def _map_word(self, bb):
+        k = 0
+        for i in range(0,16):
+            bit = (bb & (1 << i)) >> i
+            value = (bit << self.map[i]) #(bit << i) if self.map[i] > 15 else (bit << self.map[i])
+            k |= value 
+        return k
+
+    def output(self, a):
+        s = "["
+        for i in range(0, len(a)):
+            s += f"{a[i]} "
+        s += "]"
+        print(s)

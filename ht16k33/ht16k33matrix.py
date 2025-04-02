@@ -127,11 +127,15 @@ class HT16K33Matrix(HT16K33):
 
     # *********** CONSTRUCTOR **********
 
-    def __init__(self, i2c, i2c_address=0x70, board=BOARD_ADAFRUIT_1_2):
+    def __init__(self, i2c, i2c_address=0x70, board=BOARD_ADAFRUIT_1_2, map=None):
         self.buffer = bytearray(self.width)
         self.def_chars = {}
         self.board = board
-        super(HT16K33Matrix, self).__init__(i2c, i2c_address)
+        if map is not None:
+            self.map = map
+        else:
+            self._set_preset_map()
+        super(HT16K33Matrix, self).__init__(i2c, i2c_address, self.map)
 
     # *********** PUBLIC METHODS **********
 
@@ -146,13 +150,7 @@ class HT16K33Matrix(HT16K33):
             The instance (self)
         """
         # Bring the supplied angle to with 0-360 degrees
-        if angle > 360:
-            while angle > 360:
-                angle -= 360
-
-        if angle < 0:
-            while angle < 360:
-                angle += 360
+        angle %= 360
 
         # Convert angle to internal value:
         # 0 = none, 1 = 90 clockwise, 2 = 180, 3 = 90 anti-clockwise
@@ -350,19 +348,11 @@ class HT16K33Matrix(HT16K33):
         Takes the contents of _buffer and writes it to the LED matrix.
         NOTE Overrides the parent method.
         """
+        old_buffer = self.buffer
         if self.is_rotated:
-            new_buffer = self._rotate_matrix(self.buffer, self.rotation_angle)
-        else:
-            new_buffer = self.buffer
-        draw_buffer = bytearray(17)
-        for i in range(len(new_buffer)):
-            if self.board == BOARD_ADAFRUIT_1_2:
-                draw_buffer[i * 2 + 1] = (new_buffer[i] >> 1) | ((new_buffer[i] << 7) & 0xFF)
-            elif self.board == BOARD_KEYESTUDIO:
-                draw_buffer[i * 2 + 1] = (new_buffer[i] & 0xFF)
-            else:
-                assert True == False, "You are using an unsupported LED matrix board"
-        self.i2c.writeto(self.address, bytes(draw_buffer))
+            self.buffer = self._rotate_matrix(self.buffer, self.rotation_angle)
+        self._render()
+        self.buffer = old_buffer
 
     # ********** PRIVATE METHODS **********
 
@@ -399,3 +389,10 @@ class HT16K33Matrix(HT16K33):
         """
         value &= 0xFF
         for i in range(self.width): self.buffer[i] = value
+
+    def _set_preset_map(self):
+        if self.board == BOARD_ADAFRUIT_1_2:
+            self.map = [7, 0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15]
+            return
+        # Default is 1:1 mapping
+        self.map = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
