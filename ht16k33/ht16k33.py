@@ -33,7 +33,7 @@ class HT16K33:
         assert 0x00 <= i2c_address < 0x80, "ERROR - Invalid I2C address in HT16K33()"
         self.i2c = i2c
         self.address = i2c_address
-        self.power_on(do_enable_display)
+        self._power(True, do_enable_display)
 
     # *********** PUBLIC METHODS **********
 
@@ -52,7 +52,7 @@ class HT16K33:
         allowed_rates = (0, 2, 1, 0.5)
         assert rate in allowed_rates, "ERROR - Invalid blink rate set in set_blink_rate()"
         self.blink_rate = allowed_rates.index(rate) & 0x03
-        self._display(turn_on=self.display_on)
+        self._display(self.display_on)
 
     def set_brightness(self, brightness=15):
         """
@@ -96,28 +96,25 @@ class HT16K33:
         """
         Power on the controller and optionally turn on the display.
         """
-        self._write_cmd(self.HT16K33_GENERIC_SYSTEM_ON)
-        if enable_display:
-            self._display(turn_on=True)
+        self._power(True, enable_display)
 
     def power_off(self):
         """
         Turn off the display and power down the controller.
         """
-        self._display(turn_on=False)
-        self._write_cmd(self.HT16K33_GENERIC_SYSTEM_OFF)
+        self._power(False)
 
     def display_on(self):
         """
         Turn on the display.
         """
-        self._display(turn_on=True)
+        self._display(True)
 
     def display_off(self):
         """
         Turn on the display.
         """
-        self._display(turn_on=False)
+        self._display(False)
 
     def is_display_on(self):
         """
@@ -136,13 +133,28 @@ class HT16K33:
         buffer[0] = 0x00
         self.i2c.writeto(self.address, bytes(buffer))
 
-    def _display(self, turn_on):
+    def _power(self, on=True, enable_display=True):
+        """
+        Power the controller on or off and enable the display.
+
+        Pass `False` as the second argument to prevent the display from being
+        auto-enabled.
+        """
+        if on:
+            self._write_cmd(self.HT16K33_GENERIC_SYSTEM_ON)
+            if enable_display:
+                self._display(True)
+        else:
+            self._display(False)
+            self._write_cmd(self.HT16K33_GENERIC_SYSTEM_OFF)
+
+    def _display(self, on=True):
         """
         Turn the display on/off, preserving the blink rate.
         """
-        cmd = self.HT16K33_GENERIC_DISPLAY_ON if turn_on else self.HT16K33_GENERIC_DISPLAY_OFF
+        cmd = self.HT16K33_GENERIC_DISPLAY_ON if on else self.HT16K33_GENERIC_DISPLAY_OFF
         self._write_cmd(cmd | self.blink_rate << 1)
-        self.display_on = turn_on
+        self.display_on = on
 
     def _write_cmd(self, byte):
         """
