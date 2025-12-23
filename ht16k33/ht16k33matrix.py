@@ -127,11 +127,11 @@ class HT16K33Matrix(HT16K33):
 
     # *********** CONSTRUCTOR **********
 
-    def __init__(self, i2c, i2c_address=0x70, board=BOARD_ADAFRUIT_1_2):
+    def __init__(self, i2c, i2c_address=0x70, board=BOARD_ADAFRUIT_1_2, do_enable_display=True):
         self.buffer = bytearray(self.width)
         self.def_chars = {}
         self.board = board
-        super(HT16K33Matrix, self).__init__(i2c, i2c_address)
+        super(HT16K33Matrix, self).__init__(i2c, i2c_address, do_enable_display)
 
     # *********** PUBLIC METHODS **********
 

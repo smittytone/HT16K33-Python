@@ -121,11 +121,11 @@ class HT16K33MatrixFeatherWing(HT16K33):
 
     # *********** CONSTRUCTOR **********
 
-    def __init__(self, i2c, i2c_address=0x70):
+    def __init__(self, i2c, i2c_address=0x70, do_enable_display=True):
         self.buffer = bytearray(self.width * 2)
         self.def_chars = []
         for i in range(32): self.def_chars.append(b"\x00")
-        super(HT16K33MatrixFeatherWing, self).__init__(i2c, i2c_address)
+        super(HT16K33MatrixFeatherWing, self).__init__(i2c, i2c_address, do_enable_display)
 
     # *********** PUBLIC METHODS **********
 

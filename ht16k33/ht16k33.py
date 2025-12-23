@@ -25,14 +25,15 @@ class HT16K33:
     address = 0
     brightness = 15
     flash_rate = 0
+    display_on = False
 
     # *********** CONSTRUCTOR **********
 
-    def __init__(self, i2c, i2c_address):
+    def __init__(self, i2c, i2c_address, do_enable_display=True):
         assert 0x00 <= i2c_address < 0x80, "ERROR - Invalid I2C address in HT16K33()"
         self.i2c = i2c
         self.address = i2c_address
-        self.power_on()
+        self.power_on(do_enable_display)
 
     # *********** PUBLIC METHODS **********
 
@@ -88,19 +89,40 @@ class HT16K33:
         for i in range(0, len(self.buffer)): self.buffer[i] = 0x00
         return self
 
-    def power_on(self):
+    def power_on(self, enable_display=True):
         """
-        Power on the controller and display.
+        Power on the controller and optionally turn on the display.
         """
         self._write_cmd(self.HT16K33_GENERIC_SYSTEM_ON)
-        self._write_cmd(self.HT16K33_GENERIC_DISPLAY_ON)
+        if enable_display:
+            self.display_on()
 
     def power_off(self):
         """
-        Power on the controller and display.
+        Turn off the display and power down the controller.
         """
         self._write_cmd(self.HT16K33_GENERIC_DISPLAY_OFF)
-        self._write_cmd(self.HT16K33_GENERIC_SYSTEM_OFF)
+        self.display_off()
+
+    def display_on(self):
+        """
+        Turn on the display.
+        """
+        self._write_cmd(self.HT16K33_GENERIC_DISPLAY_ON)
+        self.display_on = True
+
+    def display_off(self):
+        """
+        Turn on the display.
+        """
+        self._write_cmd(self.HT16K33_GENERIC_DISPLAY_OFF)
+        self.display_on = False
+
+    def is_display_on(self):
+        """
+        Is the display enabled?
+        """
+        return self.display_on
 
     # ********** PRIVATE METHODS **********
 

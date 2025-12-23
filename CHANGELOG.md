@@ -1,0 +1,62 @@
+## Release Notes
+
+- 4.3.0 *Unreleased*
+    - Allow the display to be turned on and off with the instance functions `display_on()` and `display_off()`.
+    - Allow the display state to be determined with the the instance function `is_display_on()`.
+    - Add rotation to `ht16k33matrixmulti.py`
+- 4.2.0 *7 March 2025*
+    - Add multi-matrix scrolling enabler class.
+    - Code clean.
+- 4.1.0 *2 January 2025*
+    - Add `HT16K33Bar.py` bar graph driver.
+    - Add alternative, all-capitals character set for `ht16k33Segment.py`.
+    - Support EC Buying 0.54in 4-digit, 14-segment display in `ht16k33Segment14.py`.
+    - Support new board selection mode in `ht16k33Segment14.py`.
+    - Fix decimal point clearing `ht16k33Segment14.py`.
+- 4.0.3 *18 December 2024*
+    - Fix typo breaking `mpremote` usage  — thanks, `@sebromero`.
+- 4.0.2 *16 December 2024*
+    - Fixed a character set indexing bug in `ht16k33Segmentbig.py` — thanks, `@jonhp`.
+- 4.0.1 *16 August 2024*
+    - Minor fixes/improvements.
+    - Add **experimental** `rotate()` method to `ht16k33Segmentbig.py`.
+- 4.0.0 *8 May 2024*
+    - Completely reorganise the library files into their own directory.
+    - Add device installation script for MicroPython users - thanks, `@ubidefeo`.
+    - Add `HT16K33SegmentGen` CircuitPython examples.
+    - Use Raspberry Pi Pico for all examples.
+- 3.5.3 *15 January 2024*
+    - Remove the `.mpy` versions and provide instructions instead.
+    - Fix incorrect selection of blink rate 0.5Hz — thanks, [`@Karrp`](https://github.com/Karrp).
+- 3.5.2 *11 December 2023*
+    - Add `mip` support — thanks, [`@ubidefeo`](https://github.com/ubidefeo) (no code changes).
+- 3.5.1 *30 October 2023*
+    - Add provisional [PyPI](https://pypi.org/) support (no code changes).
+- 3.5.0 *2 September 2023*
+    - Add `HT16K33SegmentGen` a generic, 1-8 digit 7-segment driver — thanks, [`@vader7071`](https://github.com/vader7071).
+- 3.4.2 *14 February 2023*
+    - Fix an error when a space is shown as a zero — thanks, [`@asasine`](https://github.com/asasine).
+- 3.4.1 *14 November 2022*
+    - Correct VK16K33 naming.
+    - Fix VK16K33 colon setting and unsetting — thanks, Dietmar Schüller.
+- 3.4.0 *6 October 2022*
+    - Allow the colon and decimal point on [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916)).
+- 3.3.1 *13 September 2022*
+    - 14-segment character-set numerals now match 7-segment equivalents.
+    - Assorted code tweaks.
+    - Wrangle and extend examples.
+    - Remove old docs.
+    - Big thanks to [`@akbiocca`](https://github.com/akbiocca) for assistance with this release.
+- 3.3.0 *5 August 2022*
+    - Add `rotate()` method to HT16K33Segment.
+- 3.2.0 *26 July 2022*
+    - Support the [Adafruit 0.54in Alphanumeric Display](https://www.adafruit.com/product/1911) via `ht16k33segment14.py`.
+    - Bug fixes.
+- 3.1.0 *16 February 2022*
+    - Add `ht16k33segment14.py` to support the [SparkFun Qwiic Alphanumeric Display](https://www.sparkfun.com/products/16916).
+- 3.0.2 *23 November 2020*
+    - Refactor out some `ht16k33matrix.py` code.
+- 3.0.1 *7 November 2020*
+    - Correct variable name in `ht16k33matrix.py`.
+- 3.0.0 *6 November 2020*
+    - Initial public release.

@@ -34,11 +34,11 @@ class HT16K33SegmentBig(HT16K33):
 
     # *********** CONSTRUCTOR **********
 
-    def __init__(self, i2c, i2c_address=0x70):
+    def __init__(self, i2c, i2c_address=0x70, do_enable_display=True):
         self.buffer = bytearray(16)
         self.point_pattern = 0x00
         self.is_rotated = False
-        super(HT16K33SegmentBig, self).__init__(i2c, i2c_address)
+        super(HT16K33SegmentBig, self).__init__(i2c, i2c_address, do_enable_display)
 
     # *********** PUBLIC METHODS **********
 
