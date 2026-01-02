@@ -266,11 +266,9 @@ class HT16K33Segment14(HT16K33):
             for i in range(0, 8, 2):
                 a = self.buffer[i] + (self.buffer[i+1] << 8)
 
-                '''
                 b11 = a & 0x0800
                 b13 = a & 0x2000
-                a =  (a & 0x57FF) | (b11 < 2) | (b13 > 2)
-                '''
+                a =  (a & 0x57FF) | (b11 << 2) | (b13 >> 2)
 
                 b = (a & 0b0000011100000111) << 3
                 c = (a & 0b0011100000111000) >> 3
@@ -280,11 +278,9 @@ class HT16K33Segment14(HT16K33):
                 a &= 0b0100000000000000     # Decimal Point remains
                 a = (a | b | c | d | e)
 
-                '''
                 b11 = a & 0x0800
                 b13 = a & 0x2000
-                a =  (a & 0x57FF) | (b11 < 2) | (b13 > 2)
-                '''
+                a =  (a & 0x57FF) | (b11 << 2) | (b13 >> 2)
 
                 self.buffer[i] = a & 0xFF
                 self.buffer[i+1] = a >> 8
