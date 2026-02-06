@@ -41,10 +41,11 @@ class HT16K33:
         """
         Set the display's flash rate.
 
-        Only four values (in Hz) are permitted: 0, 2, 1, and 0.5.
+        Only four values (in Hz) are permitted: 0, 2, 1 and 0.5.
 
-        If the display is off, the applied blink rate will not show until
-        the display is turned on (with `.display_on()`).
+        If the display is currently off, the applied blink rate will not show until
+        the display is turned on (with `.display(True)`). Check the display state
+        with `.display_state()`.
 
         Args:
             rate (int): The chosen flash rate. Default: 0Hz (no flash).
@@ -104,19 +105,13 @@ class HT16K33:
         """
         self._power(False)
 
-    def display_on(self):
+    def display(self, on=True):
         """
-        Turn on the display.
+        Turn the display on (`True`) or off (`False`).
         """
-        self._display(True)
+        self._display(on)
 
-    def display_off(self):
-        """
-        Turn on the display.
-        """
-        self._display(False)
-
-    def is_display_on(self):
+    def display_state(self):
         """
         Is the display enabled?
         """

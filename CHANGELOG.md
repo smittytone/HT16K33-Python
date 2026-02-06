@@ -1,8 +1,8 @@
 ## Release Notes
 
 - 4.3.0 *Unreleased*
-    - Allow the display to be turned on and off with the instance functions `display_on()` and `display_off()`.
-    - Allow the display state to be determined with the the instance function `is_display_on()`.
+    - Allow the display to be turned on and off with the instance function `display()`.
+    - Allow the display state to be determined with the the instance function `display_state()`.
     - Add rotation to `ht16k33matrixmulti.py`.
     - Fix display blink rate stored state.
 - 4.2.0 *7 March 2025*
