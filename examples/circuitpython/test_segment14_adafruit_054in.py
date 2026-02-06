@@ -71,4 +71,4 @@ if __name__ == '__main__':
         point_state = not point_state
 
         # Check that the following call fails correctly on ADAFRUIT_054, etc.
-        assert display.set_colon(true) == display, "ERROR - display.set_colon() not returning self"
+        assert display.set_colon(True) == display, "ERROR - display.set_colon() not returning self"
