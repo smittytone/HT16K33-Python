@@ -12,13 +12,13 @@ Connect your HT16K33 column pins to each LED's digit selection pin, and its row 
 
 ### 4.3.0 ###
 
-Two operations — to turn on the display and to turn if off — have been extracted into a function. This allows your application to turn off the display if it needs to and then back on again. For example, you might use this for multi-LED synchronisation. The function is `display())`, called on your driver instance. Pass in `True` to turn the display on; `False` to turn it off.
+Two operations — to turn on the display and to turn if off — have been extracted into a function. This allows your application to turn off the display if it needs to and then back on again. For example, you might use this for multi-LED synchronisation. The function is `display()`, called on your driver instance. Pass in `True` to turn the display on; `False` to turn it off.
 
-As before, the driver powers on the controller when you instantiate it, but you can now opt not to turn on the display at the same time. Include the argument`do_enable_display=False` in your constructor call. By default, this parameter is passed `True`, so the display is turned on at this point, replicating previous behaviour. However, passing `False` will power on the controller but leave the display turned off. You will need to turn on the display, with `display(True)`, when you want the display to show anything.
+As before, the driver powers on the controller when you instantiate it, but you can now opt not to turn on the display at the same time. Include the argument`do_enable_display=False` in your constructor call. By default, this parameter is passed `True`, so the display will continue to be turned on at this point as per previous behaviour. However, passing `False` will power on the controller but leave the display turned off. You will need to turn on the display, with `display(True)`, when you want the display to show anything.
 
 Call `display_state()` on the driver instance to determine its current state.
 
-I do not recommend using these functions unless your application really needs them as it is easy to turn the display off and subsequently fail to check display state before trying to show something on the display. If your display is blank when it should not be, first check that the code has turned it on.
+**Important** I do not recommend using these functions unless your application really needs them as it is easy to turn the display off and subsequently fail to check display state before trying to show something on the display. If your display is blank when it should not be, first check that the code has turned it on.
 
 ### 4.2.0 ###
 
@@ -144,6 +144,6 @@ Please see [CHANGELOG.md](CHANGELOG.md).
 
 ## Licence and Copyright
 
-This repository’s source code and documentation is copyright © 2025, Tony Smith (@smittytone).
+This repository’s source code and documentation is copyright © 2026, Tony Smith (@smittytone).
 
 The HTK16K33 driver and subsidiary display drivers are licensed under the [MIT License](LICENSE.md).

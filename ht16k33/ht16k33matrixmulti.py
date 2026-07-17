@@ -2,6 +2,14 @@
 from ht16k33 import HT16K33Matrix
 
 class HT16K33MatrixMulti:
+    """
+    Micro/Circuit Python class for multiple Adafruit 0.8-in 16x8 LED matrices.
+
+    Bus:        I2C
+    Author:     Tony Smith (@smittytone)
+    License:    MIT
+    Copyright:  2026
+    """
 
     matrix_width = 8
     matrix_height = 8
@@ -15,7 +23,7 @@ class HT16K33MatrixMulti:
         assert 0 < count < 9, "ERROR - Invalid matrix count [1-4]"
         assert count != 1, "ERROR - For a single LED use the HT16K33Matrix class"
         assert len(addresses) == 0 or len(addresses) == count, "ERROR - Invalid matrix I2C address count [1-4]"
-        
+
         # Instantiate the required matrix objects, setting their
         # I2C addresses automatically or to those supplied
         self.matrices = []
@@ -63,7 +71,7 @@ class HT16K33MatrixMulti:
         for i in range(0, len(self.matrices)):
             self.matrices[i].set_angle(angle)
         return self
-    
+
     def set_brightness(self, brightness=15):
         """
         Set the display's brightness (ie. duty cycle).
@@ -92,7 +100,7 @@ class HT16K33MatrixMulti:
         for i in range(0, len(self.matrices)):
             self.matrices[i].set_inverse()
         return self
-    
+
     def clear(self):
         """
         Clear all the matrices.
@@ -146,7 +154,7 @@ class HT16K33MatrixMulti:
 
         self.matrices[0].define_character(glyph, char_code)
         return self
-    
+
     def set_character(self, ascii_value=32, column=0):
         """
         Display a single character specified by its Ascii value on the matrix.
@@ -176,7 +184,7 @@ class HT16K33MatrixMulti:
         Args:
             the_text (string) The characters to display
             column (int)      The column (x co-ordinate) at which to place the characters
-        
+
         Returns:
             The instance (self)
         """
@@ -185,7 +193,7 @@ class HT16K33MatrixMulti:
 
         text_image = self.scroll_text(the_text, emit_buffer=True)
         return self.set_image(text_image, column)
-    
+
     def set_image(self, the_image, column=0):
         """
         Displays a custom character on the display at the specified column.
@@ -218,7 +226,7 @@ class HT16K33MatrixMulti:
             matrix.buffer[local_column] = the_image[i]
             offset += 1
         return self
-    
+
     def scroll_text(self, the_line, speed=0.1, do_loop=False, emit_buffer=False):
         """
         Scroll the specified line of text leftwards across the display.
@@ -234,7 +242,7 @@ class HT16K33MatrixMulti:
 
         # Bail on incorrect values
         assert len(the_line) > 0, "ERROR - Invalid string set in scroll_text()"
-    
+
         # Calculate the source buffer size
         length = 0
         for i in range(0, len(the_line)):
@@ -319,7 +327,7 @@ class HT16K33MatrixMulti:
                 if cursor >= length:
                     cursor = 0
             else:
-                if cursor > length - self.window_width: 
+                if cursor > length - self.window_width:
                     break
             time.sleep(speed)
 
@@ -328,7 +336,7 @@ class HT16K33MatrixMulti:
     def _localise(self, x):
         """
         Return the local co-ordinates and matrix for global co-ordinates.
-        Return -1 if we are beyond the 
+        Return -1 if we are beyond the
         """
         if x >= self.window_width: return None, -1
         index = int(x / self.matrix_width)
