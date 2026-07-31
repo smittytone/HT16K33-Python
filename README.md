@@ -45,7 +45,7 @@ or for text:
 display.scroll_text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
 ```
 
-The constructor takes a pre-configured I&sup2;C instance (via CircuitPython or MicroPython) and the number of matrix LEDs in your custom display panel. By default, these are assumed to be oriented left to right, with the left-most matrix using the address `0x70` and each subsequent matrix using the next sequential address. Alternatively, you can pass in an array of addresses in the sequence in which they are mounted left to right. For example, my test rig has displays with the addresses `0x70`, `0x71`, `0x74` and, `0x72`.
+The constructor takes a pre-configured I&sup2;C instance (via CircuitPython or MicroPython) and the number of matrix LEDs in your custom display panel. By default, these are assumed to be oriented left to right, with the left-most matrix using the address `0x70` and each subsequent matrix using the next sequential address. Alternatively, you can pass in an array of addresses in the sequence in which they are mounted left to right. For example, my test rig has displays with the addresses `0x70`, `0x71`, `0x74` and `0x72`.
 
 The key functions, `scroll_text()` and `scroll_image()` take a string and a byte array, respectively (see the examples above). Both have two optional parameters. First, a speed value: a float that provides the pause duration in seconds between each animation frame (the default is 0.1 seconds). Second, a boolean that determines whether the image or text auto-repeats once it has completely scrolled across the face of the display (default: `False`). `True` should be used carefully as it will cause the code to block infinitely.
 
@@ -81,7 +81,7 @@ from ht16k33 import HT16K33Segment
 
 You can then instantiate the driver object. This requires a **configured** I2C bus object.
 
-You will need at least one display driver file, eg. `ht16k33segmentgen.py` and `ht16k33.py` in your project folder.
+You will need at least one display driver file, e.g., `ht16k33segmentgen.py` and `ht16k33.py` in your project folder.
 
 ## Install the Drivers ##
 

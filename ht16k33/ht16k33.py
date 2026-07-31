@@ -57,7 +57,7 @@ class HT16K33:
 
     def set_brightness(self, brightness=15):
         """
-        Set the display's brightness (ie. duty cycle).
+        Set the display's brightness (i.e., duty cycle).
 
         Brightness values range from 0 (dim, but not off) to 15 (max. brightness).
 

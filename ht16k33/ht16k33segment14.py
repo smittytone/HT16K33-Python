@@ -15,7 +15,7 @@ class HT16K33Segment14(HT16K33):
 
     # *********** CONSTANTS **********
 
-    # Supported boards - ie. those known to work
+    # Supported boards - i.e., those known to work
     ADAFRUIT_054                = 0
     ECBUYING_054                = 0
     SPARKFUN_ALPHA              = 1
@@ -52,7 +52,7 @@ class HT16K33Segment14(HT16K33):
         # FROM 4.1.0
         # Provide backwards compatibility with 4.0.x
         if board == self.UNKNOWN:
-            # No board passed in as default: assume 4.0.x usage, ie.
+            # No board passed in as default: assume 4.0.x usage, i.e.,
             # ADAFRUIT_054 or SPARKFUN_ALPHA
             self.board = self.SPARKFUN_ALPHA if is_ht16k33 is False else self.ADAFRUIT_054
         else:
@@ -79,7 +79,7 @@ class HT16K33Segment14(HT16K33):
               | _ |         13 / | \ 11    . 14
                 3                12
 
-        For HT16K33-based devices, swap bits 11 and 13: ie. set bit 13
+        For HT16K33-based devices, swap bits 11 and 13: i.e., set bit 13
         for a bottom right stroke, and bit 11 for a bottom left stroke.
         The diagram above is for the VK16K33. For the library's character
         set, this switch is done for you.

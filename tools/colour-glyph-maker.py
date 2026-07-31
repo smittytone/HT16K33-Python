@@ -33,7 +33,7 @@ for column in range(8):
     output.append(byte_left)
     output.append(byte_right)
 
-# Output the glyph bytearray as a string, ie.
+# Output the glyph bytearray as a string, i.e.,
 # b"\x00\x00"
 # ready to be copied and pasted into your code
 s = "b\""
