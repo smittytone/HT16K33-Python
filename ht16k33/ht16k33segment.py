@@ -60,7 +60,7 @@ class HT16K33Segment(HT16K33):
         Call 'update()' to render the buffer on the display.
 
         Args:
-            isSet (bool): Whether the colon is lit (True) or not (False). Default: True.
+            is_set (bool): Whether the colon is lit (True) or not (False). Default: True.
 
         Returns:
             The instance (self)

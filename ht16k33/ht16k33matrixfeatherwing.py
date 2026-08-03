@@ -172,14 +172,14 @@ class HT16K33MatrixFeatherWing(HT16K33):
 
         Args:
             ascii_value (int) Character Ascii code. Default: 32 (space)
-            column (int)      Whether the icon should be displayed centred on the screen. Default: False
+            column (int)      Column (from the left) at which to place the character. Default: 0
 
         Returns:
             The instance (self)
         """
         # Bail on incorrect row numbers or character values
         assert 0 <= ascii_value < 128, "ERROR - Invalid ascii code set in set_character()"
-        assert 0 <= column < self.width, "ERROR - Invalid column number set in set_icon()"
+        assert 0 <= column < self.width, "ERROR - Invalid column number set in set_character()"
 
         glyph = None
         if ascii_value < 32:

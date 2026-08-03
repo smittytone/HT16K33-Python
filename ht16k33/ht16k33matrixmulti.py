@@ -27,11 +27,11 @@ class HT16K33MatrixMulti:
         # Instantiate the required matrix objects, setting their
         # I2C addresses automatically or to those supplied
         self.matrices = []
-        baseAddress = 0x70
+        base_address = 0x70
         for i in range(0, count):
-            address = addresses[i] if len(addresses) == count else baseAddress
+            address = addresses[i] if len(addresses) == count else base_address
             self.matrices.append(HT16K33Matrix(i2c, address))
-            baseAddress += 1
+            base_address += 1
         self.window_width = self.matrix_width * count
 
     # *********** PUBLIC METHODS **********

@@ -203,7 +203,7 @@ class HT16K33Segment14(HT16K33):
         """
         Set or unset the colon symbol on the SparkFun Alphamnumeric Display.
 
-       Args:
+        Args:
             is_on (bool): Should the colon be illuminated?
 
         Returns:
@@ -218,7 +218,7 @@ class HT16K33Segment14(HT16K33):
         """
         Set or unset the decimal point symbol on the SparkFun Alphamnumeric Display.
 
-       Args:
+        Args:
             is_on (bool): Should the decimal point be illuminated?
 
         Returns:
@@ -235,7 +235,7 @@ class HT16K33Segment14(HT16K33):
         Set or unset the decimal point symbol or the colon.
         SparkFun alpha display only.
 
-       Args:
+        Args:
             digit (int):  The digit the item is part of.
             state (bool): Should the decimal point be illuminated?
 
