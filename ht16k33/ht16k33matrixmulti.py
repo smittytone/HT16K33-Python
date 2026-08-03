@@ -1,7 +1,5 @@
 # Import the base class
-from operator import add
-
-from .ht16k33 import HT16K33Matrix
+from .ht16k33matrix import HT16K33Matrix
 
 class HT16K33MatrixMulti:
     """
