@@ -33,7 +33,7 @@ class HT16K33Bar(HT16K33):
     def __init__(self, i2c, i2c_address=BAR_I2C_ADDRESS, orientation=BAR_ZERO_ALONGSIDE_CHIP, do_enable_display=True):
         self.buffer = bytearray(6)
         self.zero_by_chip = (orientation is self.BAR_ZERO_ALONGSIDE_CHIP)
-        super(HT16K33Bar, self).__init__(i2c, i2c_address, do_enable_display)
+        super().__init__(i2c, i2c_address, do_enable_display)
 
     # *********** PUBLIC METHODS **********
 

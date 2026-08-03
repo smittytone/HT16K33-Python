@@ -38,7 +38,7 @@ class HT16K33SegmentBig(HT16K33):
         self.buffer = bytearray(16)
         self.point_pattern = 0x00
         self.is_rotated = False
-        super(HT16K33SegmentBig, self).__init__(i2c, i2c_address, do_enable_display)
+        super().__init__(i2c, i2c_address, do_enable_display)
 
     # *********** PUBLIC METHODS **********
 

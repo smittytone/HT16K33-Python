@@ -31,7 +31,7 @@ class HT16K33SegmentGen(HT16K33):
         # Check digits specified (must be 1 - 8)
         assert 0 < digits < 9, "ERROR - Invalid number of digits (1-8) in HT16K33Segment8()"
         self.max_digits = digits
-        super(HT16K33SegmentGen, self).__init__(i2c, i2c_address, do_enable_display)
+        super().__init__(i2c, i2c_address, do_enable_display)
 
     # *********** PUBLIC METHODS **********
 

@@ -131,7 +131,7 @@ class HT16K33MatrixColour(HT16K33):
         self.buffer = bytearray(self.width * 2)
         self.def_chars = []
         for i in range(32): self.def_chars.append(b"\x00")
-        super(HT16K33MatrixColour, self).__init__(i2c, i2c_address, do_enable_display)
+        super().__init__(i2c, i2c_address, do_enable_display)
 
     # *********** PUBLIC METHODS **********
 

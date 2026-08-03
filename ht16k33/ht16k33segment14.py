@@ -59,7 +59,7 @@ class HT16K33Segment14(HT16K33):
             # Use supplied board value
             self.board = board
 
-        super(HT16K33Segment14, self).__init__(i2c, i2c_address, do_enable_display)
+        super().__init__(i2c, i2c_address, do_enable_display)
 
 
     # *********** PUBLIC FUNCTIONS **********

@@ -38,7 +38,7 @@ class HT16K33Segment(HT16K33):
         self.use_uppercase = False
         self.charset = self.CHARSET
 
-        super(HT16K33Segment, self).__init__(i2c, i2c_address, do_enable_display)
+        super().__init__(i2c, i2c_address, do_enable_display)
 
     # *********** PUBLIC METHODS **********
 
