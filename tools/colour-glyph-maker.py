@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/bin/env python
 
 """
 Take a glyph input line-by-line as colour values (r, g, y)

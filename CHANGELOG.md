@@ -1,5 +1,8 @@
 ## Release Notes
 
+- 4.3.1 *Unreleased*
+    - Fix small bugs and inconsistencies.
+    - Improve code readability.
 - 4.3.0 *17 July 2026*
     - Allow the display to be turned on and off with the instance function `display()`.
     - Allow the display state to be determined with the the instance function `display_state()`.
