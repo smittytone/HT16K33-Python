@@ -154,11 +154,11 @@ class HT16K33SegmentGen(HT16K33):
         if self.is_rotated:
             # Preserve the unrotated buffer
             tmpbuffer = bytearray(16)
-            for i in range(0, self.max_digits << 1):
+            for i in range(self.max_digits << 1):
                 tmpbuffer[i] = self.buffer[i]
             # Swap digits 0,(max - 1), 1,(max - 2) etc
             if self.max_digits > 1:
-                for i in range(0, (self.max_digits >> 1)):
+                for i in range(self.max_digits >> 1):
                     right = (self.max_digits - i - 1) << 1
                     left = i << 1
                     if left != right:
@@ -167,7 +167,7 @@ class HT16K33SegmentGen(HT16K33):
                         self.buffer[right] = a
 
             # Flip each digit
-            for i in range(0, self.max_digits):
+            for i in range(self.max_digits):
                 a = self.buffer[i << 1]
                 b = (a & 0x07) << 3
                 c = (a & 0x38) >> 3
@@ -175,7 +175,7 @@ class HT16K33SegmentGen(HT16K33):
                 self.buffer[i << 1] = (a | b | c)
             self._render()
             # Restore the buffer
-            for i in range(0, self.max_digits << 1):
+            for i in range(self.max_digits << 1):
                 self.buffer[i] = tmpbuffer[i]
         else:
             self._render()

@@ -207,7 +207,7 @@ class HT16K33Segment(HT16K33):
             self.buffer[self.POS[2]] = a
 
             # Rotate each digit
-            for i in range(0, 4):
+            for i in range(4):
                 a = self.buffer[self.POS[i]]
                 b = (a & 0x07) << 3
                 c = (a & 0x38) >> 3

@@ -244,7 +244,7 @@ class HT16K33Matrix(HT16K33):
 
         # Calculate the source buffer size
         length = 0
-        for i in range(0, len(the_line)):
+        for i in range(len(the_line)):
             asc_val = ord(the_line[i])
             if asc_val < 32:
                 glyph = self.def_chars[asc_val]
@@ -256,13 +256,13 @@ class HT16K33Matrix(HT16K33):
 
         # Draw the string to the source buffer
         row = 0
-        for i in range(0, len(the_line)):
+        for i in range(len(the_line)):
             asc_val = ord(the_line[i])
             if asc_val < 32:
                 glyph = self.def_chars[asc_val]
             else:
                 glyph = self.CHARSET[asc_val - 32]
-            for j in range(0, len(glyph)):
+            for j in range(len(glyph)):
                 src_buffer[row] = glyph[j] if self.is_inverse is False else ((~ glyph[j]) & 0xFF)
                 row += 1
             if asc_val > 32: row += 1
@@ -272,7 +272,7 @@ class HT16K33Matrix(HT16K33):
         cursor = 0
         while True:
             a = cursor
-            for i in range(0, self.width):
+            for i in range(self.width):
                 self.buffer[i] = src_buffer[a]
                 a += 1
             self.draw()

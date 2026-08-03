@@ -1,4 +1,6 @@
 # Import the base class
+from operator import add
+
 from ht16k33 import HT16K33Matrix
 
 class HT16K33MatrixMulti:
@@ -19,7 +21,9 @@ class HT16K33MatrixMulti:
     is_rotated = False
     is_inverse = False
 
-    def __init__(self, i2c, count, addresses=[]):
+    def __init__(self, i2c, count, addresses=None):
+        if not addresses:
+            addresses = []
         assert 0 < count < 9, "ERROR - Invalid matrix count [1-4]"
         assert count != 1, "ERROR - For a single LED use the HT16K33Matrix class"
         assert len(addresses) == 0 or len(addresses) == count, "ERROR - Invalid matrix I2C address count [1-4]"
@@ -28,7 +32,7 @@ class HT16K33MatrixMulti:
         # I2C addresses automatically or to those supplied
         self.matrices = []
         base_address = 0x70
-        for i in range(0, count):
+        for i in range(count):
             address = addresses[i] if len(addresses) == count else base_address
             self.matrices.append(HT16K33Matrix(i2c, address))
             base_address += 1
@@ -67,8 +71,8 @@ class HT16K33MatrixMulti:
         assert angle == 0 or angle == 2
 
         self.rotation_angle = angle
-        self.is_rotated = True if self.rotation_angle != 0 else False
-        for i in range(0, len(self.matrices)):
+        self.is_rotated = (self.rotation_angle != 0)
+        for i in range(len(self.matrices)):
             self.matrices[i].set_angle(angle)
         return self
 
@@ -85,7 +89,7 @@ class HT16K33MatrixMulti:
             The instance (self)
         """
         if brightness < 0 or brightness > 15: brightness = 15
-        for i in range(0, len(self.matrices)):
+        for i in range(len(self.matrices)):
             self.matrices[i].set_brightness(brightness)
         return self
 
@@ -97,7 +101,7 @@ class HT16K33MatrixMulti:
             The instance (self)
         """
         self.is_inverse = not self.is_inverse
-        for i in range(0, len(self.matrices)):
+        for i in range(len(self.matrices)):
             self.matrices[i].set_inverse()
         return self
 
@@ -105,7 +109,7 @@ class HT16K33MatrixMulti:
         """
         Clear all the matrices.
         """
-        for i in range(0, len(self.matrices)):
+        for i in range(len(self.matrices)):
             self.matrices[i].clear()
         return self
 
@@ -113,7 +117,7 @@ class HT16K33MatrixMulti:
         """
         Tell each member matrix to draw itself.
         """
-        for i in range(0, len(self.matrices)):
+        for i in range(len(self.matrices)):
             self.matrices[i].draw()
 
     def plot(self, x, y, ink=1, xor=False):
@@ -245,7 +249,7 @@ class HT16K33MatrixMulti:
 
         # Calculate the source buffer size
         length = 0
-        for i in range(0, len(the_line)):
+        for i in range(len(the_line)):
             ascii_value = ord(the_line[i])
             assert 0 < ascii_value < 128, "ERROR - Character out of range in scroll_text()"
             if ascii_value < 32:
@@ -258,10 +262,10 @@ class HT16K33MatrixMulti:
         # Draw the string to the source buffer
         src_buffer = bytearray(length)
         row = 0
-        for i in range(0, len(the_line)):
+        for i in range(len(the_line)):
             asc_val = ord(the_line[i])
             glyph = self.matrices[0].CHARSET[asc_val - 32]
-            for j in range(0, len(glyph)):
+            for j in range(len(glyph)):
                 src_buffer[row] = glyph[j]
                 row += 1
             if asc_val > 32: row += 1
@@ -295,7 +299,7 @@ class HT16K33MatrixMulti:
             if self.window_width % length != 0:
                 count += 1
             nu_image = bytearray(count * length)
-            for i in range(0, count):
+            for i in range(count):
                 nu_image[i * length:i * length + length] = the_image
             the_image = nu_image
             length = len(the_image)
@@ -304,7 +308,7 @@ class HT16K33MatrixMulti:
         cursor = 0
         while True:
             # Iterate over the matrices, setting each one as a window into the image
-            for i in range(0, len(self.matrices)):
+            for i in range(len(self.matrices)):
                 window = cursor + (i * self.matrix_width)
                 if do_loop:
                     g = bytearray(8)

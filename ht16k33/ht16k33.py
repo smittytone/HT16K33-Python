@@ -90,7 +90,7 @@ class HT16K33:
         Returns:
             The instance (self)
         """
-        for i in range(0, len(self.buffer)): self.buffer[i] = 0x00
+        for i in range(len(self.buffer)): self.buffer[i] = 0x00
         return self
 
     def power_on(self, enable_display=True):

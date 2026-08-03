@@ -268,7 +268,7 @@ class HT16K33Segment14(HT16K33):
             # Output for SparkFun Alphanumeric
             a = 0
             d = 1
-            for i in range(0, 16):
+            for i in range(16):
                 if (value & (1 << i)):
                     self.buffer[a] |= (d << digit)
                 a += 2

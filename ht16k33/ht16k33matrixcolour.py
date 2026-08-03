@@ -251,7 +251,7 @@ class HT16K33MatrixColour(HT16K33):
                 glyph = self.def_chars[asc_val]
             else:
                 glyph = self._colour_glyph(self.CHARSET[asc_val - 32], ink, paper)
-            for j in range(0, len(glyph)):
+            for j in range(len(glyph)):
                 src_buffer[row] = glyph[j]
                 row += 1
             if asc_val > 32:
@@ -374,7 +374,7 @@ class HT16K33MatrixColour(HT16K33):
         BUT maintain adjacent column pairs
         """
         assert angle in (0, 1, 2, 3), "ERROR -- Invalid angle set in _rotate_matrix()"
-        if angle is 0: return input_matrix
+        if angle == 0: return input_matrix
 
         # NOTE It's quicker to have three case-specific
         #      code blocks than a single, generic block
