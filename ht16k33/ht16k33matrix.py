@@ -361,7 +361,7 @@ class HT16K33Matrix(HT16K33):
             elif self.board == BOARD_KEYESTUDIO:
                 draw_buffer[i * 2 + 1] = (new_buffer[i] & 0xFF)
             else:
-                assert True == False, "You are using an unsupported LED matrix board"
+                assert False, "You are using an unsupported LED matrix board"
         self.i2c.writeto(self.address, bytes(draw_buffer))
 
     # ********** PRIVATE METHODS **********
@@ -372,7 +372,7 @@ class HT16K33Matrix(HT16K33):
            0 = none, 1 = 90 clockwise, 2 = 180, 3 = 90 anti-clockwise
         """
         assert angle in (0, 1, 2, 3), "ERROR - Invalid angle in _rotate_matrix()"
-        if angle is 0: return input_matrix
+        if angle == 0: return input_matrix
 
         a = 0
         line_value = 0
@@ -384,10 +384,10 @@ class HT16K33Matrix(HT16K33):
             line_value = input_matrix[y]
             for x in range(7, -1, -1):
                 a = line_value & (1 << x)
-                if a is not 0:
-                    if angle is 1:
+                if a != 0:
+                    if angle == 1:
                         output_matrix[7 - x] = output_matrix[7 - x] + (1 << y)
-                    elif angle is 2:
+                    elif angle == 2:
                         output_matrix[7 - y] += (1 << (7 - x))
                     else:
                         output_matrix[x] = output_matrix[x] + (1 << (7 - y))

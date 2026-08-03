@@ -74,7 +74,7 @@ class HT16K33Bar(HT16K33):
                 self._set_bar(i, colour)
                 i -= 1
         else:
-            for i in range(0, bar + 1):
+            for i in range(bar + 1):
                 self._set_bar(i, colour)
         return self
 

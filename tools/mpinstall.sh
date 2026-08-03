@@ -2,9 +2,9 @@
 #
 # MicroPython Package Installer
 # Created by: Ubi de Feo and Sebastian Romero
-# 
+#
 # Installs a MicroPython Package to a board using mpremote.
-# 
+#
 # This script accepts an optional argument to compile .py files to .mpy.
 # Simply run the script with the optional argument:
 #
@@ -22,7 +22,7 @@ LIBDIR="lib"
 # File system operations such as "mpremote mkdir" or "mpremote rm"
 # will generate an error if the folder exists or if the file does not exist.
 # These errors can be ignored.
-# 
+#
 # Traceback (most recent call last):
 #   File "<stdin>", line 2, in <module>
 # OSError: [Errno 17] EEXIST
@@ -59,7 +59,7 @@ function copy_file {
 function delete_file {
   echo "Deleting $1"
   # Run mpremote and capture the error message
-  error=$(mpremote rm $1)
+  error=$(mpremote rm "$1")
 
   # Print error message if return code is not 0
   if [ $? -ne 0 ]; then
@@ -125,7 +125,7 @@ for filename in $SRCDIR/*; do
       mpy-cross "$SRCDIR/$f_name"
       destination_extension=$ext
     fi
-    
+
     # Make sure previous versions of the given file are deleted.
     if [[ $existing_files == *"${f_name%.*}.$source_extension"* ]]; then
       delete_file ":/${LIBDIR}/$PKGDIR/${f_name%.*}.$source_extension"

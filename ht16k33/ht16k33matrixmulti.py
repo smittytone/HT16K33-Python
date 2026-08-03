@@ -137,7 +137,8 @@ class HT16K33MatrixMulti:
         assert (0 <= x < self.window_width) and (0 <= y < self.window_height), "ERROR - Invalid coordinate set in plot()"
 
         matrix, mx = self._localise(x)
-        matrix.plot(mx, y, ink, xor)
+        if matrix:
+            matrix.plot(mx, y, ink, xor)
         return self
 
     def define_character(self, glyph, char_code=0):
@@ -217,18 +218,19 @@ class HT16K33MatrixMulti:
         offset = 0
         display_column = column
         matrix, x = self._localise(display_column)
-        for i in range(length):
-            local_column = x + offset
-            if local_column > 7:
-                # Gone beyond the current matrix, so get the next one
-                display_column += offset
-                matrix, x = self._localise(display_column)
-                # Break if we've reached the end of the display
-                if x == -1: break
-                local_column = x
-                offset = 0
-            matrix.buffer[local_column] = the_image[i]
-            offset += 1
+        if matrix:
+            for i in range(length):
+                local_column = x + offset
+                if local_column > 7:
+                    # Gone beyond the current matrix, so get the next one
+                    display_column += offset
+                    matrix, x = self._localise(display_column)
+                    # Break if we've reached the end of the display
+                    if x == -1: break
+                    local_column = x
+                    offset = 0
+                matrix.buffer[local_column] = the_image[i]
+                offset += 1
         return self
 
     def scroll_text(self, the_line, speed=0.1, do_loop=False, emit_buffer=False):
