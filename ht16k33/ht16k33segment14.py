@@ -4,7 +4,7 @@ from .ht16k33 import HT16K33
 class HT16K33Segment14(HT16K33):
     """
     Micro/Circuit Python class for the Adafruit 0.54in Quad Alphanumeric Display,
-    and otehrs: four-digit, 14-segment LED displays driven by the HT16K33 or
+    and others: four-digit, 14-segment LED displays driven by the HT16K33 or
     VK16K33 controller.
 
     Bus:        I2C

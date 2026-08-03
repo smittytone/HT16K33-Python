@@ -1,11 +1,11 @@
 # Import the base class
 from operator import add
 
-from ht16k33 import HT16K33Matrix
+from .ht16k33 import HT16K33Matrix
 
 class HT16K33MatrixMulti:
     """
-    Micro/Circuit Python class for multiple Adafruit 0.8-in 16x8 LED matrices.
+    Micro/Circuit Python class for multiple 8x8 LED matrices.
 
     Bus:        I2C
     Author:     Tony Smith (@smittytone)
@@ -342,7 +342,7 @@ class HT16K33MatrixMulti:
     def _localise(self, x):
         """
         Return the local co-ordinates and matrix for global co-ordinates.
-        Return -1 if we are beyond the
+        Return -1 if we are beyond the width of the multi-matrix.
         """
         if x >= self.window_width: return None, -1
         index = int(x / self.matrix_width)

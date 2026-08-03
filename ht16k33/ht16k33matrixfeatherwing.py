@@ -301,14 +301,14 @@ class HT16K33MatrixFeatherWing(HT16K33):
             y (int) Y co-ordinate bottom to top
 
         Returns:
-            Whether the
+            Whether the bit is set (`True`) or not (`False`)
         """
         # Bail on incorrect row numbers or character values
         assert (0 <= x < self.width) and (0 <= y < self.height), "ERROR - Invalid coordinate set in is_set()"
 
         x = self._get_row(x)
         bit = (self.buffer[x] >> y) & 1
-        return True if bit > 0 else False
+        return bool(bit > 0)
 
     # ********** PRIVATE METHODS **********
 
