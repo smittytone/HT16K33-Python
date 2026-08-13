@@ -135,8 +135,7 @@ class HT16K33MatrixMulti:
         assert (0 <= x < self.window_width) and (0 <= y < self.window_height), "ERROR - Invalid coordinate set in plot()"
 
         matrix, mx = self._localise(x)
-        if matrix:
-            matrix.plot(mx, y, ink, xor)
+        matrix.plot(mx, y, ink, xor)
         return self
 
     def define_character(self, glyph, char_code=0):
@@ -171,6 +170,7 @@ class HT16K33MatrixMulti:
         """
         # Bail on incorrect values
         assert 0 <= ascii_value < 128, "ERROR - Invalid ascii code set in set_character()"
+        assert (0 <= column < self.window_width), "ERROR - Invalid column passed to set_character()"
 
         if ascii_value < 32:
             glyph = self.matrices[0].def_chars[ascii_value]
@@ -192,7 +192,8 @@ class HT16K33MatrixMulti:
             The instance (self)
         """
         # Bail on incorrect values
-        assert len(the_text) > 0, "ERROR - Invalid text supplied to set_text()"
+        assert len(the_text) > 0, "ERROR - Invalid text passed to set_text()"
+        assert (0 <= column < self.window_width), "ERROR - Invalid column passed to set_text()"
 
         text_image = self.scroll_text(the_text, emit_buffer=True)
         return self.set_image(text_image, column)
@@ -212,6 +213,7 @@ class HT16K33MatrixMulti:
         # Bail on incorrect values
         length = len(the_image)
         assert length > 0, "ERROR - Invalid glyph set in set_image()"
+        assert (0 <= column < self.window_width), "ERROR - Invalid column passed to set_image()"
 
         offset = 0
         display_column = column
@@ -342,7 +344,7 @@ class HT16K33MatrixMulti:
         Return the local co-ordinates and matrix for global co-ordinates.
         Return -1 if we are beyond the width of the multi-matrix.
         """
-        if x >= self.window_width: return None, -1
+        if x >= self.window_width or x < 0: return None, -1
         index = int(x / self.matrix_width)
         local_x = x - (index * self.matrix_width)
         if index >= len(self.matrices): return None, -1
